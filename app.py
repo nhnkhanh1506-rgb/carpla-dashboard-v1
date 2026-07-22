@@ -371,7 +371,9 @@ def render_mini_kpi(title, value, badge=None):
 #
 
 WORKSHOP_CONFIG = {
-    "Hà Nội - Phạm Văn Đồng": {
+    "Phạm Văn Đồng": {
+        "chi_nhanh": "Hà Nội",
+
         # Doanh thu dịch vụ = Tổng trước thuế trong file Lệnh sửa chữa
         "service_file": Path("hn_pvd_service_2026_07.xlsx"),
 
@@ -388,7 +390,7 @@ WORKSHOP_CONFIG = {
 }
 
 TARGETS = {
-    ("Hà Nội - Phạm Văn Đồng", 2026, 7): {
+    ("Hà Nội", "Phạm Văn Đồng", 2026, 7): {
         "ro": 714,
         "revenue": 1_429_000_000,
     },
@@ -524,7 +526,7 @@ def load_parts_total(file_path):
     return float(total_values.max())
 
 
-def load_service_file(workshop_name, file_path):
+def load_service_file(branch_name, workshop_name, file_path):
     """Đọc và chuẩn hóa file Lệnh sửa chữa."""
     if not file_path.exists():
         st.error(f"Không tìm thấy file lệnh sửa chữa: {file_path.name}")
@@ -566,6 +568,7 @@ def load_service_file(workshop_name, file_path):
         )
         st.stop()
 
+    data["chi_nhanh"] = branch_name
     data["xuong"] = workshop_name
     data["ngay_hoa_don"] = pd.to_datetime(
         data["ngay_hoa_don"],
@@ -614,7 +617,7 @@ def load_service_file(workshop_name, file_path):
     return data
 
 
-def load_accessory_file(workshop_name, file_path):
+def load_accessory_file(branch_name, workshop_name, file_path):
     """
     Đọc file Lệnh phụ kiện nếu xưởng có file.
     Chỉ cần các cột:
@@ -623,12 +626,13 @@ def load_accessory_file(workshop_name, file_path):
     - Tổng trước thuế
     """
     if file_path is None:
-        return pd.DataFrame(columns=[
-            "xuong",
-            "ngay_hoa_don",
-            "trang_thai",
-            "doanh_thu_phu_kien"
-        ])
+        return pd.DataFrame({
+            "chi_nhanh": pd.Series(dtype="object"),
+            "xuong": pd.Series(dtype="object"),
+            "ngay_hoa_don": pd.Series(dtype="datetime64[ns]"),
+            "trang_thai": pd.Series(dtype="object"),
+            "doanh_thu_phu_kien": pd.Series(dtype="float64"),
+        })
 
     if not file_path.exists():
         st.error(f"Không tìm thấy file lệnh phụ kiện: {file_path.name}")
@@ -660,6 +664,7 @@ def load_accessory_file(workshop_name, file_path):
         )
         st.stop()
 
+    accessory["chi_nhanh"] = branch_name
     accessory["xuong"] = workshop_name
     accessory["ngay_hoa_don"] = pd.to_datetime(
         accessory["ngay_hoa_don"],
@@ -688,6 +693,7 @@ def load_data():
     for workshop_name, config in WORKSHOP_CONFIG.items():
         service_data.append(
             load_service_file(
+                config["chi_nhanh"],
                 workshop_name,
                 config["service_file"]
             )
@@ -695,6 +701,7 @@ def load_data():
 
         accessory_data.append(
             load_accessory_file(
+                config["chi_nhanh"],
                 workshop_name,
                 config["accessory_file"]
             )
@@ -705,6 +712,7 @@ def load_data():
         )
 
         parts_totals.append({
+            "chi_nhanh": config["chi_nhanh"],
             "xuong": workshop_name,
             "year": config["parts_year"],
             "month": config["parts_month"],
@@ -734,9 +742,21 @@ data_raw, accessory_raw, parts_totals_raw = load_data()
 if "show_dashboard" not in st.session_state:
     st.session_state.show_dashboard = False
 
-workshop_options = sorted(data_raw["xuong"].dropna().unique())
+branch_options = sorted(data_raw["chi_nhanh"].dropna().unique())
 
 st.sidebar.markdown("## Bộ lọc")
+
+selected_branch_input = st.sidebar.selectbox(
+    "Chi nhánh",
+    branch_options,
+    key="sidebar_branch"
+)
+
+branch_data = data_raw[
+    data_raw["chi_nhanh"] == selected_branch_input
+].copy()
+
+workshop_options = sorted(branch_data["xuong"].dropna().unique())
 
 selected_workshop_input = st.sidebar.selectbox(
     "Xưởng",
@@ -744,8 +764,8 @@ selected_workshop_input = st.sidebar.selectbox(
     key="sidebar_workshop"
 )
 
-selected_workshop_data = data_raw[
-    data_raw["xuong"] == selected_workshop_input
+selected_workshop_data = branch_data[
+    branch_data["xuong"] == selected_workshop_input
 ].copy()
 
 year_options = sorted(
@@ -784,6 +804,7 @@ if st.sidebar.button(
     type="primary",
     use_container_width=True
 ):
+    st.session_state.selected_branch = selected_branch_input
     st.session_state.selected_workshop = selected_workshop_input
     st.session_state.selected_year = int(selected_year_input)
     st.session_state.selected_month = int(selected_month_input)
@@ -818,7 +839,7 @@ if not st.session_state.show_dashboard:
                 Nền tảng dashboard tập trung giúp theo dõi, phân tích và đánh giá hiệu quả hoạt động của các xưởng trong toàn hệ thống Carpla Services, bao gồm (nhưng không giới hạn) lượt xe, doanh thu, cơ cấu hãng xe, nguồn thanh toán, và các chỉ số vận hành liên quan.
             </div>
             <div style="margin-top:26px;font-size:15px;font-weight:700;color:#475569;">
-                Vui lòng chọn Xưởng, Năm và Tháng tại bộ lọc bên trái, sau đó nhấn “XEM DASHBOARD”.
+                Vui lòng chọn Chi nhánh, Xưởng, Năm và Tháng tại bộ lọc bên trái, sau đó nhấn “XEM DASHBOARD”.
             </div>
         </div>
         """,
@@ -826,21 +847,23 @@ if not st.session_state.show_dashboard:
     )
     st.stop()
 
+selected_branch = st.session_state.selected_branch
 selected_workshop = st.session_state.selected_workshop
 year = int(st.session_state.selected_year)
 month = int(st.session_state.selected_month)
 
 workshop_data = data_raw[
-    data_raw["xuong"] == selected_workshop
+    (data_raw["chi_nhanh"] == selected_branch) &
+    (data_raw["xuong"] == selected_workshop)
 ].copy()
 
 target_info = TARGETS.get(
-    (selected_workshop, int(year), int(month))
+    (selected_branch, selected_workshop, int(year), int(month))
 )
 
 if target_info is None:
     st.warning(
-        f"Chưa thiết lập target cho {selected_workshop}, "
+        f"Chưa thiết lập target cho {selected_branch} - {selected_workshop}, "
         f"tháng {month}/{year}. Dashboard tạm dùng target bằng 0."
     )
     TARGET_RO = 0
@@ -865,11 +888,15 @@ exclude_status = [
 data = data[~data["trang_thai"].isin(exclude_status)]
 data = data[data["doanh_thu_truoc_thue"] > 0]
 
-accessory_data = accessory_raw[
-    (accessory_raw["xuong"] == selected_workshop) &
-    (accessory_raw["ngay_hoa_don"].dt.year == year) &
-    (accessory_raw["ngay_hoa_don"].dt.month == month)
-].copy()
+if accessory_raw.empty:
+    accessory_data = accessory_raw.copy()
+else:
+    accessory_data = accessory_raw[
+        (accessory_raw["chi_nhanh"] == selected_branch) &
+        (accessory_raw["xuong"] == selected_workshop) &
+        (accessory_raw["ngay_hoa_don"].dt.year == year) &
+        (accessory_raw["ngay_hoa_don"].dt.month == month)
+    ].copy()
 
 if not accessory_data.empty:
     accessory_data = accessory_data[
@@ -880,6 +907,7 @@ if not accessory_data.empty:
     ]
 
 parts_row = parts_totals_raw[
+    (parts_totals_raw["chi_nhanh"] == selected_branch) &
     (parts_totals_raw["xuong"] == selected_workshop) &
     (parts_totals_raw["year"] == year) &
     (parts_totals_raw["month"] == month)
@@ -919,7 +947,7 @@ revenue_rate = safe_div(actual_revenue, TARGET_REVENUE)
 # ======================
 st.markdown(f"""
     <div class="hero-box">
-        <div class="hero-title">Dashboard DMS - Xưởng {selected_workshop}</div>
+        <div class="hero-title">Dashboard DMS - {selected_branch} | Xưởng {selected_workshop}</div>
         <div class="hero-subtitle">
             Theo dõi hiệu quả hoạt động tháng {month}/{year}: lượt xe, doanh thu, cơ cấu hãng xe và nguồn thanh toán
         </div>
