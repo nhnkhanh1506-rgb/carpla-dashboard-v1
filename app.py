@@ -1,21 +1,27 @@
 import pandas as pd
 import streamlit as st
 
-from calculations import calculate_dashboard_metrics
+from calculations import (
+    calculate_dashboard_metrics,
+    calculate_target_plan,
+    calculate_working_days,
+)
 from charts import (
     render_brand_section,
     render_daily_charts,
     render_payment_section,
 )
+
 from components import (
     fmt_m,
     fmt_m0,
     render_dashboard_header,
     render_homepage,
-    render_progress_card,
+    render_interactive_target_planner,
     render_sidebar,
     render_top_kpis,
 )
+
 from config import (
     LOGO_FILE,
     TARGETS,
