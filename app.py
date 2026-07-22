@@ -158,43 +158,46 @@ render_top_kpis(metrics)
 # 11. TARGET / ACTUAL
 # ============================================================
 
-st.markdown(
-    "## 1. Lượt xe và doanh thu: Chỉ tiêu / Thực hiện"
+# ============================================================
+# 11. INTERACTIVE TARGET PLANNER
+# ============================================================
+
+working_day_info = calculate_working_days(
+    year=year,
+    month=month,
+    data=data,
 )
 
-progress_column_1, progress_column_2 = st.columns(2)
+planner_result = render_interactive_target_planner(
+    actual_ro=actual_ro,
+    target_ro=target_ro,
+    actual_revenue=actual_revenue,
+    target_revenue=target_revenue,
+    working_day_info=working_day_info,
+    calculate_target_plan_function=(
+        calculate_target_plan
+    ),
+)
 
-with progress_column_1:
-    render_progress_card(
-        title="Lượt xe / RO",
-        actual_text=f"{actual_ro:,.0f}",
-        target_text=f"{target_ro:,.0f}",
-        rate=ro_rate,
-    )
 
-with progress_column_2:
-    render_progress_card(
-        title="Tổng doanh thu",
-        actual_text=fmt_m(actual_revenue),
-        target_text=fmt_m0(target_revenue),
-        rate=revenue_rate,
-    )
-
+# ============================================================
+# 11.1 SUMMARY TABLE
+# ============================================================
 
 summary_kpi = pd.DataFrame({
-    "Chỉ tiêu": [
+    "Hạng mục": [
         "Lượt xe / RO",
-        "Tổng doanh thu",
-    ],
-
-    "Target": [
-        f"{target_ro:,.0f}",
-        fmt_m0(target_revenue),
+        "Tổng Doanh thu",
     ],
 
     "Thực hiện": [
         f"{actual_ro:,.0f}",
         fmt_m(actual_revenue),
+    ],
+
+    "Chỉ tiêu": [
+        f"{target_ro:,.0f}",
+        fmt_m(target_revenue),
     ],
 
     "% đạt": [
