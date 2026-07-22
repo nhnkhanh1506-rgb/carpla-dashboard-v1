@@ -257,19 +257,23 @@ div[data-baseweb="popover"] li:hover span {{
     background:
         linear-gradient(
             135deg,
-            #22314D 0%,
-            #2F456D 55%,
-            #496B9E 100%
+            #FFF7CC 0%,
+            #FFE98A 18%,
+            #FFD94D 38%,
+            #FFE17A 58%,
+            #FFF0A8 78%,
+            #FFF7D6 100%
         );
 
     border-radius: 24px;
     padding: 28px 32px;
-    color: white;
     margin-bottom: 24px;
 
+    border: 1px solid rgba(255, 255, 255, 0.55);
+
     box-shadow:
-        0 10px 30px
-        rgba(31, 41, 55, 0.18);
+        0 10px 30px rgba(201, 152, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }}
 
 .hero-title {{
@@ -277,12 +281,13 @@ div[data-baseweb="popover"] li:hover span {{
     font-weight: 900;
     line-height: 1.1;
     margin-bottom: 8px;
-    color: white;
+    color: #1E2F6E;
 }}
 
 .hero-subtitle {{
     font-size: 15px;
-    color: #DBEAFE;
+    color: #44536B;
+    font-weight: 600;
 }}
 
 
