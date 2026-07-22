@@ -426,6 +426,7 @@ def render_top_kpis(metrics):
 
 # ============================================================
 # KẾ HOẠCH MỤC TIÊU TƯƠNG TÁC
+# GIỮ GIAO DIỆN CARD CŨ, CHỈ ĐỔI BAR THÀNH SLIDER
 # ============================================================
 
 def render_interactive_target_planner(
@@ -436,17 +437,11 @@ def render_interactive_target_planner(
     working_day_info,
     calculate_target_plan_function,
 ):
-    remaining_days = working_day_info[
-        "remaining_working_days"
-    ]
+    import math
 
-    cutoff_date = working_day_info[
-        "data_cutoff_date"
-    ]
-
-    total_working_days = working_day_info[
-        "total_working_days"
-    ]
+    remaining_days = working_day_info["remaining_working_days"]
+    cutoff_date = working_day_info["data_cutoff_date"]
+    total_working_days = working_day_info["total_working_days"]
 
     current_ro_percentage = (
         actual_ro / target_ro * 100
@@ -460,9 +455,46 @@ def render_interactive_target_planner(
         else 0
     )
 
+    current_ro_default = min(
+        100,
+        max(0, round(current_ro_percentage)),
+    )
+
+    current_revenue_default = min(
+        100,
+        max(0, round(current_revenue_percentage)),
+    )
+
+    # Tự đặt lại khi đổi kỳ dữ liệu hoặc dữ liệu cập nhật
+    period_key = (
+        f"{cutoff_date.isoformat()}_"
+        f"{actual_ro}_"
+        f"{actual_revenue}_"
+        f"{target_ro}_"
+        f"{target_revenue}"
+    )
+
+    if st.session_state.get("planner_period_key") != period_key:
+        st.session_state["planner_period_key"] = period_key
+        st.session_state["desired_ro_percentage"] = current_ro_default
+        st.session_state["desired_revenue_percentage"] = (
+            current_revenue_default
+        )
+
+    if "desired_ro_percentage" not in st.session_state:
+        st.session_state["desired_ro_percentage"] = current_ro_default
+
+    if "desired_revenue_percentage" not in st.session_state:
+        st.session_state["desired_revenue_percentage"] = (
+            current_revenue_default
+        )
+
+    # ========================================================
+    # TIÊU ĐỀ
+    # ========================================================
+
     st.markdown(
-        "## 1. Lượt xe và Doanh thu: "
-        "Thực hiện / Chỉ tiêu"
+        "## 1. Lượt xe và Doanh thu: Thực hiện / Chỉ tiêu"
     )
 
     st.caption(
@@ -476,173 +508,174 @@ def render_interactive_target_planner(
     left_column, right_column = st.columns(2)
 
     # ========================================================
-    # LƯỢT XE
+    # CARD LƯỢT XE
     # ========================================================
 
     with left_column:
-        st.markdown(
-            '<div class="planner-card-title">'
-            'Lượt xe / RO'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-
-        st.markdown(
-            f"**Thực hiện:** {actual_ro:,.0f} / "
-            f"**Chỉ tiêu:** {target_ro:,.0f}"
-        )
-
-        desired_ro_percentage = st.slider(
-            "Mục tiêu lượt xe muốn đạt",
-            min_value=0,
-            max_value=100,
-            value=min(
-                100,
-                max(
-                    0,
-                    round(current_ro_percentage),
-                ),
-            ),
-            step=1,
-            format="%d%%",
-            key="desired_ro_percentage",
-        )
-
-        ro_plan = calculate_target_plan_function(
-            actual_value=actual_ro,
-            monthly_target=target_ro,
-            desired_percentage=(
-                desired_ro_percentage
-            ),
-            remaining_working_days=remaining_days,
-        )
-
-        desired_ro = math.ceil(
-            ro_plan["desired_value"]
-        )
-
-        remaining_ro = math.ceil(
-            ro_plan["remaining_required"]
-        )
-
-        average_ro = math.ceil(
-            ro_plan["average_required"]
-        )
-
-        if ro_plan["already_achieved"]:
-            st.success(
-                f"Đã đạt mục tiêu {desired_ro_percentage}% "
-                f"tương đương {desired_ro:,.0f} lượt xe."
+        with st.container(border=True):
+            # Marker dùng để CSS nhận diện đúng card
+            st.markdown(
+                '<div class="interactive-planner-card-marker"></div>',
+                unsafe_allow_html=True,
             )
 
-        elif remaining_days > 0:
-            st.info(
-                f"Để đạt **{desired_ro_percentage}%** "
-                f"chỉ tiêu, cần thêm "
-                f"**{remaining_ro:,.0f} lượt xe**. "
-                f"Bình quân cần "
-                f"**{average_ro:,.0f} lượt xe/ngày** "
-                f"trong {remaining_days} ngày làm việc còn lại."
+            st.markdown(
+                '<div class="interactive-card-title">'
+                'Lượt xe / RO'
+                '</div>',
+                unsafe_allow_html=True,
             )
 
-        else:
-            st.warning(
-                "Không còn ngày làm việc trong tháng."
+            st.markdown(
+                '<div class="interactive-card-subtitle">'
+                f'<b>Thực hiện:</b> {actual_ro:,.0f} '
+                f'/ <b>Chỉ tiêu:</b> {target_ro:,.0f}'
+                '</div>',
+                unsafe_allow_html=True,
             )
+
+            desired_ro_percentage = st.slider(
+                "Mục tiêu lượt xe muốn đạt",
+                min_value=0,
+                max_value=100,
+                step=1,
+                format="%d%%",
+                key="desired_ro_percentage",
+                label_visibility="collapsed",
+            )
+
+            ro_plan = calculate_target_plan_function(
+                actual_value=actual_ro,
+                monthly_target=target_ro,
+                desired_percentage=desired_ro_percentage,
+                remaining_working_days=remaining_days,
+            )
+
+            desired_ro = math.ceil(
+                ro_plan["desired_value"]
+            )
+
+            remaining_ro = math.ceil(
+                ro_plan["remaining_required"]
+            )
+
+            average_ro = math.ceil(
+                ro_plan["average_required"]
+            )
+
+            if ro_plan["already_achieved"]:
+                st.success(
+                    f"Đã đạt mục tiêu "
+                    f"{desired_ro_percentage}% tương đương "
+                    f"{desired_ro:,.0f} lượt xe."
+                )
+
+            elif remaining_days > 0:
+                st.info(
+                    f"Để đạt **{desired_ro_percentage}%** chỉ tiêu, "
+                    f"cần thêm **{remaining_ro:,.0f} lượt xe**. "
+                    f"Bình quân cần **{average_ro:,.0f} lượt xe/ngày** "
+                    f"trong **{remaining_days} ngày làm việc** còn lại."
+                )
+
+            else:
+                st.warning(
+                    "Không còn ngày làm việc trong tháng."
+                )
+
+            if st.button(
+                "↺ Về mức hiện tại",
+                key="reset_ro_target",
+                use_container_width=True,
+            ):
+                st.session_state["desired_ro_percentage"] = (
+                    current_ro_default
+                )
+                st.rerun()
 
     # ========================================================
-    # DOANH THU
+    # CARD DOANH THU
     # ========================================================
 
     with right_column:
-        st.markdown(
-            '<div class="planner-card-title">'
-            'Tổng Doanh thu'
-            '</div>',
-            unsafe_allow_html=True,
-        )
+        with st.container(border=True):
+            st.markdown(
+                '<div class="interactive-planner-card-marker"></div>',
+                unsafe_allow_html=True,
+            )
 
-        st.markdown(
-            f"**Thực hiện:** "
-            f"{fmt_m(actual_revenue)} / "
-            f"**Chỉ tiêu:** "
-            f"{fmt_m(target_revenue)}"
-        )
+            st.markdown(
+                '<div class="interactive-card-title">'
+                'Tổng Doanh thu'
+                '</div>',
+                unsafe_allow_html=True,
+            )
 
-        desired_revenue_percentage = st.slider(
-            "Mục tiêu doanh thu muốn đạt",
-            min_value=0,
-            max_value=100,
-            value=min(
-                100,
-                max(
-                    0,
-                    round(
-                        current_revenue_percentage
-                    ),
-                ),
-            ),
-            step=1,
-            format="%d%%",
-            key="desired_revenue_percentage",
-        )
+            st.markdown(
+                '<div class="interactive-card-subtitle">'
+                f'<b>Thực hiện:</b> {fmt_m(actual_revenue)} '
+                f'/ <b>Chỉ tiêu:</b> {fmt_m(target_revenue)}'
+                '</div>',
+                unsafe_allow_html=True,
+            )
 
-        revenue_plan = (
-            calculate_target_plan_function(
+            desired_revenue_percentage = st.slider(
+                "Mục tiêu doanh thu muốn đạt",
+                min_value=0,
+                max_value=100,
+                step=1,
+                format="%d%%",
+                key="desired_revenue_percentage",
+                label_visibility="collapsed",
+            )
+
+            revenue_plan = calculate_target_plan_function(
                 actual_value=actual_revenue,
                 monthly_target=target_revenue,
-                desired_percentage=(
-                    desired_revenue_percentage
-                ),
-                remaining_working_days=(
-                    remaining_days
-                ),
-            )
-        )
-
-        desired_revenue = revenue_plan[
-            "desired_value"
-        ]
-
-        remaining_revenue = revenue_plan[
-            "remaining_required"
-        ]
-
-        average_revenue = revenue_plan[
-            "average_required"
-        ]
-
-        if revenue_plan["already_achieved"]:
-            st.success(
-                f"Đã đạt mục tiêu "
-                f"{desired_revenue_percentage}% "
-                f"tương đương "
-                f"{fmt_m(desired_revenue)}."
+                desired_percentage=desired_revenue_percentage,
+                remaining_working_days=remaining_days,
             )
 
-        elif remaining_days > 0:
-            st.info(
-                f"Để đạt "
-                f"**{desired_revenue_percentage}%** "
-                f"chỉ tiêu, cần thêm "
-                f"**{fmt_m(remaining_revenue)}**. "
-                f"Bình quân cần "
-                f"**{fmt_m(average_revenue)}/ngày** "
-                f"trong {remaining_days} ngày làm việc còn lại."
-            )
+            desired_revenue = revenue_plan["desired_value"]
+            remaining_revenue = revenue_plan["remaining_required"]
+            average_revenue = revenue_plan["average_required"]
 
-        else:
-            st.warning(
-                "Không còn ngày làm việc trong tháng."
-            )
+            if revenue_plan["already_achieved"]:
+                st.success(
+                    f"Đã đạt mục tiêu "
+                    f"{desired_revenue_percentage}% tương đương "
+                    f"{fmt_m(desired_revenue)}."
+                )
+
+            elif remaining_days > 0:
+                st.info(
+                    f"Để đạt **{desired_revenue_percentage}%** chỉ tiêu, "
+                    f"cần thêm **{fmt_m(remaining_revenue)}**. "
+                    f"Bình quân cần "
+                    f"**{fmt_m(average_revenue)}/ngày** "
+                    f"trong **{remaining_days} ngày làm việc** còn lại."
+                )
+
+            else:
+                st.warning(
+                    "Không còn ngày làm việc trong tháng."
+                )
+
+            if st.button(
+                "↺ Về mức hiện tại",
+                key="reset_revenue_target",
+                use_container_width=True,
+            ):
+                st.session_state[
+                    "desired_revenue_percentage"
+                ] = current_revenue_default
+                st.rerun()
 
     return {
-        "desired_ro_percentage": (
-            desired_ro_percentage
-        ),
-        "desired_revenue_percentage": (
-            desired_revenue_percentage
-        ),
+        "current_ro_percentage": current_ro_percentage,
+        "current_revenue_percentage": current_revenue_percentage,
+        "desired_ro_percentage": desired_ro_percentage,
+        "desired_revenue_percentage": desired_revenue_percentage,
         "ro_plan": ro_plan,
         "revenue_plan": revenue_plan,
     }
