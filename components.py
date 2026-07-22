@@ -9,11 +9,11 @@ import streamlit as st
 # ============================================================
 
 def fmt_m(value):
-    return f"{value / 1_000_000:,.2f}M"
+    return f"{value / 1_000_000:,.1f}M"
 
 
 def fmt_m0(value):
-    return f"{value / 1_000_000:,.0f}M"
+    return f"{value / 1_000_000:,.1f}M"
 
 
 # ============================================================
@@ -66,7 +66,7 @@ def render_progress_card(
     <div class="progress-track">
         <div class="progress-fill" style="width:{percentage_display}%;"></div>
         <div class="progress-dot" style="left:{percentage_display}%;"></div>
-        <div class="progress-label" style="left:{percentage_display}%;">{percentage:.2f}%</div>
+        <div class="progress-label" style="left:{percentage_display}%;">{percentage:.0f}%</div>
     </div>
     <div class="progress-scale">
         <span>0%</span>
@@ -389,7 +389,7 @@ def render_top_kpis(metrics):
             f"{actual_ro:,.0f}",
             (
                 f"Target: {target_ro:,.0f} | "
-                f"Đạt: {ro_rate:.2%}"
+                f"Đạt: {ro_rate:.0%}"
             ),
         )
 
@@ -400,7 +400,7 @@ def render_top_kpis(metrics):
             (
                 f"Target: "
                 f"{target_revenue / 1_000_000:,.0f}M | "
-                f"Đạt: {revenue_rate:.2%}"
+                f"Đạt: {revenue_rate:.0%}"
             ),
         )
 
