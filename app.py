@@ -6,6 +6,7 @@ from calculations import (
     calculate_target_plan,
     calculate_working_days,
 )
+
 from charts import (
     render_brand_section,
     render_daily_charts,
@@ -28,8 +29,76 @@ from config import (
     WORKING_DAYS,
     WORKSHOP_CONFIG,
 )
+
 from data_loader import load_all_data
 from styles import apply_global_style
+
+
+# ============================================================
+# HÀM ĐỊNH DẠNG BẢNG
+# HEADER XÁM NHẠT, DÒNG DỮ LIỆU TRẮNG
+# ============================================================
+
+def style_white_table(dataframe):
+    return (
+        dataframe.style
+        .set_properties(
+            **{
+                "background-color": "#FFFFFF",
+                "color": "#1F2937",
+                "border-color": "#E5E7EB",
+                "font-weight": "500",
+            }
+        )
+        .set_table_styles(
+            [
+                {
+                    "selector": "thead th",
+                    "props": [
+                        (
+                            "background-color",
+                            "#F3F4F6",
+                        ),
+                        (
+                            "color",
+                            "#6B7280",
+                        ),
+                        (
+                            "font-weight",
+                            "600",
+                        ),
+                        (
+                            "border-color",
+                            "#E5E7EB",
+                        ),
+                        (
+                            "text-align",
+                            "left",
+                        ),
+                    ],
+                },
+                {
+                    "selector": "tbody td",
+                    "props": [
+                        (
+                            "background-color",
+                            "#FFFFFF",
+                        ),
+                        (
+                            "color",
+                            "#1F2937",
+                        ),
+                        (
+                            "border-color",
+                            "#E5E7EB",
+                        ),
+                    ],
+                },
+            ],
+            overwrite=False,
+        )
+        .hide(axis="index")
+    )
 
 
 # ============================================================
@@ -151,16 +220,10 @@ render_dashboard_header(
 # 10. TOP KPI CARDS
 # ============================================================
 
-render_top_kpis(metrics)
+render_top_kpis(
+    metrics
+)
 
-
-# ============================================================
-# 11. TARGET / ACTUAL
-# ============================================================
-
-# ============================================================
-# 11. INTERACTIVE TARGET PLANNER
-# ============================================================
 
 # ============================================================
 # 11. INTERACTIVE TARGET PLANNER
@@ -188,30 +251,34 @@ planner_result = render_interactive_target_planner(
 # 11.1 SUMMARY TABLE
 # ============================================================
 
-summary_kpi = pd.DataFrame({
-    "Hạng mục": [
-        "Lượt xe / RO",
-        "Tổng Doanh thu",
-    ],
+summary_kpi = pd.DataFrame(
+    {
+        "Hạng mục": [
+            "Lượt xe / RO",
+            "Tổng Doanh thu",
+        ],
 
-    "Thực hiện": [
-        f"{actual_ro:,.0f}",
-        fmt_m(actual_revenue),
-    ],
+        "Thực hiện": [
+            f"{actual_ro:,.0f}",
+            fmt_m(actual_revenue),
+        ],
 
-    "Chỉ tiêu": [
-        f"{target_ro:,.0f}",
-        fmt_m(target_revenue),
-    ],
+        "Chỉ tiêu": [
+            f"{target_ro:,.0f}",
+            fmt_m(target_revenue),
+        ],
 
-    "% đạt": [
-        f"{ro_rate:.0%}",
-        f"{revenue_rate:.0%}",
-    ],
-})
+        "% đạt": [
+            f"{ro_rate:.0%}",
+            f"{revenue_rate:.0%}",
+        ],
+    }
+)
 
 st.dataframe(
-    summary_kpi,
+    style_white_table(
+        summary_kpi
+    ),
     use_container_width=True,
     hide_index=True,
 )
@@ -225,23 +292,27 @@ st.markdown(
     "## Cơ cấu tổng doanh thu"
 )
 
-revenue_breakdown = pd.DataFrame({
-    "Nguồn doanh thu": [
-        "Doanh thu dịch vụ",
-        "Doanh thu phụ tùng",
-        "Doanh thu phụ kiện",
-        "TỔNG DOANH THU",
-    ],
+revenue_breakdown = pd.DataFrame(
+    {
+        "Nguồn doanh thu": [
+            "Doanh thu dịch vụ",
+            "Doanh thu phụ tùng",
+            "Doanh thu phụ kiện",
+            "TỔNG DOANH THU",
+        ],
 
-    "Giá trị": [
-        service_revenue,
-        parts_revenue,
-        accessory_revenue,
-        actual_revenue,
-    ],
-})
+        "Giá trị": [
+            service_revenue,
+            parts_revenue,
+            accessory_revenue,
+            actual_revenue,
+        ],
+    }
+)
 
-revenue_breakdown["Giá trị hiển thị"] = (
+revenue_breakdown[
+    "Giá trị hiển thị"
+] = (
     revenue_breakdown["Giá trị"]
     .map(fmt_m)
 )
@@ -265,27 +336,42 @@ revenue_breakdown["Tỷ trọng"] = [
         else 0
     ),
 
-    1 if actual_revenue else 0,
+    (
+        1
+        if actual_revenue
+        else 0
+    ),
 ]
 
-revenue_breakdown["Tỷ trọng"] = (
+revenue_breakdown[
+    "Tỷ trọng"
+] = (
     revenue_breakdown["Tỷ trọng"]
     .map(
-        lambda value: f"{value:.0%}"
+        lambda value:
+        f"{value:.0%}"
     )
 )
 
-st.dataframe(
+revenue_breakdown_display = (
     revenue_breakdown[
         [
             "Nguồn doanh thu",
             "Giá trị hiển thị",
             "Tỷ trọng",
         ]
-    ].rename(
+    ]
+    .rename(
         columns={
-            "Giá trị hiển thị": "Giá trị",
+            "Giá trị hiển thị":
+                "Giá trị",
         }
+    )
+)
+
+st.dataframe(
+    style_white_table(
+        revenue_breakdown_display
     ),
     use_container_width=True,
     hide_index=True,
