@@ -477,6 +477,12 @@ def render_interactive_target_planner(
         st.session_state["desired_revenue_percentage"] = (
             current_revenue_default
         )
+        st.session_state["ro_slider_nonce"] = (
+            st.session_state.get("ro_slider_nonce", 0) + 1
+        )
+        st.session_state["revenue_slider_nonce"] = (
+            st.session_state.get("revenue_slider_nonce", 0) + 1
+        )
 
     if "desired_ro_percentage" not in st.session_state:
         st.session_state["desired_ro_percentage"] = current_ro_default
@@ -485,6 +491,12 @@ def render_interactive_target_planner(
         st.session_state["desired_revenue_percentage"] = (
             current_revenue_default
         )
+
+    if "ro_slider_nonce" not in st.session_state:
+        st.session_state["ro_slider_nonce"] = 0
+
+    if "revenue_slider_nonce" not in st.session_state:
+        st.session_state["revenue_slider_nonce"] = 0
 
     st.markdown(
         "## 1. Lượt xe và Doanh thu: Thực hiện / Chỉ tiêu"
@@ -499,10 +511,6 @@ def render_interactive_target_planner(
     )
 
     card_left, card_right = st.columns(2)
-
-    # ========================================================
-    # CARD LƯỢT XE
-    # ========================================================
 
     with card_left:
         with st.container(key="ro_target_card"):
@@ -519,19 +527,30 @@ def render_interactive_target_planner(
                 unsafe_allow_html=True,
             )
 
-            desired_ro_percentage = carpla_slider(
-                value=st.session_state[
-                    "desired_ro_percentage"
-                ],
+            ro_component_value = carpla_slider(
+                value=int(
+                    st.session_state["desired_ro_percentage"]
+                ),
                 min_value=0,
                 max_value=100,
                 step=1,
-                key="desired_ro_percentage_component",
+                key=(
+                    "desired_ro_percentage_component_"
+                    f'{st.session_state["ro_slider_nonce"]}'
+                ),
             )
 
-            st.session_state[
-                "desired_ro_percentage"
-            ] = desired_ro_percentage
+            if (
+                ro_component_value
+                != st.session_state["desired_ro_percentage"]
+            ):
+                st.session_state["desired_ro_percentage"] = (
+                    int(ro_component_value)
+                )
+
+            desired_ro_percentage = int(
+                st.session_state["desired_ro_percentage"]
+            )
 
     with card_right:
         with st.container(key="revenue_target_card"):
@@ -552,21 +571,35 @@ def render_interactive_target_planner(
                 unsafe_allow_html=True,
             )
 
-            desired_revenue_percentage = carpla_slider(
-                value=st.session_state[
-                    "desired_revenue_percentage"
-                ],
+            revenue_component_value = carpla_slider(
+                value=int(
+                    st.session_state[
+                        "desired_revenue_percentage"
+                    ]
+                ),
                 min_value=0,
                 max_value=100,
                 step=1,
-                key="desired_revenue_percentage_component",
+                key=(
+                    "desired_revenue_percentage_component_"
+                    f'{st.session_state["revenue_slider_nonce"]}'
+                ),
             )
 
-            st.session_state[
-                "desired_revenue_percentage"
-            ] = desired_revenue_percentage
+            if (
+                revenue_component_value
+                != st.session_state["desired_revenue_percentage"]
+            ):
+                st.session_state[
+                    "desired_revenue_percentage"
+                ] = int(revenue_component_value)
 
-    
+            desired_revenue_percentage = int(
+                st.session_state[
+                    "desired_revenue_percentage"
+                ]
+            )
+
     ro_plan = calculate_target_plan_function(
         actual_value=actual_ro,
         monthly_target=target_ro,
@@ -612,7 +645,10 @@ def render_interactive_target_planner(
             key="reset_ro_target",
             use_container_width=True,
         ):
-            st.session_state["desired_ro_percentage"] = current_ro_default
+            st.session_state["desired_ro_percentage"] = (
+                current_ro_default
+            )
+            st.session_state["ro_slider_nonce"] += 1
             st.rerun()
 
     with result_right:
@@ -639,6 +675,7 @@ def render_interactive_target_planner(
             st.session_state["desired_revenue_percentage"] = (
                 current_revenue_default
             )
+            st.session_state["revenue_slider_nonce"] += 1
             st.rerun()
 
     return {
