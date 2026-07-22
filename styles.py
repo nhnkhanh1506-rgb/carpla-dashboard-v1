@@ -640,6 +640,130 @@ button[data-testid="stSidebarCollapseButton"] * {{
     opacity: 1 !important;
 }}
 
+
+/* =========================================================
+   INTERACTIVE TARGET CARDS
+   GIỮ HÌNH DẠNG GIỐNG CARD CŨ
+   ========================================================= */
+
+/* Card chứa slider */
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) {{
+    background: #FFFFFF !important;
+    border: 1px solid #DBE3EE !important;
+    border-radius: 28px !important;
+    padding: 26px 30px 22px 30px !important;
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.06) !important;
+
+    min-height: 270px;
+}}
+
+/* Ẩn marker */
+.interactive-planner-card-marker {{
+    display: none;
+}}
+
+.interactive-card-title {{
+    font-size: 17px;
+    font-weight: 900;
+    color: #1F2937;
+    margin-bottom: 24px;
+}}
+
+.interactive-card-subtitle {{
+    font-size: 16px;
+    font-weight: 600;
+    color: #526078;
+    margin-bottom: 34px;
+}}
+
+
+/* =========================================================
+   SLIDER GIỐNG THANH PROGRESS CŨ
+   ========================================================= */
+
+/* Thanh nền */
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div[data-baseweb="slider"] > div {{
+    height: 10px !important;
+}}
+
+/* Thanh slider tổng */
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div[data-baseweb="slider"] div[role="slider"] {{
+    width: 26px !important;
+    height: 26px !important;
+
+    background-color: #E85B5B !important;
+    border: 4px solid #FFFFFF !important;
+    border-radius: 50% !important;
+
+    box-shadow:
+        0 5px 16px rgba(232, 91, 91, 0.28) !important;
+}}
+
+/* Số phần trăm phía trên nút tròn */
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div[data-baseweb="slider"] [data-testid="stThumbValue"] {{
+    color: #E85B5B !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+}}
+
+/* Giới hạn 0% và 100% */
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div[data-baseweb="slider"] [data-testid="stTickBar"] {{
+    color: #64748B !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+}}
+
+
+/* =========================================================
+   THÔNG BÁO KẾ HOẠCH
+   ========================================================= */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div[data-testid="stAlert"] {{
+    border-radius: 14px !important;
+    margin-top: 18px !important;
+    font-size: 14px !important;
+}}
+
+
+/* =========================================================
+   NÚT RESET NHỎ, KHÔNG PHÁ BỐ CỤC
+   ========================================================= */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div.stButton > button {{
+    min-height: 38px !important;
+    border-radius: 12px !important;
+    background: #F8FAFC !important;
+    color: #475569 !important;
+    border: 1px solid #DCE3EC !important;
+    font-size: 13px !important;
+    margin-top: 4px !important;
+}}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(
+    .interactive-planner-card-marker
+) div.stButton > button:hover {{
+    background: #EEF3F9 !important;
+    border-color: #CBD5E1 !important;
+    color: #1F2937 !important;
+}}
+
+
 </style>
 """,
         unsafe_allow_html=True,
