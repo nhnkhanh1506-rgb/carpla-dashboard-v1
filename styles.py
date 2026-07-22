@@ -487,24 +487,24 @@ div[data-testid="stDataFrame"] {{
    TRANG CHỦ MỚI
    ========================================================= */
 
-.homepage-stage {
+.homepage-stage {{
     position: relative;
     max-width: 1180px;
     margin: 0 auto;
     padding: 34px 20px 28px 20px;
     min-height: 620px;
     overflow: hidden;
-}
+}}
 
-.homepage-orb {
+.homepage-orb {{
     position: absolute;
     border-radius: 50%;
     filter: blur(30px);
     opacity: 0.55;
     z-index: 0;
-}
+}}
 
-.orb-yellow {
+.orb-yellow {{
     width: 360px;
     height: 360px;
     top: 20px;
@@ -515,9 +515,9 @@ div[data-testid="stDataFrame"] {{
         rgba(245, 212, 66, 0.16) 45%,
         rgba(245, 212, 66, 0.00) 75%
     );
-}
+}}
 
-.orb-blue {
+.orb-blue {{
     width: 420px;
     height: 420px;
     right: 90px;
@@ -528,9 +528,9 @@ div[data-testid="stDataFrame"] {{
         rgba(33, 48, 108, 0.08) 48%,
         rgba(33, 48, 108, 0.00) 78%
     );
-}
+}}
 
-.homepage-card {
+.homepage-card {{
     position: relative;
     z-index: 2;
     max-width: 980px;
@@ -538,48 +538,52 @@ div[data-testid="stDataFrame"] {{
     text-align: center;
     padding: 54px 56px 46px 56px;
     border-radius: 30px;
+
     background:
         linear-gradient(
             180deg,
             rgba(255,255,255,0.82) 0%,
             rgba(255,255,255,0.72) 100%
         );
+
     border: 1px solid rgba(255,255,255,0.75);
+
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
+
     box-shadow:
         0 18px 50px rgba(15, 23, 42, 0.08),
         0 6px 18px rgba(245, 212, 66, 0.10);
-}
+}}
 
-.homepage-title {
+.homepage-title {{
     margin-top: 28px;
     font-size: 46px;
     line-height: 1.12;
     font-weight: 900;
     color: #1E2F6E;
     letter-spacing: 0.3px;
-}
+}}
 
-.homepage-subtitle {
+.homepage-subtitle {{
     max-width: 820px;
     margin: 20px auto 0 auto;
     font-size: 20px;
     line-height: 1.78;
     color: #5B6B84;
     font-weight: 500;
-}
+}}
 
-.homepage-pill-row {
+.homepage-pill-row {{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 12px;
     margin-top: 30px;
     margin-bottom: 26px;
-}
+}}
 
-.homepage-pill {
+.homepage-pill {{
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -591,16 +595,16 @@ div[data-testid="stDataFrame"] {{
     font-size: 14px;
     font-weight: 800;
     box-shadow: 0 5px 14px rgba(15, 23, 42, 0.05);
-}
+}}
 
-.homepage-guide {
+.homepage-guide {{
     max-width: 780px;
     margin: 0 auto;
     font-size: 16px;
     line-height: 1.7;
     color: #44536B;
     font-weight: 600;
-}
+}}
 
 
 /* =========================================================
