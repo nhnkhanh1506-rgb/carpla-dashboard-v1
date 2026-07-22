@@ -586,7 +586,7 @@ def render_daily_charts(
 
             (
                 f"Target: {target_ro:,.0f} | "
-                f"{ro_vs_target:.2%}"
+                f"{ro_vs_target:.0%}"
             ),
         )
 
@@ -611,7 +611,7 @@ def render_daily_charts(
             (
                 f"Target: "
                 f"{fmt_m0(target_revenue)} | "
-                f"{revenue_vs_target:.2%}"
+                f"{revenue_vs_target:.0%}"
             ),
         )
 
@@ -678,7 +678,7 @@ def render_brand_section(data):
         brand_display["ty_trong_ro"]
         .map(
             lambda value:
-            f"{value:.2%}"
+            f"{value:.0%}"
         )
     )
 
@@ -690,7 +690,7 @@ def render_brand_section(data):
         ]
         .map(
             lambda value:
-            f"{value:.2%}"
+            f"{value:.0%}"
         )
     )
 
@@ -1020,7 +1020,8 @@ def render_payment_section(data):
                         ]
                     ),
 
-                    textinfo="percent",
+                    textinfo="none",
+texttemplate="%{percent:.0%}",
 
                     textfont=dict(
                         size=15,
@@ -1035,7 +1036,7 @@ def render_payment_section(data):
                     hovertemplate=(
                         "<b>%{label}</b><br>"
                         "Giá trị: %{value:,.0f}<br>"
-                        "Tỷ trọng: %{percent}"
+                        "Tỷ trọng: %{percent:.0%}"
                         "<extra></extra>"
                     ),
                 )
