@@ -586,6 +586,55 @@ div.stButton > button {{
     font-weight: 800;
 }}
 
+/* =========================================================
+   NÚT THU GỌN / MỞ SIDEBAR
+   ========================================================= */
+
+[data-testid="stSidebarCollapseButton"] button {{
+    background-color: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: white !important;
+    border-radius: 10px !important;
+    width: 34px !important;
+    height: 34px !important;
+    opacity: 1 !important;
+}}
+
+[data-testid="stSidebarCollapseButton"] button:hover {{
+    background-color: #475569 !important;
+    border-color: #64748B !important;
+}}
+
+[data-testid="stSidebarCollapseButton"] svg {{
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    opacity: 1 !important;
+}}
+
+[data-testid="collapsedControl"] button {{
+    background-color: white !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 10px !important;
+    width: 34px !important;
+    height: 34px !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.10) !important;
+}}
+
+[data-testid="collapsedControl"] button:hover {{
+    background-color: #F8FAFC !important;
+    border-color: #94A3B8 !important;
+}}
+
+[data-testid="collapsedControl"] svg {{
+    color: #334155 !important;
+    fill: #334155 !important;
+    stroke: #334155 !important;
+    opacity: 1 !important;
+}}
+
+</style>
+
 </style>
 """,
         unsafe_allow_html=True,
