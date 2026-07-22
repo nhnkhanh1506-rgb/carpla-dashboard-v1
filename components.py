@@ -545,7 +545,20 @@ def render_interactive_target_planner(
                 key="desired_ro_percentage",
                 label_visibility="collapsed",
             )
+            st.markdown(
+    """
+<div class="interactive-slider-scale">
+    <span>0%</span>
+    <span>100%</span>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
+    
+
+
+    
     # ========================================================
     # CARD DOANH THU
     # ========================================================
@@ -568,14 +581,24 @@ def render_interactive_target_planner(
             )
 
             desired_revenue_percentage = st.slider(
-                "Mục tiêu doanh thu muốn đạt",
-                min_value=0,
-                max_value=100,
-                step=1,
-                format="%d%%",
-                key="desired_revenue_percentage",
-                label_visibility="collapsed",
-            )
+    "Mục tiêu doanh thu muốn đạt",
+    min_value=0,
+    max_value=100,
+    step=1,
+    format="%d%%",
+    key="desired_revenue_percentage",
+    label_visibility="collapsed",
+)
+
+st.markdown(
+    """
+<div class="interactive-slider-scale">
+    <span>0%</span>
+    <span>100%</span>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
     # --------------------------------------------------------
     # TÍNH KẾ HOẠCH
