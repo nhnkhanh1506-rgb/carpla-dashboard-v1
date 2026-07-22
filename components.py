@@ -516,8 +516,6 @@ def render_interactive_target_planner(
                 unsafe_allow_html=True,
             )
 
-            # Slider thật dùng để nhận thao tác kéo.
-            # CSS sẽ làm slider này trong suốt và phủ lên thanh HTML bên dưới.
             desired_ro_percentage = st.slider(
                 "Mục tiêu lượt xe muốn đạt",
                 min_value=0,
@@ -528,34 +526,11 @@ def render_interactive_target_planner(
                 label_visibility="collapsed",
             )
 
-            ro_visual_percentage = max(
-                0,
-                min(desired_ro_percentage, 100),
-            )
-
             st.markdown(
-                f"""
-<div class="interactive-old-progress">
-    <div class="progress-track">
-        <div
-            class="progress-fill"
-            style="width:{ro_visual_percentage}%;"
-        ></div>
-        <div
-            class="progress-dot"
-            style="left:{ro_visual_percentage}%;"
-        ></div>
-        <div
-            class="progress-label"
-            style="left:{ro_visual_percentage}%;"
-        >
-            {desired_ro_percentage:.0f}%
-        </div>
-    </div>
-    <div class="progress-scale">
-        <span>0%</span>
-        <span>100%</span>
-    </div>
+                """
+<div class="slider-fixed-scale">
+    <span>0%</span>
+    <span>100%</span>
 </div>
 """,
                 unsafe_allow_html=True,
@@ -589,34 +564,11 @@ def render_interactive_target_planner(
                 label_visibility="collapsed",
             )
 
-            revenue_visual_percentage = max(
-                0,
-                min(desired_revenue_percentage, 100),
-            )
-
             st.markdown(
-                f"""
-<div class="interactive-old-progress">
-    <div class="progress-track">
-        <div
-            class="progress-fill"
-            style="width:{revenue_visual_percentage}%;"
-        ></div>
-        <div
-            class="progress-dot"
-            style="left:{revenue_visual_percentage}%;"
-        ></div>
-        <div
-            class="progress-label"
-            style="left:{revenue_visual_percentage}%;"
-        >
-            {desired_revenue_percentage:.0f}%
-        </div>
-    </div>
-    <div class="progress-scale">
-        <span>0%</span>
-        <span>100%</span>
-    </div>
+                """
+<div class="slider-fixed-scale">
+    <span>0%</span>
+    <span>100%</span>
 </div>
 """,
                 unsafe_allow_html=True,
