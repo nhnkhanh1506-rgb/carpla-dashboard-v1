@@ -503,6 +503,7 @@ def render_interactive_target_planner(
     # ========================================================
     # CARD LƯỢT XE
     # ========================================================
+
     with card_left:
         with st.container(key="ro_target_card"):
             st.markdown(
@@ -519,49 +520,53 @@ def render_interactive_target_planner(
             )
 
             desired_ro_percentage = carpla_slider(
-    value=st.session_state["desired_ro_percentage"],
-    min_value=0,
-    max_value=100,
-    step=1,
-    key="desired_ro_percentage_component",
-)
+                value=st.session_state[
+                    "desired_ro_percentage"
+                ],
+                min_value=0,
+                max_value=100,
+                step=1,
+                key="desired_ro_percentage_component",
+            )
 
-st.session_state["desired_ro_percentage"] = (
-    desired_ro_percentage
-)
+            st.session_state[
+                "desired_ro_percentage"
+            ] = desired_ro_percentage
 
-    # ========================================================
-    # CARD DOANH THU
-    # ========================================================
     with card_right:
         with st.container(key="revenue_target_card"):
             st.markdown(
-                '<div class="progress-title">Tổng Doanh thu</div>',
+                '<div class="progress-title">'
+                'Tổng Doanh thu'
+                '</div>',
                 unsafe_allow_html=True,
             )
 
             st.markdown(
                 '<div class="progress-sub">'
-                f'<b>Thực hiện:</b> {fmt_m(actual_revenue)} / '
-                f'<b>Chỉ tiêu:</b> {fmt_m(target_revenue)}'
+                f'<b>Thực hiện:</b> '
+                f'{fmt_m(actual_revenue)} / '
+                f'<b>Chỉ tiêu:</b> '
+                f'{fmt_m(target_revenue)}'
                 '</div>',
                 unsafe_allow_html=True,
             )
 
             desired_revenue_percentage = carpla_slider(
-    value=st.session_state[
-        "desired_revenue_percentage"
-    ],
-    min_value=0,
-    max_value=100,
-    step=1,
-    key="desired_revenue_percentage_component",
-)
+                value=st.session_state[
+                    "desired_revenue_percentage"
+                ],
+                min_value=0,
+                max_value=100,
+                step=1,
+                key="desired_revenue_percentage_component",
+            )
 
-st.session_state["desired_revenue_percentage"] = (
-    desired_revenue_percentage
-)
+            st.session_state[
+                "desired_revenue_percentage"
+            ] = desired_revenue_percentage
 
+    
     ro_plan = calculate_target_plan_function(
         actual_value=actual_ro,
         monthly_target=target_ro,
