@@ -369,31 +369,25 @@ def render_mini_kpi(title, value, badge=None):
 # - parts_file: file "Bảng tổng hợp lệnh sửa chữa" (có thể không có)
 # - accessory_file: file "Lệnh phụ kiện" (có thể không có)
 #
-# Nên đổi tên file báo cáo phụ tùng thành tên ngắn, không dấu:
-# hn_pvd_parts_2026_07.xlsx
 
 WORKSHOP_CONFIG = {
-    "Đà Nẵng": {
-        "service_file": Path("dn1307.xlsx"),
-        "parts_file": None,
-        "accessory_file": None,
-        "parts_year": None,
-        "parts_month": None,
-    },
     "Hà Nội - Phạm Văn Đồng": {
+        # Doanh thu dịch vụ = Tổng trước thuế trong file Lệnh sửa chữa
         "service_file": Path("Lệnh sửa chữa (repair.order)-2.xlsx"),
-        "parts_file": Path("hn_pvd_parts_2026_07.xlsx"),
+
+        # Doanh thu phụ tùng = Doanh thu phụ tùng tại dòng Tổng cộng
+        "parts_file": Path("Bảng tổng hợp lệnh sữa chữa-2.xlsx"),
+
+        # Xưởng này chưa có dữ liệu phụ kiện
         "accessory_file": None,
+
+        # Kỳ dữ liệu của file báo cáo phụ tùng
         "parts_year": 2026,
         "parts_month": 7,
     },
 }
 
 TARGETS = {
-    ("Đà Nẵng", 2026, 7): {
-        "ro": 488,
-        "revenue": 1_105_000_000,
-    },
     ("Hà Nội - Phạm Văn Đồng", 2026, 7): {
         "ro": 714,
         "revenue": 1_429_000_000,
