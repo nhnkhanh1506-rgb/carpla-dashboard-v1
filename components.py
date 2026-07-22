@@ -111,146 +111,177 @@ def render_mini_kpi(
 # SIDEBAR FILTER
 # ============================================================
 
-def render_sidebar(
-    data_raw,
-):
+def render_sidebar(data_raw):
     if "show_dashboard" not in st.session_state:
         st.session_state.show_dashboard = False
 
+    if "selected_branch" not in st.session_state:
+        st.session_state.selected_branch = None
+
+    if "selected_workshop" not in st.session_state:
+        st.session_state.selected_workshop = None
+
+    if "selected_year" not in st.session_state:
+        st.session_state.selected_year = None
+
+    if "selected_month" not in st.session_state:
+        st.session_state.selected_month = None
+
     st.sidebar.markdown("## Bộ lọc")
 
+    # =========================================================
+    # 1. CHI NHÁNH
+    # =========================================================
     branch_options = sorted(
-        data_raw["chi_nhanh"]
-        .dropna()
-        .unique()
+        data_raw["chi_nhanh"].dropna().unique().tolist()
     )
 
     selected_branch_input = st.sidebar.selectbox(
         "Chi nhánh",
-        branch_options,
+        options=branch_options,
+        index=None,
+        placeholder=" ",
         key="sidebar_branch",
     )
 
-    branch_data = data_raw[
-        data_raw["chi_nhanh"]
-        == selected_branch_input
-    ].copy()
+    # =========================================================
+    # 2. XƯỞNG
+    # =========================================================
+    if selected_branch_input is not None:
+        branch_data = data_raw[
+            data_raw["chi_nhanh"] == selected_branch_input
+        ].copy()
 
-    workshop_options = sorted(
-        branch_data["xuong"]
-        .dropna()
-        .unique()
-    )
+        workshop_options = sorted(
+            branch_data["xuong"].dropna().unique().tolist()
+        )
+    else:
+        branch_data = data_raw.iloc[0:0].copy()
+        workshop_options = []
 
     selected_workshop_input = st.sidebar.selectbox(
         "Xưởng",
-        workshop_options,
+        options=workshop_options,
+        index=None,
+        placeholder=" ",
         key="sidebar_workshop",
     )
 
-    workshop_data = branch_data[
-        branch_data["xuong"]
-        == selected_workshop_input
-    ].copy()
+    # =========================================================
+    # 3. NĂM
+    # =========================================================
+    if selected_branch_input is not None and selected_workshop_input is not None:
+        workshop_data = branch_data[
+            branch_data["xuong"] == selected_workshop_input
+        ].copy()
 
-    year_options = sorted(
-        workshop_data["ngay_hoa_don"]
-        .dropna()
-        .dt.year
-        .unique(),
-        reverse=True,
-    )
+        year_options = sorted(
+            workshop_data["ngay_hoa_don"]
+            .dropna()
+            .dt.year
+            .unique()
+            .tolist(),
+            reverse=True,
+        )
+    else:
+        workshop_data = data_raw.iloc[0:0].copy()
+        year_options = []
 
     selected_year_input = st.sidebar.selectbox(
         "Năm",
-        year_options,
+        options=year_options,
+        index=None,
+        placeholder=" ",
         key="sidebar_year",
     )
 
-    month_options = sorted(
-        workshop_data.loc[
-            workshop_data[
-                "ngay_hoa_don"
-            ].dt.year
-            == selected_year_input,
-            "ngay_hoa_don",
-        ]
-        .dropna()
-        .dt.month
-        .unique()
-    )
+    # =========================================================
+    # 4. THÁNG
+    # =========================================================
+    if (
+        selected_branch_input is not None
+        and selected_workshop_input is not None
+        and selected_year_input is not None
+    ):
+        month_options = sorted(
+            workshop_data.loc[
+                workshop_data["ngay_hoa_don"].dt.year == selected_year_input,
+                "ngay_hoa_don",
+            ]
+            .dropna()
+            .dt.month
+            .unique()
+            .tolist()
+        )
+    else:
+        month_options = []
 
     selected_month_input = st.sidebar.selectbox(
         "Tháng",
-        month_options,
-        format_func=lambda value: (
-            f"Tháng {int(value)}"
-        ),
+        options=month_options,
+        index=None,
+        placeholder=" ",
+        format_func=lambda value: f"Tháng {int(value)}",
         key="sidebar_month",
     )
+
+    # =========================================================
+    # 5. NÚT XEM DASHBOARD
+    # =========================================================
+    all_selected = all([
+        selected_branch_input is not None,
+        selected_workshop_input is not None,
+        selected_year_input is not None,
+        selected_month_input is not None,
+    ])
 
     if st.sidebar.button(
         "XEM DASHBOARD",
         type="primary",
         use_container_width=True,
+        disabled=not all_selected,
     ):
-        st.session_state.selected_branch = (
-            selected_branch_input
-        )
-
-        st.session_state.selected_workshop = (
-            selected_workshop_input
-        )
-
-        st.session_state.selected_year = int(
-            selected_year_input
-        )
-
-        st.session_state.selected_month = int(
-            selected_month_input
-        )
-
+        st.session_state.selected_branch = selected_branch_input
+        st.session_state.selected_workshop = selected_workshop_input
+        st.session_state.selected_year = int(selected_year_input)
+        st.session_state.selected_month = int(selected_month_input)
         st.session_state.show_dashboard = True
         st.rerun()
 
+    # =========================================================
+    # 6. NÚT TRANG CHỦ
+    # =========================================================
     if st.session_state.show_dashboard:
         if st.sidebar.button(
             "← TRANG CHỦ",
             use_container_width=True,
         ):
             st.session_state.show_dashboard = False
+
+            # reset bộ lọc về trắng như bản cũ
+            st.session_state.selected_branch = None
+            st.session_state.selected_workshop = None
+            st.session_state.selected_year = None
+            st.session_state.selected_month = None
+
+            if "sidebar_branch" in st.session_state:
+                del st.session_state["sidebar_branch"]
+            if "sidebar_workshop" in st.session_state:
+                del st.session_state["sidebar_workshop"]
+            if "sidebar_year" in st.session_state:
+                del st.session_state["sidebar_year"]
+            if "sidebar_month" in st.session_state:
+                del st.session_state["sidebar_month"]
+
             st.rerun()
 
     return {
-        "show_dashboard": (
-            st.session_state.show_dashboard
-        ),
-
-        "branch": st.session_state.get(
-            "selected_branch",
-            selected_branch_input,
-        ),
-
-        "workshop": st.session_state.get(
-            "selected_workshop",
-            selected_workshop_input,
-        ),
-
-        "year": int(
-            st.session_state.get(
-                "selected_year",
-                selected_year_input,
-            )
-        ),
-
-        "month": int(
-            st.session_state.get(
-                "selected_month",
-                selected_month_input,
-            )
-        ),
+        "show_dashboard": st.session_state.show_dashboard,
+        "branch": st.session_state.get("selected_branch"),
+        "workshop": st.session_state.get("selected_workshop"),
+        "year": st.session_state.get("selected_year"),
+        "month": st.session_state.get("selected_month"),
     }
-
 
 # ============================================================
 # HOMEPAGE
