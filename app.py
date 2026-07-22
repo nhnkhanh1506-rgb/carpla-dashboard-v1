@@ -162,6 +162,10 @@ render_top_kpis(metrics)
 # 11. INTERACTIVE TARGET PLANNER
 # ============================================================
 
+# ============================================================
+# 11. INTERACTIVE TARGET PLANNER
+# ============================================================
+
 working_day_info = calculate_working_days(
     year=year,
     month=month,
