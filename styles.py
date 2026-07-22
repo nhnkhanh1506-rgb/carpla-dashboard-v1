@@ -641,29 +641,23 @@ button[data-testid="stSidebarCollapseButton"] * {{
 }}
 
 /* =========================================================
-   CARD TARGET TƯƠNG TÁC
-   GIỐNG HÌNH DẠNG SECTION-CARD CŨ
+   CARD TARGET TƯƠNG TÁC — HIỂN THỊ Y HỆT PROGRESS CARD CŨ
    ========================================================= */
 
 .st-key-ro_target_card,
 .st-key-revenue_target_card {{
+    position: relative !important;
     background: #FFFFFF !important;
     border-radius: 22px !important;
     padding: 22px 22px 18px 22px !important;
     border: 1px solid #DBE3EE !important;
-
-    box-shadow:
-        0 8px 24px
-        rgba(15, 23, 42, 0.05) !important;
-
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
     min-height: 170px !important;
     height: 170px !important;
     margin-bottom: 22px !important;
     overflow: visible !important;
 }}
 
-
-/* Tiêu đề đúng như card cũ */
 .st-key-ro_target_card .progress-title,
 .st-key-revenue_target_card .progress-title {{
     font-size: 16px !important;
@@ -672,8 +666,6 @@ button[data-testid="stSidebarCollapseButton"] * {{
     margin-bottom: 14px !important;
 }}
 
-
-/* Dòng Thực hiện / Chỉ tiêu đúng như card cũ */
 .st-key-ro_target_card .progress-sub,
 .st-key-revenue_target_card .progress-sub {{
     font-size: 15px !important;
@@ -682,119 +674,92 @@ button[data-testid="stSidebarCollapseButton"] * {{
     font-weight: 600 !important;
 }}
 
-
-/* =========================================================
-   SLIDER TƯƠNG TÁC — GIỐNG PROGRESS BAR CŨ
-   ========================================================= */
-
-/* Khoảng cách từ dòng Thực hiện xuống slider */
+/* Slider thật: trong suốt nhưng vẫn nhận thao tác kéo. */
 .st-key-ro_target_card div[data-testid="stSlider"],
 .st-key-revenue_target_card div[data-testid="stSlider"] {{
-    margin-top: 32px !important;
-    margin-bottom: 0 !important;
-    padding: 0 !important;
-}}
-
-
-/* Xóa khoảng đệm mặc định của BaseWeb */
-.st-key-ro_target_card div[data-baseweb="slider"],
-.st-key-revenue_target_card div[data-baseweb="slider"] {{
-    padding: 0 !important;
+    position: absolute !important;
+    left: 22px !important;
+    right: 22px !important;
+    bottom: 25px !important;
+    width: calc(100% - 44px) !important;
+    height: 64px !important;
     margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0.001 !important;
+    z-index: 30 !important;
+    cursor: pointer !important;
 }}
 
+/* Giao diện nhìn thấy: dùng đúng HTML/CSS progress card cũ. */
+.interactive-old-progress {{
+    position: relative !important;
+    margin-top: 38px !important;
+    pointer-events: none !important;
+}}
 
-/* Thanh nền xám */
-.st-key-ro_target_card div[data-baseweb="slider"] > div > div,
-.st-key-revenue_target_card div[data-baseweb="slider"] > div > div {{
+.interactive-old-progress .progress-track {{
+    position: relative !important;
+    width: 100% !important;
     height: 10px !important;
-    min-height: 10px !important;
+    background: #E5E7EB !important;
+    border-radius: 999px !important;
+    margin-top: 38px !important;
+}}
+
+.interactive-old-progress .progress-fill {{
+    height: 10px !important;
+    background: linear-gradient(90deg, #D64545, #E45858) !important;
     border-radius: 999px !important;
 }}
 
-
-/* Track tổng */
-.st-key-ro_target_card div[data-baseweb="slider"] > div > div:nth-child(1),
-.st-key-revenue_target_card div[data-baseweb="slider"] > div > div:nth-child(1) {{
-    background-color: #E5E7EB !important;
-}}
-
-
-/* Phần đã kéo màu đỏ gradient */
-.st-key-ro_target_card div[data-baseweb="slider"] > div > div:nth-child(2),
-.st-key-revenue_target_card div[data-baseweb="slider"] > div > div:nth-child(2) {{
-    background:
-        linear-gradient(
-            90deg,
-            #D64545 0%,
-            #E45858 100%
-        ) !important;
-
-    height: 10px !important;
-    min-height: 10px !important;
-    border-radius: 999px !important;
-}}
-
-
-/* Nút tròn giống progress-dot cũ */
-.st-key-ro_target_card div[role="slider"],
-.st-key-revenue_target_card div[role="slider"] {{
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    min-height: 28px !important;
-
-    background-color: #E45858 !important;
-
-    border: 5px solid #FFFFFF !important;
+.interactive-old-progress .progress-dot {{
+    position: absolute !important;
+    top: -7px !important;
+    width: 24px !important;
+    height: 24px !important;
+    background: #E45858 !important;
+    border: 4px solid #FFFFFF !important;
     border-radius: 50% !important;
-
-    box-shadow:
-        0 6px 18px
-        rgba(228, 88, 88, 0.30) !important;
+    transform: translateX(-50%) !important;
+    box-sizing: content-box !important;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.22) !important;
 }}
 
-
-/* Số phần trăm trên nút */
-.st-key-ro_target_card [data-testid="stThumbValue"],
-.st-key-revenue_target_card [data-testid="stThumbValue"] {{
+.interactive-old-progress .progress-label {{
+    position: absolute !important;
+    top: -34px !important;
+    transform: translateX(-50%) !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
     color: #E45858 !important;
-    font-size: 15px !important;
-    font-weight: 900 !important;
     white-space: nowrap !important;
 }}
 
-
-/* Mốc 0% và 100% */
-.st-key-ro_target_card [data-testid="stTickBar"],
-.st-key-revenue_target_card [data-testid="stTickBar"] {{
-    margin-top: 11px !important;
-    color: #64748B !important;
+.interactive-old-progress .progress-scale {{
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
     font-size: 13px !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
+    color: #64748B !important;
+    margin-top: 10px !important;
 }}
 
-.st-key-ro_target_card [data-testid="stTickBar"] *,
-.st-key-revenue_target_card [data-testid="stTickBar"] * {{
+.interactive-old-progress .progress-scale span {{
     color: #64748B !important;
-    font-size: 13px !important;
-    font-weight: 800 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }}
-
-
-
 
 /* Thông báo bên dưới */
 div[data-testid="stAlert"] {{
     border-radius: 14px !important;
 }}
 
-
-/* Nút reset bên dưới, không ảnh hưởng card */
+/* Nút reset bên dưới */
 button[kind="secondary"] {{
     border-radius: 12px !important;
 }}
-
 
 </style>
 """,
