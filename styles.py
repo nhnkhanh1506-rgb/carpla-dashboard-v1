@@ -736,37 +736,33 @@ button[kind="secondary"] {{
 }}
 
 /* =========================================================
-   DATAFRAME / TABLE — HEADER XÁM, DÒNG DỮ LIỆU TRẮNG
+   DATAFRAME HEADER — GRADIENT CARPLA
    ========================================================= */
 
-/* Khung bảng */
-div[data-testid="stDataFrame"] {{
-    background-color: #FFFFFF !important;
-    border-radius: 16px !important;
-    overflow: hidden !important;
-}}
-
-/* Vùng bên trong bảng */
-div[data-testid="stDataFrame"] > div,
-div[data-testid="stDataFrame"] iframe {{
-    background-color: #FFFFFF !important;
-}}
-
-/* Toàn bộ bảng HTML */
-div[data-testid="stDataFrame"] table {{
-    background-color: #FFFFFF !important;
-    border-collapse: collapse !important;
-}}
-
-/* Header cột màu xám nhạt */
 div[data-testid="stDataFrame"] thead,
 div[data-testid="stDataFrame"] thead tr,
 div[data-testid="stDataFrame"] thead th {{
-    background-color: #F3F4F6 !important;
-    color: #6B7280 !important;
+    background:
+        linear-gradient(
+            90deg,
+            #172554 0%,
+            #29467E 55%,
+            #4E73A8 100%
+        ) !important;
+
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
 }}
 
-/* Tất cả dòng dữ liệu màu trắng */
+/* Ép chữ và icon trong header thành trắng */
+div[data-testid="stDataFrame"] thead th *,
+div[data-testid="stDataFrame"] thead th svg {{
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+}}
+
+/* Dòng dữ liệu vẫn giữ nền trắng */
 div[data-testid="stDataFrame"] tbody,
 div[data-testid="stDataFrame"] tbody tr,
 div[data-testid="stDataFrame"] tbody td {{
@@ -774,18 +770,11 @@ div[data-testid="stDataFrame"] tbody td {{
     color: #1F2937 !important;
 }}
 
-/* Không đổi màu khi hover */
+/* Hover nhẹ */
 div[data-testid="stDataFrame"] tbody tr:hover,
 div[data-testid="stDataFrame"] tbody tr:hover td {{
-    background-color: #FFFFFF !important;
+    background-color: #F7FAFC !important;
 }}
-
-/* Đường kẻ ô */
-div[data-testid="stDataFrame"] th,
-div[data-testid="stDataFrame"] td {{
-    border-color: #E5E7EB !important;
-}}
-
 
 
 </style>
