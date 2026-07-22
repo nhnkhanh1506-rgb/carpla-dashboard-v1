@@ -31,6 +31,48 @@ def safe_div(a, b):
 
 
 # ============================================================
+# ĐỊNH DẠNG BẢNG: HEADER XÁM, DÒNG DỮ LIỆU TRẮNG
+# ============================================================
+
+def style_white_table(dataframe):
+    return (
+        dataframe.style
+        .set_properties(
+            **{
+                "background-color": "#FFFFFF",
+                "color": "#1F2937",
+                "border-color": "#E5E7EB",
+                "font-weight": "500",
+            }
+        )
+        .set_table_styles(
+            [
+                {
+                    "selector": "thead th",
+                    "props": [
+                        ("background-color", "#F3F4F6"),
+                        ("color", "#6B7280"),
+                        ("font-weight", "600"),
+                        ("border-color", "#E5E7EB"),
+                        ("text-align", "left"),
+                    ],
+                },
+                {
+                    "selector": "tbody td",
+                    "props": [
+                        ("background-color", "#FFFFFF"),
+                        ("color", "#1F2937"),
+                        ("border-color", "#E5E7EB"),
+                    ],
+                },
+            ],
+            overwrite=False,
+        )
+        .hide(axis="index")
+    )
+
+
+# ============================================================
 # CHUẨN BỊ DỮ LIỆU THEO NGÀY
 # ============================================================
 
@@ -753,7 +795,7 @@ def render_brand_section(data):
         )
 
         st.dataframe(
-            brand_display,
+            style_white_table(brand_display),
             use_container_width=True,
             hide_index=True,
         )
@@ -985,7 +1027,7 @@ def render_payment_section(data):
         )
 
         st.dataframe(
-            payment_display,
+            style_white_table(payment_display),
             use_container_width=True,
             hide_index=True,
         )
