@@ -288,7 +288,7 @@ def render_sidebar(data_raw):
 # ============================================================
 def render_homepage(logo_path: Path):
     st.markdown(
-        "<div style='height:55px;'></div>",
+        "<div style='height:22px;'></div>",
         unsafe_allow_html=True,
     )
 
@@ -309,27 +309,39 @@ def render_homepage(logo_path: Path):
         )
 
     html = (
-        '<div style="max-width:900px;margin:0 auto;'
-        'text-align:center;padding:36px 28px 42px 28px;">'
-        f'{logo_html}'
-        '<div style="font-size:38px;line-height:1.2;'
-        'font-weight:900;color:#172554;margin-top:28px;'
-        'margin-bottom:18px;">'
-        'DASHBOARD QUẢN TRỊ DMS'
-        '</div>'
-        '<div style="max-width:790px;margin:0 auto;'
-        'font-size:18px;line-height:1.75;color:#64748B;">'
-        'Nền tảng dashboard tập trung giúp theo dõi, phân tích '
-        'và đánh giá hiệu quả hoạt động của các xưởng trong toàn '
-        'hệ thống Carpla Services, bao gồm (nhưng không giới hạn) '
-        'lượt xe, doanh thu, cơ cấu hãng xe, nguồn thanh toán, '
-        'và các chỉ số vận hành liên quan.'
-        '</div>'
-        '<div style="margin-top:26px;font-size:15px;'
-        'font-weight:700;color:#475569;">'
-        'Vui lòng chọn Chi nhánh, Xưởng, Năm và Tháng tại bộ lọc '
-        'bên trái, sau đó nhấn “XEM DASHBOARD”.'
-        '</div>'
+        '<div class="homepage-stage">'
+            '<div class="homepage-orb orb-yellow"></div>'
+            '<div class="homepage-orb orb-blue"></div>'
+
+            '<div class="homepage-card">'
+                f'{logo_html}'
+
+                '<div class="homepage-title">'
+                    'DASHBOARD QUẢN TRỊ DMS'
+                '</div>'
+
+                '<div class="homepage-subtitle">'
+                    'Nền tảng dashboard tập trung giúp theo dõi, '
+                    'phân tích và đánh giá hiệu quả hoạt động của '
+                    'các xưởng trong toàn hệ thống Carpla Services, '
+                    'bao gồm (nhưng không giới hạn) lượt xe, doanh thu, '
+                    'cơ cấu hãng xe, nguồn thanh toán và các chỉ số '
+                    'vận hành liên quan.'
+                '</div>'
+
+                '<div class="homepage-pill-row">'
+                    '<div class="homepage-pill">Lượt xe / RO</div>'
+                    '<div class="homepage-pill">Doanh thu</div>'
+                    '<div class="homepage-pill">Nguồn thanh toán</div>'
+                    '<div class="homepage-pill">Hãng xe</div>'
+                '</div>'
+
+                '<div class="homepage-guide">'
+                    'Vui lòng chọn <b>Chi nhánh</b>, <b>Xưởng</b>, '
+                    '<b>Năm</b> và <b>Tháng</b> tại bộ lọc bên trái, '
+                    'sau đó nhấn <b>“XEM DASHBOARD”</b>.'
+                '</div>'
+            '</div>'
         '</div>'
     )
 
