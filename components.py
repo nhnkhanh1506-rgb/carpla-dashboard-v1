@@ -472,11 +472,7 @@ def render_interactive_target_planner(
         f"Còn {remaining_days} ngày làm việc."
     )
 
-        card_left, card_right = st.columns(2)
-
-    # ========================================================
-    # CARD LƯỢT XE
-    # ========================================================
+    card_left, card_right = st.columns(2)
 
     with card_left:
         with st.container(key="ro_target_card"):
@@ -484,7 +480,6 @@ def render_interactive_target_planner(
                 '<div class="progress-title">Lượt xe / RO</div>',
                 unsafe_allow_html=True,
             )
-
             st.markdown(
                 '<div class="progress-sub">'
                 f'<b>Thực hiện:</b> {actual_ro:,.0f} / '
@@ -492,7 +487,6 @@ def render_interactive_target_planner(
                 '</div>',
                 unsafe_allow_html=True,
             )
-
             desired_ro_percentage = st.slider(
                 "Mục tiêu lượt xe muốn đạt",
                 min_value=0,
@@ -502,20 +496,11 @@ def render_interactive_target_planner(
                 key="desired_ro_percentage",
                 label_visibility="collapsed",
             )
-
             st.markdown(
-                """
-<div class="slider-fixed-scale">
-    <span>0%</span>
-    <span>100%</span>
-</div>
-""",
+                '<div class="slider-fixed-scale">'
+                '<span>0%</span><span>100%</span></div>',
                 unsafe_allow_html=True,
             )
-
-    # ========================================================
-    # CARD DOANH THU
-    # ========================================================
 
     with card_right:
         with st.container(key="revenue_target_card"):
@@ -523,7 +508,6 @@ def render_interactive_target_planner(
                 '<div class="progress-title">Tổng Doanh thu</div>',
                 unsafe_allow_html=True,
             )
-
             st.markdown(
                 '<div class="progress-sub">'
                 f'<b>Thực hiện:</b> {fmt_m(actual_revenue)} / '
@@ -531,7 +515,6 @@ def render_interactive_target_planner(
                 '</div>',
                 unsafe_allow_html=True,
             )
-
             desired_revenue_percentage = st.slider(
                 "Mục tiêu doanh thu muốn đạt",
                 min_value=0,
@@ -541,14 +524,9 @@ def render_interactive_target_planner(
                 key="desired_revenue_percentage",
                 label_visibility="collapsed",
             )
-
             st.markdown(
-                """
-<div class="slider-fixed-scale">
-    <span>0%</span>
-    <span>100%</span>
-</div>
-""",
+                '<div class="slider-fixed-scale">'
+                '<span>0%</span><span>100%</span></div>',
                 unsafe_allow_html=True,
             )
 
