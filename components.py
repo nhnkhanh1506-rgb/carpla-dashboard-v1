@@ -4,6 +4,8 @@ import base64
 
 import streamlit as st
 
+from custom_slider import carpla_slider
+
 
 # ============================================================
 # HÀM FORMAT
