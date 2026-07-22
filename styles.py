@@ -683,65 +683,11 @@ button[data-testid="stSidebarCollapseButton"] * {{
 }}
 
 
-/* Khoảng cách thanh slider giống progress-track cũ */
-.st-key-ro_target_card div[data-testid="stSlider"],
-.st-key-revenue_target_card div[data-testid="stSlider"] {{
-    margin-top: 26px !important;
-    padding-top: 0 !important;
-}}
-
-
-/* Thanh slider */
-.st-key-ro_target_card div[data-baseweb="slider"],
-.st-key-revenue_target_card div[data-baseweb="slider"] {{
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-}}
-
-
-/* Nút tròn giống progress-dot cũ */
-.st-key-ro_target_card div[role="slider"],
-.st-key-revenue_target_card div[role="slider"] {{
-    width: 24px !important;
-    height: 24px !important;
-
-    background-color: #E45858 !important;
-
-    border:
-        4px solid #FFFFFF !important;
-
-    border-radius:
-        50% !important;
-
-    box-shadow:
-        0 6px 16px
-        rgba(239, 68, 68, 0.22) !important;
-}}
-
-
-/* Số phần trăm phía trên */
-.st-key-ro_target_card [data-testid="stThumbValue"],
-.st-key-revenue_target_card [data-testid="stThumbValue"] {{
-    color: #E45858 !important;
-    font-size: 14px !important;
-    font-weight: 800 !important;
-}}
-
-
-/* Mốc 0% và 100% */
-.st-key-ro_target_card [data-testid="stTickBar"],
-.st-key-revenue_target_card [data-testid="stTickBar"] {{
-    color: #64748B !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-}}
-
-
 /* =========================================================
-   SLIDER TƯƠNG TÁC — GIỐNG THANH PROGRESS CŨ
+   SLIDER TƯƠNG TÁC — GIỐNG PROGRESS BAR CŨ
    ========================================================= */
 
-/* Khoảng cách trước thanh slider */
+/* Khoảng cách từ dòng Thực hiện xuống slider */
 .st-key-ro_target_card div[data-testid="stSlider"],
 .st-key-revenue_target_card div[data-testid="stSlider"] {{
     margin-top: 32px !important;
@@ -750,25 +696,15 @@ button[data-testid="stSidebarCollapseButton"] * {{
 }}
 
 
-/* Toàn bộ slider */
+/* Xóa khoảng đệm mặc định của BaseWeb */
 .st-key-ro_target_card div[data-baseweb="slider"],
 .st-key-revenue_target_card div[data-baseweb="slider"] {{
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }}
 
 
-/* Track ngoài */
-.st-key-ro_target_card div[data-baseweb="slider"] > div,
-.st-key-revenue_target_card div[data-baseweb="slider"] > div {{
-    height: 10px !important;
-    min-height: 10px !important;
-    border-radius: 999px !important;
-    background: #E5E7EB !important;
-}}
-
-
-/* Tất cả lớp track bên trong */
+/* Thanh nền xám */
 .st-key-ro_target_card div[data-baseweb="slider"] > div > div,
 .st-key-revenue_target_card div[data-baseweb="slider"] > div > div {{
     height: 10px !important;
@@ -777,12 +713,16 @@ button[data-testid="stSidebarCollapseButton"] * {{
 }}
 
 
-/* Phần màu đỏ đã kéo */
-.st-key-ro_target_card
-div[data-baseweb="slider"] > div > div:first-child,
+/* Track tổng */
+.st-key-ro_target_card div[data-baseweb="slider"] > div > div:nth-child(1),
+.st-key-revenue_target_card div[data-baseweb="slider"] > div > div:nth-child(1) {{
+    background-color: #E5E7EB !important;
+}}
 
-.st-key-revenue_target_card
-div[data-baseweb="slider"] > div > div:first-child {{
+
+/* Phần đã kéo màu đỏ gradient */
+.st-key-ro_target_card div[data-baseweb="slider"] > div > div:nth-child(2),
+.st-key-revenue_target_card div[data-baseweb="slider"] > div > div:nth-child(2) {{
     background:
         linear-gradient(
             90deg,
@@ -791,11 +731,12 @@ div[data-baseweb="slider"] > div > div:first-child {{
         ) !important;
 
     height: 10px !important;
+    min-height: 10px !important;
     border-radius: 999px !important;
 }}
 
 
-/* Nút tròn */
+/* Nút tròn giống progress-dot cũ */
 .st-key-ro_target_card div[role="slider"],
 .st-key-revenue_target_card div[role="slider"] {{
     width: 28px !important;
@@ -803,40 +744,31 @@ div[data-baseweb="slider"] > div > div:first-child {{
     min-width: 28px !important;
     min-height: 28px !important;
 
-    background: #E45858 !important;
+    background-color: #E45858 !important;
 
-    border:
-        5px solid #FFFFFF !important;
-
-    border-radius:
-        50% !important;
+    border: 5px solid #FFFFFF !important;
+    border-radius: 50% !important;
 
     box-shadow:
         0 6px 18px
         rgba(228, 88, 88, 0.30) !important;
-
-    transform:
-        translate(-50%, -50%) !important;
 }}
 
 
-/* Số phần trăm phía trên nút */
+/* Số phần trăm trên nút */
 .st-key-ro_target_card [data-testid="stThumbValue"],
 .st-key-revenue_target_card [data-testid="stThumbValue"] {{
     color: #E45858 !important;
     font-size: 15px !important;
     font-weight: 900 !important;
     white-space: nowrap !important;
-    top: -34px !important;
 }}
 
 
-/* Mốc 0% và 100% mặc định của Streamlit */
+/* Mốc 0% và 100% */
 .st-key-ro_target_card [data-testid="stTickBar"],
 .st-key-revenue_target_card [data-testid="stTickBar"] {{
-    display: flex !important;
-    justify-content: space-between !important;
-    margin-top: 12px !important;
+    margin-top: 11px !important;
     color: #64748B !important;
     font-size: 13px !important;
     font-weight: 800 !important;
@@ -848,6 +780,8 @@ div[data-baseweb="slider"] > div > div:first-child {{
     font-size: 13px !important;
     font-weight: 800 !important;
 }}
+
+
 
 
 /* Thông báo bên dưới */
