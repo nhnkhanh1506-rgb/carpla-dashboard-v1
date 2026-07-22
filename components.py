@@ -219,14 +219,14 @@ def render_sidebar(data_raw):
     else:
         month_options = []
 
-   selected_month_input = st.sidebar.selectbox(
-    "Tháng",
-    options=month_options,
-    index=None,
-    placeholder=" ",
-    format_func=lambda value: str(int(value)),
-    key="sidebar_month",
-)
+    selected_month_input = st.sidebar.selectbox(
+        "Tháng",
+        options=month_options,
+        index=None,
+        placeholder=" ",
+        format_func=lambda value: str(int(value)),
+        key="sidebar_month",
+    )
 
     # =========================================================
     # 5. NÚT XEM DASHBOARD
