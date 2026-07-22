@@ -622,23 +622,43 @@ def render_interactive_target_planner(
     remaining_revenue = revenue_plan["remaining_required"]
     average_revenue = revenue_plan["average_required"]
 
-    result_left, result_right = st.columns(2)
+      result_left, result_right = st.columns(2)
+
+    # ========================================================
+    # KẾT QUẢ LƯỢT XE
+    # Chỉ hiển thị khi slider khác mức hiện tại
+    # ========================================================
 
     with result_left:
-        if ro_plan["already_achieved"]:
-            st.success(
-                f"Đã đạt mức **{desired_ro_percentage}%** chỉ tiêu, "
-                f"tương đương **{desired_ro:,.0f} lượt xe**."
-            )
-        elif remaining_days > 0:
-            st.info(
-                f"Để đạt **{desired_ro_percentage}%** chỉ tiêu, "
-                f"cần thêm **{remaining_ro:,.0f} lượt xe**. "
-                f"Bình quân cần **{average_ro:,.0f} lượt xe/ngày** "
-                f"trong **{remaining_days} ngày làm việc** còn lại."
-            )
-        else:
-            st.warning("Không còn ngày làm việc trong tháng.")
+        is_current_ro_level = (
+            desired_ro_percentage == current_ro_default
+        )
+
+        if not is_current_ro_level:
+            if ro_plan["already_achieved"]:
+                st.success(
+                    f"Đã đạt mức "
+                    f"**{desired_ro_percentage}%** chỉ tiêu, "
+                    f"tương đương "
+                    f"**{desired_ro:,.0f} lượt xe**."
+                )
+
+            elif remaining_days > 0:
+                st.info(
+                    f"Để đạt "
+                    f"**{desired_ro_percentage}%** chỉ tiêu, "
+                    f"cần thêm "
+                    f"**{remaining_ro:,.0f} lượt xe**. "
+                    f"Bình quân cần "
+                    f"**{average_ro:,.0f} lượt xe/ngày** "
+                    f"trong "
+                    f"**{remaining_days} ngày làm việc** còn lại."
+                )
+
+            else:
+                st.warning(
+                    "Không còn ngày làm việc trong tháng."
+                )
 
         if st.button(
             "↺ Về mức hiện tại",
@@ -648,34 +668,61 @@ def render_interactive_target_planner(
             st.session_state["desired_ro_percentage"] = (
                 current_ro_default
             )
+
             st.session_state["ro_slider_nonce"] += 1
+
             st.rerun()
 
+    # ========================================================
+    # KẾT QUẢ DOANH THU
+    # Chỉ hiển thị khi slider khác mức hiện tại
+    # ========================================================
+
     with result_right:
-        if revenue_plan["already_achieved"]:
-            st.success(
-                f"Đã đạt mức **{desired_revenue_percentage}%** chỉ tiêu, "
-                f"tương đương **{fmt_m(desired_revenue)}**."
-            )
-        elif remaining_days > 0:
-            st.info(
-                f"Để đạt **{desired_revenue_percentage}%** chỉ tiêu, "
-                f"cần thêm **{fmt_m(remaining_revenue)}**. "
-                f"Bình quân cần **{fmt_m(average_revenue)}/ngày** "
-                f"trong **{remaining_days} ngày làm việc** còn lại."
-            )
-        else:
-            st.warning("Không còn ngày làm việc trong tháng.")
+        is_current_revenue_level = (
+            desired_revenue_percentage
+            == current_revenue_default
+        )
+
+        if not is_current_revenue_level:
+            if revenue_plan["already_achieved"]:
+                st.success(
+                    f"Đã đạt mức "
+                    f"**{desired_revenue_percentage}%** chỉ tiêu, "
+                    f"tương đương "
+                    f"**{fmt_m(desired_revenue)}**."
+                )
+
+            elif remaining_days > 0:
+                st.info(
+                    f"Để đạt "
+                    f"**{desired_revenue_percentage}%** chỉ tiêu, "
+                    f"cần thêm "
+                    f"**{fmt_m(remaining_revenue)}**. "
+                    f"Bình quân cần "
+                    f"**{fmt_m(average_revenue)}/ngày** "
+                    f"trong "
+                    f"**{remaining_days} ngày làm việc** còn lại."
+                )
+
+            else:
+                st.warning(
+                    "Không còn ngày làm việc trong tháng."
+                )
 
         if st.button(
             "↺ Về mức hiện tại",
             key="reset_revenue_target",
             use_container_width=True,
         ):
-            st.session_state["desired_revenue_percentage"] = (
-                current_revenue_default
-            )
-            st.session_state["revenue_slider_nonce"] += 1
+            st.session_state[
+                "desired_revenue_percentage"
+            ] = current_revenue_default
+
+            st.session_state[
+                "revenue_slider_nonce"
+            ] += 1
+
             st.rerun()
 
     return {
