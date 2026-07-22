@@ -587,53 +587,66 @@ div.stButton > button {{
 }}
 
 /* =========================================================
-   NÚT THU GỌN / MỞ SIDEBAR
+   NÚT THU GỌN / MỞ SIDEBAR — GIỐNG GIAO DIỆN CŨ
    ========================================================= */
 
+/* Nút khi sidebar đang mở */
+[data-testid="stSidebarCollapseButton"],
 [data-testid="stSidebarCollapseButton"] button {{
-    background-color: #334155 !important;
-    border: 1px solid #475569 !important;
-    color: white !important;
-    border-radius: 10px !important;
-    width: 34px !important;
-    height: 34px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     opacity: 1 !important;
 }}
 
 [data-testid="stSidebarCollapseButton"] button:hover {{
-    background-color: #475569 !important;
-    border-color: #64748B !important;
+    background: rgba(255,255,255,0.08) !important;
+    border: none !important;
 }}
 
-[data-testid="stSidebarCollapseButton"] svg {{
-    color: white !important;
-    fill: white !important;
-    stroke: white !important;
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stSidebarCollapseButton"] button svg {{
+    color: #FFFFFF !important;
+    fill: none !important;
+    stroke: #FFFFFF !important;
+    stroke-width: 2.6px !important;
     opacity: 1 !important;
 }}
 
+
+/* Một số phiên bản Streamlit dùng selector này */
+button[data-testid="stSidebarCollapseButton"] {{
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #FFFFFF !important;
+}}
+
+button[data-testid="stSidebarCollapseButton"] svg {{
+    color: #FFFFFF !important;
+    fill: none !important;
+    stroke: #FFFFFF !important;
+    stroke-width: 2.6px !important;
+    opacity: 1 !important;
+}}
+
+
+/* Nút khi sidebar đã đóng */
+[data-testid="collapsedControl"],
 [data-testid="collapsedControl"] button {{
-    background-color: white !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 10px !important;
-    width: 34px !important;
-    height: 34px !important;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.10) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }}
 
-[data-testid="collapsedControl"] button:hover {{
-    background-color: #F8FAFC !important;
-    border-color: #94A3B8 !important;
-}}
-
-[data-testid="collapsedControl"] svg {{
-    color: #334155 !important;
-    fill: #334155 !important;
-    stroke: #334155 !important;
+[data-testid="collapsedControl"] svg,
+[data-testid="collapsedControl"] button svg {{
+    color: #475569 !important;
+    fill: none !important;
+    stroke: #475569 !important;
+    stroke-width: 2.6px !important;
     opacity: 1 !important;
 }}
-
-</style>
 
 </style>
 """,
