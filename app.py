@@ -373,10 +373,10 @@ def render_mini_kpi(title, value, badge=None):
 WORKSHOP_CONFIG = {
     "Hà Nội - Phạm Văn Đồng": {
         # Doanh thu dịch vụ = Tổng trước thuế trong file Lệnh sửa chữa
-        "service_file": Path("Lệnh sửa chữa (repair.order)-2.xlsx"),
+        "service_file": Path("hn_pvd_service_2026_07.xlsx"),
 
         # Doanh thu phụ tùng = Doanh thu phụ tùng tại dòng Tổng cộng
-        "parts_file": Path("Bảng tổng hợp lệnh sữa chữa-2.xlsx"),
+        "parts_file": Path("hn_pvd_parts_2026_07.xlsx"),
 
         # Xưởng này chưa có dữ liệu phụ kiện
         "accessory_file": None,
