@@ -518,25 +518,17 @@ def render_interactive_target_planner(
                 unsafe_allow_html=True,
             )
 
-            desired_ro_percentage = st.slider(
-                "Mục tiêu lượt xe muốn đạt",
-                min_value=0,
-                max_value=100,
-                step=1,
-                format="%d%%",
-                key="desired_ro_percentage",
-                label_visibility="collapsed",
-            )
+            desired_ro_percentage = carpla_slider(
+    value=st.session_state["desired_ro_percentage"],
+    min_value=0,
+    max_value=100,
+    step=1,
+    key="desired_ro_percentage_component",
+)
 
-            st.markdown(
-                """
-<div class="slider-fixed-scale">
-    <span>0%</span>
-    <span>100%</span>
-</div>
-""",
-                unsafe_allow_html=True,
-            )
+st.session_state["desired_ro_percentage"] = (
+    desired_ro_percentage
+)
 
     # ========================================================
     # CARD DOANH THU
@@ -556,25 +548,19 @@ def render_interactive_target_planner(
                 unsafe_allow_html=True,
             )
 
-            desired_revenue_percentage = st.slider(
-                "Mục tiêu doanh thu muốn đạt",
-                min_value=0,
-                max_value=100,
-                step=1,
-                format="%d%%",
-                key="desired_revenue_percentage",
-                label_visibility="collapsed",
-            )
+            desired_revenue_percentage = carpla_slider(
+    value=st.session_state[
+        "desired_revenue_percentage"
+    ],
+    min_value=0,
+    max_value=100,
+    step=1,
+    key="desired_revenue_percentage_component",
+)
 
-            st.markdown(
-                """
-<div class="slider-fixed-scale">
-    <span>0%</span>
-    <span>100%</span>
-</div>
-""",
-                unsafe_allow_html=True,
-            )
+st.session_state["desired_revenue_percentage"] = (
+    desired_revenue_percentage
+)
 
     ro_plan = calculate_target_plan_function(
         actual_value=actual_ro,
