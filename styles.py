@@ -735,6 +735,59 @@ button[kind="secondary"] {{
     border-radius: 12px !important;
 }}
 
+/* =========================================================
+   DATAFRAME / TABLE — HEADER XÁM, DÒNG DỮ LIỆU TRẮNG
+   ========================================================= */
+
+/* Khung bảng */
+div[data-testid="stDataFrame"] {{
+    background-color: #FFFFFF !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}}
+
+/* Vùng bên trong bảng */
+div[data-testid="stDataFrame"] > div,
+div[data-testid="stDataFrame"] iframe {{
+    background-color: #FFFFFF !important;
+}}
+
+/* Toàn bộ bảng HTML */
+div[data-testid="stDataFrame"] table {{
+    background-color: #FFFFFF !important;
+    border-collapse: collapse !important;
+}}
+
+/* Header cột màu xám nhạt */
+div[data-testid="stDataFrame"] thead,
+div[data-testid="stDataFrame"] thead tr,
+div[data-testid="stDataFrame"] thead th {{
+    background-color: #F3F4F6 !important;
+    color: #6B7280 !important;
+}}
+
+/* Tất cả dòng dữ liệu màu trắng */
+div[data-testid="stDataFrame"] tbody,
+div[data-testid="stDataFrame"] tbody tr,
+div[data-testid="stDataFrame"] tbody td {{
+    background-color: #FFFFFF !important;
+    color: #1F2937 !important;
+}}
+
+/* Không đổi màu khi hover */
+div[data-testid="stDataFrame"] tbody tr:hover,
+div[data-testid="stDataFrame"] tbody tr:hover td {{
+    background-color: #FFFFFF !important;
+}}
+
+/* Đường kẻ ô */
+div[data-testid="stDataFrame"] th,
+div[data-testid="stDataFrame"] td {{
+    border-color: #E5E7EB !important;
+}}
+
+
+
 </style>
 """,
         unsafe_allow_html=True,
