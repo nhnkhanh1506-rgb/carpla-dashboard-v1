@@ -496,11 +496,7 @@ def render_interactive_target_planner(
                 key="desired_ro_percentage",
                 label_visibility="collapsed",
             )
-            st.markdown(
-                '<div class="interactive-slider-scale">'
-                '<span>0%</span><span>100%</span></div>',
-                unsafe_allow_html=True,
-            )
+            
 
     with card_right:
         with st.container(key="revenue_target_card"):
@@ -524,11 +520,7 @@ def render_interactive_target_planner(
                 key="desired_revenue_percentage",
                 label_visibility="collapsed",
             )
-            st.markdown(
-                '<div class="interactive-slider-scale">'
-                '<span>0%</span><span>100%</span></div>',
-                unsafe_allow_html=True,
-            )
+            
 
     ro_plan = calculate_target_plan_function(
         actual_value=actual_ro,
