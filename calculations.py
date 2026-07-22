@@ -1,5 +1,7 @@
-import pandas as pd
+import calendar
+from datetime import date
 
+import pandas as pd
 
 # ============================================================
 # TRẠNG THÁI KHÔNG ĐƯỢC TÍNH
@@ -195,4 +197,113 @@ def calculate_dashboard_metrics(
         "ro_rate": ro_rate,
         "revenue_rate": revenue_rate,
         "revenue_per_ro": revenue_per_ro,
+    }
+
+
+# ============================================================
+# TÍNH NGÀY LÀM VIỆC, KHÔNG BAO GỒM CHỦ NHẬT
+# ============================================================
+
+def calculate_working_days(year, month, data):
+    """
+    Quy ước:
+    - Một tháng làm việc tất cả các ngày trừ Chủ nhật.
+    - Ngày chốt dữ liệu là ngày hóa đơn mới nhất.
+    - Ngày còn lại bắt đầu từ ngày kế tiếp sau ngày chốt dữ liệu.
+    """
+
+    days_in_month = calendar.monthrange(
+        year,
+        month,
+    )[1]
+
+    working_dates = [
+        date(year, month, day)
+        for day in range(1, days_in_month + 1)
+        if date(year, month, day).weekday() != 6
+    ]
+
+    total_working_days = len(working_dates)
+
+    valid_dates = (
+        data["ngay_hoa_don"]
+        .dropna()
+    )
+
+    if valid_dates.empty:
+        data_cutoff_date = date(
+            year,
+            month,
+            1,
+        )
+    else:
+        data_cutoff_date = (
+            valid_dates.max().date()
+        )
+
+    remaining_working_dates = [
+        working_date
+        for working_date in working_dates
+        if working_date > data_cutoff_date
+    ]
+
+    elapsed_working_dates = [
+        working_date
+        for working_date in working_dates
+        if working_date <= data_cutoff_date
+    ]
+
+    return {
+        "data_cutoff_date": data_cutoff_date,
+        "total_working_days": total_working_days,
+        "elapsed_working_days": len(
+            elapsed_working_dates
+        ),
+        "remaining_working_days": len(
+            remaining_working_dates
+        ),
+        "remaining_working_dates": (
+            remaining_working_dates
+        ),
+    }
+
+
+# ============================================================
+# TÍNH YÊU CẦU BÌNH QUÂN CHO MỤC TIÊU TƯƠNG TÁC
+# ============================================================
+
+def calculate_target_plan(
+    actual_value,
+    monthly_target,
+    desired_percentage,
+    remaining_working_days,
+):
+    desired_value = (
+        monthly_target
+        * desired_percentage
+        / 100
+    )
+
+    remaining_required = max(
+        desired_value - actual_value,
+        0,
+    )
+
+    if remaining_working_days > 0:
+        average_required = (
+            remaining_required
+            / remaining_working_days
+        )
+    else:
+        average_required = 0
+
+    already_achieved = (
+        actual_value >= desired_value
+    )
+
+    return {
+        "desired_value": desired_value,
+        "remaining_required": remaining_required,
+        "average_required": average_required,
+        "already_achieved": already_achieved,
     }
