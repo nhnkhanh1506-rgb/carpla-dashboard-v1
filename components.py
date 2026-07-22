@@ -59,43 +59,26 @@ def render_progress_card(
         min(percentage, 100),
     )
 
+    html = f"""
+<div class="section-card">
+    <div class="progress-title">{title}</div>
+    <div class="progress-sub">Thực hiện: {actual_text} / {target_text}</div>
+    <div class="progress-track">
+        <div class="progress-fill" style="width:{percentage_display}%;"></div>
+        <div class="progress-dot" style="left:{percentage_display}%;"></div>
+        <div class="progress-label" style="left:{percentage_display}%;">{percentage:.2f}%</div>
+    </div>
+    <div class="progress-scale">
+        <span>0%</span>
+        <span>100%</span>
+    </div>
+</div>
+"""
+
     st.markdown(
-        f"""
-        <div class="section-card">
-            <div class="progress-title">{title}</div>
-
-            <div class="progress-sub">
-                Thực hiện: {actual_text} / {target_text}
-            </div>
-
-            <div class="progress-track">
-                <div
-                    class="progress-fill"
-                    style="width:{percentage_display}%;"
-                ></div>
-
-                <div
-                    class="progress-dot"
-                    style="left:{percentage_display}%;"
-                ></div>
-
-                <div
-                    class="progress-label"
-                    style="left:{percentage_display}%;"
-                >
-                    {percentage:.2f}%
-                </div>
-            </div>
-
-            <div class="progress-scale">
-                <span>0%</span>
-                <span>100%</span>
-            </div>
-        </div>
-        """,
+        html,
         unsafe_allow_html=True,
     )
-
 
 # ============================================================
 # MINI KPI
@@ -380,21 +363,15 @@ def render_dashboard_header(
     year,
     month,
 ):
-    st.markdown(
-        f"""
-        <div class="hero-box">
-            <div class="hero-title">
-                Dashboard DMS - Xưởng {workshop}
-            </div>
+    html = f"""
+<div class="hero-box">
+    <div class="hero-title">Dashboard DMS - Xưởng {workshop}</div>
+    <div class="hero-subtitle">Chi nhánh {branch} | Theo dõi hiệu quả hoạt động tháng {month}/{year}: lượt xe, doanh thu, cơ cấu hãng xe và nguồn thanh toán</div>
+</div>
+"""
 
-            <div class="hero-subtitle">
-                Chi nhánh {branch} |
-                Theo dõi hiệu quả hoạt động tháng
-                {month}/{year}: lượt xe, doanh thu,
-                cơ cấu hãng xe và nguồn thanh toán
-            </div>
-        </div>
-        """,
+    st.markdown(
+        html,
         unsafe_allow_html=True,
     )
 
