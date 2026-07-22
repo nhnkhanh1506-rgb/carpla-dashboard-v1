@@ -587,64 +587,51 @@ div.stButton > button {{
 }}
 
 /* =========================================================
-   NÚT THU GỌN / MỞ SIDEBAR — GIỐNG GIAO DIỆN CŨ
+   NÚT THU GỌN SIDEBAR — MŨI TÊN TRẮNG SÁNG
    ========================================================= */
 
-/* Nút khi sidebar đang mở */
-[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapseButton"] {{
+    opacity: 1 !important;
+}}
+
 [data-testid="stSidebarCollapseButton"] button {{
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    color: #FFFFFF !important;
     opacity: 1 !important;
 }}
 
 [data-testid="stSidebarCollapseButton"] button:hover {{
-    background: rgba(255,255,255,0.08) !important;
-    border: none !important;
+    background: rgba(255, 255, 255, 0.08) !important;
 }}
 
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="stSidebarCollapseButton"] button svg {{
+[data-testid="stSidebarCollapseButton"] svg {{
     color: #FFFFFF !important;
-    fill: none !important;
+    fill: #FFFFFF !important;
     stroke: #FFFFFF !important;
-    stroke-width: 2.6px !important;
+    opacity: 1 !important;
+}}
+
+[data-testid="stSidebarCollapseButton"] svg path {{
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+    opacity: 1 !important;
+}}
+
+[data-testid="stSidebarCollapseButton"] * {{
+    color: #FFFFFF !important;
     opacity: 1 !important;
 }}
 
 
-/* Một số phiên bản Streamlit dùng selector này */
-button[data-testid="stSidebarCollapseButton"] {{
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+/* Dự phòng cho các phiên bản Streamlit khác */
+button[data-testid="stSidebarCollapseButton"],
+button[data-testid="stSidebarCollapseButton"] * {{
     color: #FFFFFF !important;
-}}
-
-button[data-testid="stSidebarCollapseButton"] svg {{
-    color: #FFFFFF !important;
-    fill: none !important;
+    fill: #FFFFFF !important;
     stroke: #FFFFFF !important;
-    stroke-width: 2.6px !important;
-    opacity: 1 !important;
-}}
-
-
-/* Nút khi sidebar đã đóng */
-[data-testid="collapsedControl"],
-[data-testid="collapsedControl"] button {{
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}}
-
-[data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] button svg {{
-    color: #475569 !important;
-    fill: none !important;
-    stroke: #475569 !important;
-    stroke-width: 2.6px !important;
     opacity: 1 !important;
 }}
 
