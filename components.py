@@ -286,6 +286,7 @@ def render_sidebar(data_raw):
 # ============================================================
 # HOMEPAGE
 # ============================================================
+
 def render_homepage(logo_path: Path):
     st.markdown(
         "<div style='height:22px;'></div>",
@@ -327,13 +328,6 @@ def render_homepage(logo_path: Path):
                     'bao gồm (nhưng không giới hạn) lượt xe, doanh thu, '
                     'cơ cấu hãng xe, nguồn thanh toán và các chỉ số '
                     'vận hành liên quan.'
-                '</div>'
-
-                '<div class="homepage-pill-row">'
-                    '<div class="homepage-pill">Lượt xe / RO</div>'
-                    '<div class="homepage-pill">Doanh thu</div>'
-                    '<div class="homepage-pill">Nguồn thanh toán</div>'
-                    '<div class="homepage-pill">Hãng xe</div>'
                 '</div>'
 
                 '<div class="homepage-guide">'
