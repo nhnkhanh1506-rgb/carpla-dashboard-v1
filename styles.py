@@ -484,52 +484,44 @@ div[data-testid="stDataFrame"] {{
 
 
 /* =========================================================
-   TRANG CHỦ MỚI
+   TRANG CHỦ MỚI - FULL YELLOW GRADIENT
    ========================================================= */
 
 .homepage-stage {{
     position: relative;
-    max-width: 1180px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 20px 20px 28px 20px;
-    min-height: 620px;
+    min-height: 680px;
+    padding: 38px 28px 42px 28px;
     overflow: hidden;
+    border-radius: 34px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFF7CC 0%,
+            #FFE98A 18%,
+            #FFD94D 38%,
+            #FFE17A 58%,
+            #FFF0A8 78%,
+            #FFF7D6 100%
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.35),
+        0 18px 45px rgba(201, 152, 0, 0.14);
 }}
 
 .homepage-orb {{
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(18px);
-    z-index: 0;
+    display: none;
 }}
 
-/* Vàng rõ hơn */
 .orb-yellow {{
-    width: 520px;
-    height: 520px;
-    top: 60px;
-    left: 110px;
-    background: radial-gradient(
-        circle,
-        rgba(245, 212, 66, 0.78) 0%,
-        rgba(245, 212, 66, 0.42) 32%,
-        rgba(245, 212, 66, 0.18) 52%,
-        rgba(245, 212, 66, 0.00) 74%
-    );
+    display: none;
 }}
 
-/* Xanh navy nhẹ hơn để không lấn vàng */
 .orb-blue {{
-    width: 420px;
-    height: 420px;
-    right: 110px;
-    top: 120px;
-    background: radial-gradient(
-        circle,
-        rgba(33, 48, 108, 0.18) 0%,
-        rgba(33, 48, 108, 0.08) 45%,
-        rgba(33, 48, 108, 0.00) 74%
-    );
+    display: none;
 }}
 
 .homepage-card {{
@@ -538,30 +530,29 @@ div[data-testid="stDataFrame"] {{
     max-width: 980px;
     margin: 0 auto;
     text-align: center;
-    padding: 54px 56px 46px 56px;
+    padding: 58px 56px 50px 56px;
     border-radius: 30px;
 
     background:
         linear-gradient(
             180deg,
             rgba(255,255,255,0.58) 0%,
-            rgba(255,255,255,0.52) 100%
+            rgba(255,255,255,0.44) 100%
         );
 
-    border: 1px solid rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.55);
 
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 
     box-shadow:
-        0 18px 50px rgba(15, 23, 42, 0.08),
-        0 10px 30px rgba(245, 212, 66, 0.18);
+        0 14px 30px rgba(120, 93, 0, 0.08);
 }}
 
 .homepage-title {{
     margin-top: 28px;
-    font-size: 46px;
-    line-height: 1.12;
+    font-size: 48px;
+    line-height: 1.10;
     font-weight: 900;
     color: #1E2F6E;
     letter-spacing: 0.3px;
@@ -569,20 +560,20 @@ div[data-testid="stDataFrame"] {{
 
 .homepage-subtitle {{
     max-width: 820px;
-    margin: 20px auto 0 auto;
+    margin: 22px auto 0 auto;
     font-size: 20px;
-    line-height: 1.78;
-    color: #5B6B84;
+    line-height: 1.82;
+    color: #51627F;
     font-weight: 500;
 }}
 
 .homepage-guide {{
     max-width: 780px;
-    margin: 28px auto 0 auto;
+    margin: 30px auto 0 auto;
     font-size: 16px;
     line-height: 1.7;
-    color: #44536B;
-    font-weight: 600;
+    color: #3F4F68;
+    font-weight: 650;
 }}
 
 /* =========================================================
