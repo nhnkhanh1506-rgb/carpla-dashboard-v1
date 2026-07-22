@@ -491,7 +491,7 @@ div[data-testid="stDataFrame"] {{
     position: relative;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 34px 20px 28px 20px;
+    padding: 20px 20px 28px 20px;
     min-height: 620px;
     overflow: hidden;
 }}
@@ -499,34 +499,36 @@ div[data-testid="stDataFrame"] {{
 .homepage-orb {{
     position: absolute;
     border-radius: 50%;
-    filter: blur(30px);
-    opacity: 0.55;
+    filter: blur(18px);
     z-index: 0;
 }}
 
+/* Vàng rõ hơn */
 .orb-yellow {{
-    width: 360px;
-    height: 360px;
-    top: 20px;
-    left: 120px;
+    width: 520px;
+    height: 520px;
+    top: 60px;
+    left: 110px;
     background: radial-gradient(
         circle,
-        rgba(245, 212, 66, 0.48) 0%,
-        rgba(245, 212, 66, 0.16) 45%,
-        rgba(245, 212, 66, 0.00) 75%
+        rgba(245, 212, 66, 0.78) 0%,
+        rgba(245, 212, 66, 0.42) 32%,
+        rgba(245, 212, 66, 0.18) 52%,
+        rgba(245, 212, 66, 0.00) 74%
     );
 }}
 
+/* Xanh navy nhẹ hơn để không lấn vàng */
 .orb-blue {{
     width: 420px;
     height: 420px;
-    right: 90px;
-    top: 80px;
+    right: 110px;
+    top: 120px;
     background: radial-gradient(
         circle,
-        rgba(33, 48, 108, 0.22) 0%,
-        rgba(33, 48, 108, 0.08) 48%,
-        rgba(33, 48, 108, 0.00) 78%
+        rgba(33, 48, 108, 0.18) 0%,
+        rgba(33, 48, 108, 0.08) 45%,
+        rgba(33, 48, 108, 0.00) 74%
     );
 }}
 
@@ -542,18 +544,18 @@ div[data-testid="stDataFrame"] {{
     background:
         linear-gradient(
             180deg,
-            rgba(255,255,255,0.82) 0%,
-            rgba(255,255,255,0.72) 100%
+            rgba(255,255,255,0.58) 0%,
+            rgba(255,255,255,0.52) 100%
         );
 
-    border: 1px solid rgba(255,255,255,0.75);
+    border: 1px solid rgba(255,255,255,0.65);
 
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
     box-shadow:
         0 18px 50px rgba(15, 23, 42, 0.08),
-        0 6px 18px rgba(245, 212, 66, 0.10);
+        0 10px 30px rgba(245, 212, 66, 0.18);
 }}
 
 .homepage-title {{
@@ -574,38 +576,14 @@ div[data-testid="stDataFrame"] {{
     font-weight: 500;
 }}
 
-.homepage-pill-row {{
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 30px;
-    margin-bottom: 26px;
-}}
-
-.homepage-pill {{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 18px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(30, 47, 110, 0.08);
-    color: #1E2F6E;
-    font-size: 14px;
-    font-weight: 800;
-    box-shadow: 0 5px 14px rgba(15, 23, 42, 0.05);
-}}
-
 .homepage-guide {{
     max-width: 780px;
-    margin: 0 auto;
+    margin: 28px auto 0 auto;
     font-size: 16px;
     line-height: 1.7;
     color: #44536B;
     font-weight: 600;
 }}
-
 
 /* =========================================================
    NÚT CHUNG NGOÀI SIDEBAR
