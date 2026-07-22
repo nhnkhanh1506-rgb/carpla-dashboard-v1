@@ -640,127 +640,122 @@ button[data-testid="stSidebarCollapseButton"] * {{
     opacity: 1 !important;
 }}
 
-
 /* =========================================================
-   INTERACTIVE TARGET CARDS
-   GIỮ HÌNH DẠNG GIỐNG CARD CŨ
+   CARD TARGET TƯƠNG TÁC
+   GIỐNG HÌNH DẠNG SECTION-CARD CŨ
    ========================================================= */
 
-/* Card chứa slider */
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) {{
+.st-key-ro_target_card,
+.st-key-revenue_target_card {{
     background: #FFFFFF !important;
+    border-radius: 22px !important;
+    padding: 22px 22px 18px 22px !important;
     border: 1px solid #DBE3EE !important;
-    border-radius: 28px !important;
-    padding: 26px 30px 22px 30px !important;
 
     box-shadow:
-        0 8px 24px rgba(15, 23, 42, 0.06) !important;
+        0 8px 24px
+        rgba(15, 23, 42, 0.05) !important;
 
-    min-height: 270px;
-}}
-
-/* Ẩn marker */
-.interactive-planner-card-marker {{
-    display: none;
-}}
-
-.interactive-card-title {{
-    font-size: 17px;
-    font-weight: 900;
-    color: #1F2937;
-    margin-bottom: 24px;
-}}
-
-.interactive-card-subtitle {{
-    font-size: 16px;
-    font-weight: 600;
-    color: #526078;
-    margin-bottom: 34px;
+    min-height: 170px !important;
+    height: 170px !important;
+    margin-bottom: 22px !important;
+    overflow: visible !important;
 }}
 
 
-/* =========================================================
-   SLIDER GIỐNG THANH PROGRESS CŨ
-   ========================================================= */
-
-/* Thanh nền */
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div[data-baseweb="slider"] > div {{
-    height: 10px !important;
+/* Tiêu đề đúng như card cũ */
+.st-key-ro_target_card .progress-title,
+.st-key-revenue_target_card .progress-title {{
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #1F2937 !important;
+    margin-bottom: 14px !important;
 }}
 
-/* Thanh slider tổng */
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div[data-baseweb="slider"] div[role="slider"] {{
-    width: 26px !important;
-    height: 26px !important;
 
-    background-color: #E85B5B !important;
-    border: 4px solid #FFFFFF !important;
-    border-radius: 50% !important;
-
-    box-shadow:
-        0 5px 16px rgba(232, 91, 91, 0.28) !important;
-}}
-
-/* Số phần trăm phía trên nút tròn */
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div[data-baseweb="slider"] [data-testid="stThumbValue"] {{
-    color: #E85B5B !important;
+/* Dòng Thực hiện / Chỉ tiêu đúng như card cũ */
+.st-key-ro_target_card .progress-sub,
+.st-key-revenue_target_card .progress-sub {{
     font-size: 15px !important;
-    font-weight: 900 !important;
+    color: #475569 !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
 }}
 
-/* Giới hạn 0% và 100% */
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div[data-baseweb="slider"] [data-testid="stTickBar"] {{
-    color: #64748B !important;
-    font-size: 13px !important;
+
+/* Khoảng cách thanh slider giống progress-track cũ */
+.st-key-ro_target_card div[data-testid="stSlider"],
+.st-key-revenue_target_card div[data-testid="stSlider"] {{
+    margin-top: 26px !important;
+    padding-top: 0 !important;
+}}
+
+
+/* Thanh slider */
+.st-key-ro_target_card div[data-baseweb="slider"],
+.st-key-revenue_target_card div[data-baseweb="slider"] {{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}}
+
+
+/* Nút tròn giống progress-dot cũ */
+.st-key-ro_target_card div[role="slider"],
+.st-key-revenue_target_card div[role="slider"] {{
+    width: 24px !important;
+    height: 24px !important;
+
+    background-color: #E45858 !important;
+
+    border:
+        4px solid #FFFFFF !important;
+
+    border-radius:
+        50% !important;
+
+    box-shadow:
+        0 6px 16px
+        rgba(239, 68, 68, 0.22) !important;
+}}
+
+
+/* Số phần trăm phía trên */
+.st-key-ro_target_card [data-testid="stThumbValue"],
+.st-key-revenue_target_card [data-testid="stThumbValue"] {{
+    color: #E45858 !important;
+    font-size: 14px !important;
     font-weight: 800 !important;
 }}
 
 
-/* =========================================================
-   THÔNG BÁO KẾ HOẠCH
-   ========================================================= */
-
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div[data-testid="stAlert"] {{
-    border-radius: 14px !important;
-    margin-top: 18px !important;
-    font-size: 14px !important;
-}}
-
-
-/* =========================================================
-   NÚT RESET NHỎ, KHÔNG PHÁ BỐ CỤC
-   ========================================================= */
-
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div.stButton > button {{
-    min-height: 38px !important;
-    border-radius: 12px !important;
-    background: #F8FAFC !important;
-    color: #475569 !important;
-    border: 1px solid #DCE3EC !important;
+/* Mốc 0% và 100% */
+.st-key-ro_target_card [data-testid="stTickBar"],
+.st-key-revenue_target_card [data-testid="stTickBar"] {{
+    color: #64748B !important;
     font-size: 13px !important;
-    margin-top: 4px !important;
+    font-weight: 700 !important;
 }}
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(
-    .interactive-planner-card-marker
-) div.stButton > button:hover {{
-    background: #EEF3F9 !important;
-    border-color: #CBD5E1 !important;
-    color: #1F2937 !important;
+
+/* Thanh chưa đạt */
+.st-key-ro_target_card
+div[data-baseweb="slider"] > div > div,
+
+.st-key-revenue_target_card
+div[data-baseweb="slider"] > div > div {{
+    border-radius: 999px !important;
+}}
+
+
+/* Thông báo bên dưới */
+div[data-testid="stAlert"] {{
+    border-radius: 14px !important;
+}}
+
+
+/* Nút reset bên dưới, không ảnh hưởng card */
+button[kind="secondary"] {{
+    border-radius: 12px !important;
 }}
 
 
