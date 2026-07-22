@@ -192,8 +192,8 @@ summary_kpi = pd.DataFrame({
     ],
 
     "% đạt": [
-        f"{ro_rate:.2%}",
-        f"{revenue_rate:.2%}",
+        f"{ro_rate:.0%}",
+        f"{revenue_rate:.0%}",
     ],
 })
 
@@ -258,7 +258,7 @@ revenue_breakdown["Tỷ trọng"] = [
 revenue_breakdown["Tỷ trọng"] = (
     revenue_breakdown["Tỷ trọng"]
     .map(
-        lambda value: f"{value:.2%}"
+        lambda value: f"{value:.0%}"
     )
 )
 
