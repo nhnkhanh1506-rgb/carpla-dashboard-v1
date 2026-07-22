@@ -641,19 +641,17 @@ button[data-testid="stSidebarCollapseButton"] * {{
 }}
 
 /* =========================================================
-   CARD TARGET TƯƠNG TÁC — HIỂN THỊ Y HỆT PROGRESS CARD CŨ
+   CARD TARGET TƯƠNG TÁC — BẢN ỔN ĐỊNH
    ========================================================= */
 
 .st-key-ro_target_card,
 .st-key-revenue_target_card {{
-    position: relative !important;
     background: #FFFFFF !important;
     border-radius: 22px !important;
     padding: 22px 22px 18px 22px !important;
     border: 1px solid #DBE3EE !important;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
-    min-height: 170px !important;
-    height: 170px !important;
+    min-height: 190px !important;
     margin-bottom: 22px !important;
     overflow: visible !important;
 }}
@@ -670,82 +668,58 @@ button[data-testid="stSidebarCollapseButton"] * {{
 .st-key-revenue_target_card .progress-sub {{
     font-size: 15px !important;
     color: #475569 !important;
-    margin-bottom: 8px !important;
     font-weight: 600 !important;
+    margin-bottom: 30px !important;
 }}
 
-/* Slider thật: trong suốt nhưng vẫn nhận thao tác kéo. */
+/* Slider thật, luôn kéo được */
 .st-key-ro_target_card div[data-testid="stSlider"],
 .st-key-revenue_target_card div[data-testid="stSlider"] {{
-    position: absolute !important;
-    left: 22px !important;
-    right: 22px !important;
-    bottom: 25px !important;
-    width: calc(100% - 44px) !important;
-    height: 64px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    opacity: 0.001 !important;
-    z-index: 30 !important;
-    cursor: pointer !important;
-}}
-
-/* Giao diện nhìn thấy: dùng đúng HTML/CSS progress card cũ. */
-.interactive-old-progress {{
-    position: relative !important;
-    margin-top: 38px !important;
-    pointer-events: none !important;
-}}
-
-.interactive-old-progress .progress-track {{
     position: relative !important;
     width: 100% !important;
-    height: 10px !important;
-    background: #E5E7EB !important;
-    border-radius: 999px !important;
-    margin-top: 38px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    z-index: auto !important;
 }}
 
-.interactive-old-progress .progress-fill {{
-    height: 10px !important;
-    background: linear-gradient(90deg, #D64545, #E45858) !important;
-    border-radius: 999px !important;
-}}
-
-.interactive-old-progress .progress-dot {{
-    position: absolute !important;
-    top: -7px !important;
-    width: 24px !important;
-    height: 24px !important;
-    background: #E45858 !important;
-    border: 4px solid #FFFFFF !important;
-    border-radius: 50% !important;
-    transform: translateX(-50%) !important;
-    box-sizing: content-box !important;
-    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.22) !important;
-}}
-
-.interactive-old-progress .progress-label {{
-    position: absolute !important;
-    top: -34px !important;
-    transform: translateX(-50%) !important;
+/* Màu số phần trăm */
+.st-key-ro_target_card [data-testid="stThumbValue"],
+.st-key-revenue_target_card [data-testid="stThumbValue"] {{
+    color: #E45858 !important;
     font-size: 14px !important;
     font-weight: 800 !important;
-    color: #E45858 !important;
     white-space: nowrap !important;
 }}
 
-.interactive-old-progress .progress-scale {{
+/* Nút slider */
+.st-key-ro_target_card div[role="slider"],
+.st-key-revenue_target_card div[role="slider"] {{
+    background-color: #E45858 !important;
+    border: 4px solid #FFFFFF !important;
+    border-radius: 50% !important;
+    box-shadow: 0 5px 14px rgba(228, 88, 88, 0.28) !important;
+}}
+
+/* Ẩn mốc mặc định vì có mốc cố định riêng */
+.st-key-ro_target_card [data-testid="stTickBar"],
+.st-key-revenue_target_card [data-testid="stTickBar"] {{
+    display: none !important;
+}}
+
+/* 0% và 100% luôn hiển thị */
+.slider-fixed-scale {{
     display: flex !important;
     justify-content: space-between !important;
     width: 100% !important;
+    margin-top: 8px !important;
+    color: #64748B !important;
     font-size: 13px !important;
     font-weight: 700 !important;
-    color: #64748B !important;
-    margin-top: 10px !important;
+    line-height: 1 !important;
 }}
 
-.interactive-old-progress .progress-scale span {{
+.slider-fixed-scale span {{
     color: #64748B !important;
     opacity: 1 !important;
     visibility: visible !important;
