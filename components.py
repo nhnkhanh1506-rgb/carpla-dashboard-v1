@@ -255,10 +255,7 @@ def render_sidebar(
 # ============================================================
 # HOMEPAGE
 # ============================================================
-
-def render_homepage(
-    logo_path: Path,
-):
+def render_homepage(logo_path: Path):
     st.markdown(
         "<div style='height:55px;'></div>",
         unsafe_allow_html=True,
@@ -270,88 +267,45 @@ def render_homepage(
         ).decode("utf-8")
 
         logo_html = (
-            '<img '
-            f'src="data:image/png;base64,{logo_base64}" '
-            'style="'
-            'width:360px;'
-            'max-width:72%;'
-            'height:auto;'
-            'display:block;'
-            'margin:0 auto;'
-            '">'
+            f'<img src="data:image/png;base64,{logo_base64}" '
+            'style="width:360px;max-width:72%;height:auto;'
+            'display:block;margin:0 auto;">'
+        )
+    else:
+        logo_html = (
+            '<div style="font-size:42px;font-weight:900;'
+            'color:#172554;">CARPLA SERVICES</div>'
         )
 
-    else:
-        logo_html = """
-        <div
-            style="
-                font-size:42px;
-                font-weight:900;
-                color:#172554;
-            "
-        >
-            CARPLA SERVICES
-        </div>
-        """
-
-    st.markdown(
-        f"""
-        <div
-            style="
-                max-width:900px;
-                margin:0 auto;
-                text-align:center;
-                padding:36px 28px 42px 28px;
-            "
-        >
-            {logo_html}
-
-            <div
-                style="
-                    font-size:38px;
-                    line-height:1.2;
-                    font-weight:900;
-                    color:#172554;
-                    margin-top:28px;
-                    margin-bottom:18px;
-                "
-            >
-                DASHBOARD QUẢN TRỊ DMS
-            </div>
-
-            <div
-                style="
-                    max-width:790px;
-                    margin:0 auto;
-                    font-size:18px;
-                    line-height:1.75;
-                    color:#64748B;
-                "
-            >
-                Nền tảng dashboard tập trung giúp theo dõi,
-                phân tích và đánh giá hiệu quả hoạt động của
-                các xưởng trong toàn hệ thống Carpla Services,
-                bao gồm lượt xe, doanh thu, cơ cấu hãng xe,
-                nguồn thanh toán và các chỉ số vận hành liên quan.
-            </div>
-
-            <div
-                style="
-                    margin-top:26px;
-                    font-size:15px;
-                    font-weight:700;
-                    color:#475569;
-                "
-            >
-                Vui lòng chọn Chi nhánh, Xưởng, Năm và Tháng
-                tại bộ lọc bên trái, sau đó nhấn
-                “XEM DASHBOARD”.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    html = (
+        '<div style="max-width:900px;margin:0 auto;'
+        'text-align:center;padding:36px 28px 42px 28px;">'
+        f'{logo_html}'
+        '<div style="font-size:38px;line-height:1.2;'
+        'font-weight:900;color:#172554;margin-top:28px;'
+        'margin-bottom:18px;">'
+        'DASHBOARD QUẢN TRỊ DMS'
+        '</div>'
+        '<div style="max-width:790px;margin:0 auto;'
+        'font-size:18px;line-height:1.75;color:#64748B;">'
+        'Nền tảng dashboard tập trung giúp theo dõi, phân tích '
+        'và đánh giá hiệu quả hoạt động của các xưởng trong toàn '
+        'hệ thống Carpla Services, bao gồm (nhưng không giới hạn) '
+        'lượt xe, doanh thu, cơ cấu hãng xe, nguồn thanh toán, '
+        'và các chỉ số vận hành liên quan.'
+        '</div>'
+        '<div style="margin-top:26px;font-size:15px;'
+        'font-weight:700;color:#475569;">'
+        'Vui lòng chọn Chi nhánh, Xưởng, Năm và Tháng tại bộ lọc '
+        'bên trái, sau đó nhấn “XEM DASHBOARD”.'
+        '</div>'
+        '</div>'
     )
 
+    st.markdown(
+        html,
+        unsafe_allow_html=True,
+    )
 
 # ============================================================
 # HERO DASHBOARD
