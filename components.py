@@ -289,7 +289,7 @@ def render_sidebar(data_raw):
 
 def render_homepage(logo_path: Path):
     st.markdown(
-        "<div style='height:22px;'></div>",
+        "<div style='height:18px;'></div>",
         unsafe_allow_html=True,
     )
 
@@ -311,9 +311,6 @@ def render_homepage(logo_path: Path):
 
     html = (
         '<div class="homepage-stage">'
-            '<div class="homepage-orb orb-yellow"></div>'
-            '<div class="homepage-orb orb-blue"></div>'
-
             '<div class="homepage-card">'
                 f'{logo_html}'
 
@@ -343,6 +340,7 @@ def render_homepage(logo_path: Path):
         html,
         unsafe_allow_html=True,
     )
+
 
 # ============================================================
 # HERO DASHBOARD
