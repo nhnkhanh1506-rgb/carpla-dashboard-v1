@@ -41,7 +41,7 @@ def calculate_dashboard_metrics(
     targets,
 ):
     # --------------------------------------------------------
-    # 1. LỌC LỆNH THEO NGÀY HÓA ĐƠN
+    # 1. LỌC LỆNH SỬA CHỮA THEO NGÀY HÓA ĐƠN
     # --------------------------------------------------------
 
     data = data_raw[
@@ -63,24 +63,30 @@ def calculate_dashboard_metrics(
         )
     ].copy()
 
-    # Loại trạng thái không hợp lệ
+    # --------------------------------------------------------
+    # 2. LOẠI CÁC TRẠNG THÁI KHÔNG HỢP LỆ
+    # --------------------------------------------------------
+
     data = data[
         ~data["trang_thai"].isin(
             EXCLUDED_STATUS
         )
     ].copy()
 
-    # Chỉ lấy lệnh có doanh thu dương
+    # Chỉ giữ lệnh có doanh thu dịch vụ dương
     data = data[
         data["doanh_thu_truoc_thue"] > 0
     ].copy()
 
-    # Chỉ lấy dòng có số lệnh
+    # Chỉ giữ dòng có Số lệnh hợp lệ
     data = data[
         data["ro_key"].notna()
     ].copy()
 
-    # Mỗi số lệnh chỉ giữ một dòng
+    # --------------------------------------------------------
+    # 3. MỖI SỐ LỆNH CHỈ GIỮ MỘT DÒNG
+    # --------------------------------------------------------
+
     data = (
         data.sort_values(
             "ngay_hoa_don"
@@ -93,10 +99,10 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 2. DOANH THU DỊCH VỤ
+    # 4. DOANH THU DỊCH VỤ
     # --------------------------------------------------------
     #
-    # Lấy Tổng trước thuế trong file
+    # Lấy cột Tổng trước thuế trong file:
     # hn_pvd_service_2026_07.xlsx
     # --------------------------------------------------------
 
@@ -105,7 +111,7 @@ def calculate_dashboard_metrics(
     ].sum()
 
     # --------------------------------------------------------
-    # 3. GHÉP DOANH THU PHỤ TÙNG THEO SỐ LỆNH
+    # 5. LẤY DỮ LIỆU PHỤ TÙNG CỦA XƯỞNG
     # --------------------------------------------------------
 
     parts_df = parts_data.get(
@@ -113,10 +119,14 @@ def calculate_dashboard_metrics(
         pd.DataFrame(),
     )
 
-    if (
-        parts_df is None
-        or parts_df.empty
-    ):
+    if parts_df is None:
+        parts_df = pd.DataFrame()
+
+    # --------------------------------------------------------
+    # 6. GHÉP PHỤ TÙNG VÀO TỪNG LỆNH
+    # --------------------------------------------------------
+
+    if parts_df.empty:
         merged_data = data.copy()
 
         merged_data[
@@ -146,6 +156,18 @@ def calculate_dashboard_metrics(
             columns=["_merge"]
         )
 
+    # --------------------------------------------------------
+    # 7. CHUẨN HÓA DOANH THU PHỤ TÙNG
+    # --------------------------------------------------------
+
+    if (
+        "doanh_thu_phu_tung"
+        not in merged_data.columns
+    ):
+        merged_data[
+            "doanh_thu_phu_tung"
+        ] = 0
+
     merged_data[
         "doanh_thu_phu_tung"
     ] = pd.to_numeric(
@@ -156,7 +178,27 @@ def calculate_dashboard_metrics(
     ).fillna(0)
 
     # --------------------------------------------------------
-    # 4. KIỂM TRA SỐ LỆNH GHÉP
+    # 8. DOANH THU ĐẦY ĐỦ CỦA TỪNG LỆNH
+    # --------------------------------------------------------
+    #
+    # Doanh thu của một lệnh =
+    # Tổng trước thuế trong file dịch vụ
+    # + Doanh thu phụ tùng của chính lệnh đó
+    # --------------------------------------------------------
+
+    merged_data[
+        "doanh_thu_theo_lenh"
+    ] = (
+        merged_data[
+            "doanh_thu_truoc_thue"
+        ]
+        + merged_data[
+            "doanh_thu_phu_tung"
+        ]
+    )
+
+    # --------------------------------------------------------
+    # 9. KIỂM TRA SỐ LỆNH GHÉP ĐƯỢC
     # --------------------------------------------------------
 
     actual_ro = data[
@@ -183,11 +225,7 @@ def calculate_dashboard_metrics(
         )
 
     # --------------------------------------------------------
-    # 5. DOANH THU PHỤ TÙNG
-    # --------------------------------------------------------
-    #
-    # Chỉ cộng doanh thu phụ tùng của đúng các lệnh
-    # trong file dịch vụ đã lọc theo Ngày hóa đơn.
+    # 10. DOANH THU PHỤ TÙNG
     # --------------------------------------------------------
 
     parts_revenue = merged_data[
@@ -195,7 +233,7 @@ def calculate_dashboard_metrics(
     ].sum()
 
     # --------------------------------------------------------
-    # 6. DOANH THU PHỤ KIỆN
+    # 11. DOANH THU PHỤ KIỆN
     # --------------------------------------------------------
 
     accessory_df = accessory_data.get(
@@ -249,23 +287,24 @@ def calculate_dashboard_metrics(
         )
 
     # --------------------------------------------------------
-    # 7. TỔNG DOANH THU
+    # 12. TỔNG DOANH THU
     # --------------------------------------------------------
     #
     # Tổng doanh thu =
-    # Tổng trước thuế file dịch vụ
-    # + Doanh thu phụ tùng của các lệnh match
+    # Doanh thu dịch vụ
+    # + Doanh thu phụ tùng
     # + Doanh thu phụ kiện
     # --------------------------------------------------------
 
     actual_revenue = (
-        service_revenue
-        + parts_revenue
+        merged_data[
+            "doanh_thu_theo_lenh"
+        ].sum()
         + accessory_revenue
     )
 
     # --------------------------------------------------------
-    # 8. TỔNG TIỀN SAU THUẾ
+    # 13. TỔNG TIỀN SAU THUẾ
     # --------------------------------------------------------
 
     total_after_tax = data[
@@ -273,7 +312,7 @@ def calculate_dashboard_metrics(
     ].sum()
 
     # --------------------------------------------------------
-    # 9. TARGET
+    # 14. TARGET
     # --------------------------------------------------------
 
     target_info = targets.get(
@@ -290,12 +329,13 @@ def calculate_dashboard_metrics(
     )
 
     target_ro = target_info["ro"]
+
     target_revenue = (
         target_info["revenue"]
     )
 
     # --------------------------------------------------------
-    # 10. TỶ LỆ HOÀN THÀNH
+    # 15. TỶ LỆ HOÀN THÀNH
     # --------------------------------------------------------
 
     ro_rate = safe_div(
@@ -314,11 +354,14 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 11. TRẢ KẾT QUẢ VỀ APP
+    # 16. TRẢ KẾT QUẢ VỀ APP
     # --------------------------------------------------------
 
     return {
+        # Dữ liệu file dịch vụ gốc đã lọc
         "data": data,
+
+        # Dữ liệu đã ghép phụ tùng theo từng lệnh
         "merged_data": merged_data,
 
         "selected_branch": selected_branch,
@@ -357,7 +400,7 @@ def calculate_working_days(
 ):
     """
     Quy ước:
-    - Làm việc tất cả các ngày trừ Chủ nhật.
+    - Một tháng làm việc tất cả các ngày trừ Chủ nhật.
     - Ngày chốt dữ liệu là Ngày hóa đơn mới nhất.
     - Ngày còn lại bắt đầu từ ngày kế tiếp.
     """
