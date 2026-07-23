@@ -47,7 +47,7 @@ TARGETS = {
 # CẤU HÌNH CHUNG
 # ============================================================
 
-WORKING_DAYS = 25
+WORKING_DAYS = 27
 
 LOGO_FILE = Path(
     "carpla_services_logo_hd.png"
