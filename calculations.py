@@ -41,7 +41,7 @@ def calculate_dashboard_metrics(
     targets,
 ):
     # --------------------------------------------------------
-    # 1. LỌC FILE LỆNH SỬA CHỮA THEO NGÀY HÓA ĐƠN
+    # 1. LỌC LỆNH THEO NGÀY HÓA ĐƠN
     # --------------------------------------------------------
 
     data = data_raw[
@@ -54,43 +54,33 @@ def calculate_dashboard_metrics(
             == selected_workshop
         )
         & (
-            data_raw[
-                "ngay_hoa_don"
-            ].dt.year
+            data_raw["ngay_hoa_don"].dt.year
             == year
         )
         & (
-            data_raw[
-                "ngay_hoa_don"
-            ].dt.month
+            data_raw["ngay_hoa_don"].dt.month
             == month
         )
     ].copy()
 
-    # --------------------------------------------------------
-    # 2. LOẠI TRẠNG THÁI KHÔNG HỢP LỆ
-    # --------------------------------------------------------
-
+    # Loại trạng thái không hợp lệ
     data = data[
-        ~data[
-            "trang_thai"
-        ].isin(EXCLUDED_STATUS)
+        ~data["trang_thai"].isin(
+            EXCLUDED_STATUS
+        )
     ].copy()
 
-    # Chỉ tính lệnh có doanh thu dương
+    # Chỉ lấy lệnh có doanh thu dương
     data = data[
-        data[
-            "doanh_thu_truoc_thue"
-        ] > 0
+        data["doanh_thu_truoc_thue"] > 0
     ].copy()
 
-    # Chỉ giữ các dòng có Số lệnh
+    # Chỉ lấy dòng có số lệnh
     data = data[
         data["ro_key"].notna()
     ].copy()
 
-    # Nếu một Số lệnh xuất hiện nhiều dòng,
-    # chỉ giữ một dòng để tránh đếm trùng
+    # Mỗi số lệnh chỉ giữ một dòng
     data = (
         data.sort_values(
             "ngay_hoa_don"
@@ -103,15 +93,19 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 3. TỔNG DOANH THU THEO FILE LỆNH SỬA CHỮA
+    # 2. DOANH THU DỊCH VỤ
+    # --------------------------------------------------------
+    #
+    # Lấy Tổng trước thuế trong file
+    # hn_pvd_service_2026_07.xlsx
     # --------------------------------------------------------
 
-    invoice_revenue = data[
+    service_revenue = data[
         "doanh_thu_truoc_thue"
     ].sum()
 
     # --------------------------------------------------------
-    # 4. GHÉP VỚI FILE BẢNG TỔNG HỢP
+    # 3. GHÉP DOANH THU PHỤ TÙNG THEO SỐ LỆNH
     # --------------------------------------------------------
 
     parts_df = parts_data.get(
@@ -119,22 +113,14 @@ def calculate_dashboard_metrics(
         pd.DataFrame(),
     )
 
-    if parts_df is None:
-        parts_df = pd.DataFrame()
-
-    if parts_df.empty:
+    if (
+        parts_df is None
+        or parts_df.empty
+    ):
         merged_data = data.copy()
 
         merged_data[
-            "doanh_thu_cong_viec"
-        ] = 0
-
-        merged_data[
             "doanh_thu_phu_tung"
-        ] = 0
-
-        merged_data[
-            "tong_doanh_thu_bang_tong_hop"
         ] = 0
 
         merged_data[
@@ -160,8 +146,17 @@ def calculate_dashboard_metrics(
             columns=["_merge"]
         )
 
+    merged_data[
+        "doanh_thu_phu_tung"
+    ] = pd.to_numeric(
+        merged_data[
+            "doanh_thu_phu_tung"
+        ],
+        errors="coerce",
+    ).fillna(0)
+
     # --------------------------------------------------------
-    # 5. KIỂM TRA SỐ LỆNH GHÉP ĐƯỢC
+    # 4. KIỂM TRA SỐ LỆNH GHÉP
     # --------------------------------------------------------
 
     actual_ro = data[
@@ -179,76 +174,28 @@ def calculate_dashboard_metrics(
         - matched_orders
     )
 
-    # --------------------------------------------------------
-    # 6. CHUẨN HÓA CÁC CỘT DOANH THU
-    # --------------------------------------------------------
-
-    revenue_columns = [
-        "doanh_thu_cong_viec",
-        "doanh_thu_phu_tung",
-        "tong_doanh_thu_bang_tong_hop",
-    ]
-
-    for column in revenue_columns:
-        if column not in merged_data.columns:
-            merged_data[column] = 0
-
-        merged_data[column] = (
-            pd.to_numeric(
-                merged_data[column],
-                errors="coerce",
-            ).fillna(0)
+    if missing_orders > 0:
+        st.warning(
+            f"Còn {missing_orders:,}/{actual_ro:,} "
+            f"lệnh theo Ngày hóa đơn chưa tìm thấy "
+            f"trong file Bảng tổng hợp. "
+            f"Doanh thu phụ tùng có thể bị thiếu."
         )
 
     # --------------------------------------------------------
-    # 7. DOANH THU CÔNG VIỆC VÀ PHỤ TÙNG
+    # 5. DOANH THU PHỤ TÙNG
     # --------------------------------------------------------
-
-    service_revenue = merged_data[
-        "doanh_thu_cong_viec"
-    ].sum()
+    #
+    # Chỉ cộng doanh thu phụ tùng của đúng các lệnh
+    # trong file dịch vụ đã lọc theo Ngày hóa đơn.
+    # --------------------------------------------------------
 
     parts_revenue = merged_data[
         "doanh_thu_phu_tung"
     ].sum()
 
-    summary_revenue = merged_data[
-        "tong_doanh_thu_bang_tong_hop"
-    ].sum()
-
     # --------------------------------------------------------
-    # 8. ĐỐI CHIẾU HAI FILE
-    # --------------------------------------------------------
-
-    summary_difference = (
-        invoice_revenue
-        - summary_revenue
-    )
-
-    # Cảnh báo nếu còn lệnh chưa ghép được
-    if missing_orders > 0:
-        st.warning(
-            f"Còn {missing_orders:,} / "
-            f"{actual_ro:,} lệnh theo Ngày hóa đơn "
-            f"chưa tìm thấy trong file "
-            f"Bảng tổng hợp của xưởng "
-            f"{selected_workshop}. "
-            f"Doanh thu phụ tùng có thể đang bị thiếu."
-        )
-
-    # Cảnh báo nếu tổng hai file không khớp
-    if (
-        missing_orders == 0
-        and abs(summary_difference) > 1
-    ):
-        st.warning(
-            f"Tổng doanh thu trong file Lệnh sửa chữa "
-            f"và file Bảng tổng hợp đang chênh lệch "
-            f"{summary_difference:,.0f} đồng."
-        )
-
-    # --------------------------------------------------------
-    # 9. DOANH THU PHỤ KIỆN
+    # 6. DOANH THU PHỤ KIỆN
     # --------------------------------------------------------
 
     accessory_df = accessory_data.get(
@@ -302,25 +249,23 @@ def calculate_dashboard_metrics(
         )
 
     # --------------------------------------------------------
-    # 10. TỔNG DOANH THU
+    # 7. TỔNG DOANH THU
     # --------------------------------------------------------
     #
-    # Quan trọng:
-    # Tổng trước thuế trong file Lệnh sửa chữa
-    # đã bằng:
-    #
-    # Doanh thu công việc + Doanh thu phụ tùng
-    #
-    # Vì vậy không được cộng phụ tùng thêm lần nữa.
+    # Tổng doanh thu =
+    # Tổng trước thuế file dịch vụ
+    # + Doanh thu phụ tùng của các lệnh match
+    # + Doanh thu phụ kiện
     # --------------------------------------------------------
 
     actual_revenue = (
-        invoice_revenue
+        service_revenue
+        + parts_revenue
         + accessory_revenue
     )
 
     # --------------------------------------------------------
-    # 11. TỔNG TIỀN SAU THUẾ
+    # 8. TỔNG TIỀN SAU THUẾ
     # --------------------------------------------------------
 
     total_after_tax = data[
@@ -328,7 +273,7 @@ def calculate_dashboard_metrics(
     ].sum()
 
     # --------------------------------------------------------
-    # 12. TARGET
+    # 9. TARGET
     # --------------------------------------------------------
 
     target_info = targets.get(
@@ -350,7 +295,7 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 13. TỶ LỆ HOÀN THÀNH
+    # 10. TỶ LỆ HOÀN THÀNH
     # --------------------------------------------------------
 
     ro_rate = safe_div(
@@ -369,7 +314,7 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 14. TRẢ KẾT QUẢ VỀ APP
+    # 11. TRẢ KẾT QUẢ VỀ APP
     # --------------------------------------------------------
 
     return {
@@ -385,19 +330,9 @@ def calculate_dashboard_metrics(
         "matched_orders": matched_orders,
         "missing_orders": missing_orders,
 
-        # Doanh thu chi tiết
         "service_revenue": service_revenue,
         "parts_revenue": parts_revenue,
         "accessory_revenue": accessory_revenue,
-
-        # Tổng theo file Lệnh sửa chữa
-        "invoice_revenue": invoice_revenue,
-
-        # Tổng theo file Bảng tổng hợp
-        "summary_revenue": summary_revenue,
-        "summary_difference": summary_difference,
-
-        # Tổng doanh thu dashboard
         "actual_revenue": actual_revenue,
 
         "total_after_tax": total_after_tax,
