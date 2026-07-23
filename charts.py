@@ -468,7 +468,7 @@ def build_revenue_daily_chart(
 
             textfont=dict(
                 color=BAR_LABEL_COLOR,
-                size=12,
+                size=14,
             ),
         ),
         secondary_y=False,
