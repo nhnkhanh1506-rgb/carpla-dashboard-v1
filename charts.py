@@ -129,8 +129,6 @@ def prepare_daily_data(
         subset=["ngay_hoa_don"]
     ).copy()
 
-    # Không fallback về Tổng trước thuế.
-    # App phải truyền đúng merged_data.
     if (
         "doanh_thu_theo_lenh"
         not in daily_source.columns
@@ -153,10 +151,6 @@ def prepare_daily_data(
         errors="coerce",
     ).fillna(0)
 
-    # --------------------------------------------------------
-    # NHÓM THEO NGÀY HÓA ĐƠN
-    # --------------------------------------------------------
-
     daily = (
         daily_source
         .assign(
@@ -167,13 +161,10 @@ def prepare_daily_data(
         )
         .groupby("day")
         .agg(
-            # CPUS Daily giữ nguyên
             ro=(
                 "ro",
                 "nunique",
             ),
-
-            # Doanh thu Daily dùng tổng đầy đủ từng lệnh
             revenue=(
                 "doanh_thu_theo_lenh",
                 "sum",
@@ -311,8 +302,10 @@ def build_ro_daily_chart(
 
             textfont=dict(
                 color=BAR_LABEL_COLOR,
-                size=12,
+                size=14,
             ),
+
+            cliponaxis=False,
         ),
         secondary_y=False,
     )
@@ -366,6 +359,9 @@ def build_ro_daily_chart(
         height=370,
         paper_bgcolor=DARK_PANEL,
         plot_bgcolor=DARK_PANEL,
+
+        uniformtext_minsize=14,
+        uniformtext_mode="show",
 
         font=dict(
             color=WHITE,
@@ -458,18 +454,22 @@ def build_revenue_daily_chart(
             name="Doanh thu/ngày",
 
             text=[
-    f"{value:.1f}M"
-    if value > 0
-    else ""
-    for value in daily["revenue_m"]
-],
+                f"{value:.1f}M"
+                if value > 0
+                else ""
+                for value in daily[
+                    "revenue_m"
+                ]
+            ],
 
             textposition="outside",
 
             textfont=dict(
                 color=BAR_LABEL_COLOR,
-                size=16,
+                size=14,
             ),
+
+            cliponaxis=False,
         ),
         secondary_y=False,
     )
@@ -525,6 +525,9 @@ def build_revenue_daily_chart(
         height=370,
         paper_bgcolor=DARK_PANEL,
         plot_bgcolor=DARK_PANEL,
+
+        uniformtext_minsize=14,
+        uniformtext_mode="show",
 
         font=dict(
             color=WHITE,
@@ -612,10 +615,6 @@ def render_daily_charts(
         working_days=working_days,
     )
 
-    # ========================================================
-    # TÍNH CÁC CHỈ SỐ
-    # ========================================================
-
     total_ro = daily[
         "ro"
     ].sum()
@@ -643,8 +642,10 @@ def render_daily_charts(
     # HÀNG 1: CPUS DAILY
     # ========================================================
 
-    ro_chart_column, ro_kpi_column = st.columns(
-        [4.6, 1.25]
+    ro_chart_column, ro_kpi_column = (
+        st.columns(
+            [4.6, 1.25]
+        )
     )
 
     with ro_chart_column:
@@ -674,8 +675,10 @@ def render_daily_charts(
     # HÀNG 2: DOANH THU DAILY
     # ========================================================
 
-    revenue_chart_column, revenue_kpi_column = st.columns(
-        [4.6, 1.25]
+    revenue_chart_column, revenue_kpi_column = (
+        st.columns(
+            [4.6, 1.25]
+        )
     )
 
     with revenue_chart_column:
@@ -713,6 +716,7 @@ def render_daily_charts(
                 target_revenue_day
             ),
         )
+
 
 # ============================================================
 # HÃNG XE
