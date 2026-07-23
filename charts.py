@@ -1,4 +1,4 @@
-import calendar
+ import calendar
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -37,7 +37,6 @@ def safe_div(a, b):
 
 # ============================================================
 # ĐỊNH DẠNG BẢNG
-# HEADER XÁM NHẠT, DÒNG DỮ LIỆU TRẮNG
 # ============================================================
 
 def style_white_table(dataframe):
@@ -130,29 +129,20 @@ def prepare_daily_data(
         subset=["ngay_hoa_don"]
     ).copy()
 
-    # --------------------------------------------------------
-    # DOANH THU THEO TỪNG LỆNH
-    # --------------------------------------------------------
-    #
-    # Cột doanh_thu_theo_lenh được tạo trong calculations.py:
-    #
-    # doanh_thu_theo_lenh
-    # = doanh_thu_truoc_thue
-    # + doanh_thu_phu_tung
-    #
-    # Nếu chưa có cột mới, tạm dùng doanh_thu_truoc_thue
-    # để tránh làm app bị lỗi.
-    # --------------------------------------------------------
-
+    # Không fallback về Tổng trước thuế.
+    # App phải truyền đúng merged_data.
     if (
         "doanh_thu_theo_lenh"
         not in daily_source.columns
     ):
-        daily_source[
-            "doanh_thu_theo_lenh"
-        ] = daily_source[
-            "doanh_thu_truoc_thue"
-        ]
+        st.error(
+            "Dữ liệu biểu đồ Daily chưa có cột "
+            "'doanh_thu_theo_lenh'. "
+            "Kiểm tra app.py phải truyền "
+            "metrics['merged_data'] vào "
+            "render_daily_charts()."
+        )
+        st.stop()
 
     daily_source[
         "doanh_thu_theo_lenh"
@@ -166,13 +156,6 @@ def prepare_daily_data(
     # --------------------------------------------------------
     # NHÓM THEO NGÀY HÓA ĐƠN
     # --------------------------------------------------------
-    #
-    # CPUS Daily:
-    # - Đếm Số lệnh duy nhất theo Ngày hóa đơn
-    #
-    # Doanh thu Daily:
-    # - Cộng doanh_thu_theo_lenh theo Ngày hóa đơn
-    # --------------------------------------------------------
 
     daily = (
         daily_source
@@ -184,10 +167,13 @@ def prepare_daily_data(
         )
         .groupby("day")
         .agg(
+            # CPUS Daily giữ nguyên
             ro=(
                 "ro",
                 "nunique",
             ),
+
+            # Doanh thu Daily dùng tổng đầy đủ từng lệnh
             revenue=(
                 "doanh_thu_theo_lenh",
                 "sum",
@@ -870,9 +856,7 @@ def render_brand_section(data):
     )
 
     total_row = pd.DataFrame({
-        "Hãng xe": [
-            "TỔNG"
-        ],
+        "Hãng xe": ["TỔNG"],
 
         "Số RO": [
             total_ro_brand
@@ -1079,19 +1063,17 @@ def render_payment_section(data):
         - insurance_value
     )
 
-    payment_structure = (
-        pd.DataFrame({
-            "Nguồn thanh toán": [
-                "Bảo hiểm chi trả",
-                "Khách hàng chi trả",
-            ],
+    payment_structure = pd.DataFrame({
+        "Nguồn thanh toán": [
+            "Bảo hiểm chi trả",
+            "Khách hàng chi trả",
+        ],
 
-            "Giá trị": [
-                insurance_value,
-                customer_value,
-            ],
-        })
-    )
+        "Giá trị": [
+            insurance_value,
+            customer_value,
+        ],
+    })
 
     total_payment = (
         payment_structure[
