@@ -6,6 +6,7 @@ from calculations import (
     calculate_target_plan,
     calculate_working_days,
 )
+
 from charts import (
     render_brand_section,
     render_daily_charts,
@@ -34,6 +35,7 @@ from styles import apply_global_style
 
 # ============================================================
 # HÀM ĐỊNH DẠNG BẢNG
+# HEADER XÁM NHẠT, DÒNG DỮ LIỆU TRẮNG
 # ============================================================
 
 def style_white_table(dataframe):
@@ -103,9 +105,7 @@ def style_white_table(dataframe):
 # ============================================================
 
 st.set_page_config(
-    page_title=(
-        "Dashboard DMS - Carpla Service"
-    ),
+    page_title="Dashboard DMS - Carpla Service",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -122,11 +122,7 @@ apply_global_style()
 # 3. LOAD DATA
 # ============================================================
 
-(
-    data_raw,
-    parts_data,
-    accessory_data,
-) = load_all_data(
+data_raw, parts_data, accessory_data = load_all_data(
     WORKSHOP_CONFIG
 )
 
@@ -156,21 +152,10 @@ if not selection["show_dashboard"]:
 # 6. SELECTED FILTERS
 # ============================================================
 
-selected_branch = (
-    selection["branch"]
-)
-
-selected_workshop = (
-    selection["workshop"]
-)
-
-year = int(
-    selection["year"]
-)
-
-month = int(
-    selection["month"]
-)
+selected_branch = selection["branch"]
+selected_workshop = selection["workshop"]
+year = int(selection["year"])
+month = int(selection["month"])
 
 
 # ============================================================
@@ -188,75 +173,39 @@ metrics = calculate_dashboard_metrics(
     targets=TARGETS,
 )
 
-# Dữ liệu file dịch vụ đã lọc
+# Dữ liệu dịch vụ đã lọc theo Ngày hóa đơn
 data = metrics["data"]
 
-# Dữ liệu đã ghép phụ tùng theo từng lệnh
-merged_data = metrics[
-    "merged_data"
-]
+# Dữ liệu đã ghép doanh thu phụ tùng theo từng lệnh
+merged_data = metrics["merged_data"]
 
-actual_ro = metrics[
-    "actual_ro"
-]
+actual_ro = metrics["actual_ro"]
 
-matched_orders = metrics[
-    "matched_orders"
-]
+matched_orders = metrics["matched_orders"]
+missing_orders = metrics["missing_orders"]
 
-missing_orders = metrics[
-    "missing_orders"
-]
+service_revenue = metrics["service_revenue"]
+parts_revenue = metrics["parts_revenue"]
+accessory_revenue = metrics["accessory_revenue"]
+actual_revenue = metrics["actual_revenue"]
 
-service_revenue = metrics[
-    "service_revenue"
-]
+total_after_tax = metrics["total_after_tax"]
 
-parts_revenue = metrics[
-    "parts_revenue"
-]
+target_ro = metrics["target_ro"]
+target_revenue = metrics["target_revenue"]
 
-accessory_revenue = metrics[
-    "accessory_revenue"
-]
-
-actual_revenue = metrics[
-    "actual_revenue"
-]
-
-total_after_tax = metrics[
-    "total_after_tax"
-]
-
-target_ro = metrics[
-    "target_ro"
-]
-
-target_revenue = metrics[
-    "target_revenue"
-]
-
-ro_rate = metrics[
-    "ro_rate"
-]
-
-revenue_rate = metrics[
-    "revenue_rate"
-]
+ro_rate = metrics["ro_rate"]
+revenue_rate = metrics["revenue_rate"]
 
 
 # ============================================================
 # 8. WARNING IF TARGET IS MISSING
 # ============================================================
 
-if (
-    target_ro == 0
-    and target_revenue == 0
-):
+if target_ro == 0 and target_revenue == 0:
     st.warning(
         f"Chưa thiết lập target cho Chi nhánh "
-        f"{selected_branch}, "
-        f"Xưởng {selected_workshop}, "
+        f"{selected_branch}, Xưởng {selected_workshop}, "
         f"tháng {month}/{year}."
     )
 
@@ -370,32 +319,25 @@ revenue_breakdown = pd.DataFrame(
 revenue_breakdown[
     "Giá trị hiển thị"
 ] = (
-    revenue_breakdown[
-        "Giá trị"
-    ]
+    revenue_breakdown["Giá trị"]
     .map(fmt_m)
 )
 
-revenue_breakdown[
-    "Tỷ trọng"
-] = [
+revenue_breakdown["Tỷ trọng"] = [
     (
-        service_revenue
-        / actual_revenue
+        service_revenue / actual_revenue
         if actual_revenue
         else 0
     ),
 
     (
-        parts_revenue
-        / actual_revenue
+        parts_revenue / actual_revenue
         if actual_revenue
         else 0
     ),
 
     (
-        accessory_revenue
-        / actual_revenue
+        accessory_revenue / actual_revenue
         if actual_revenue
         else 0
     ),
@@ -410,9 +352,7 @@ revenue_breakdown[
 revenue_breakdown[
     "Tỷ trọng"
 ] = (
-    revenue_breakdown[
-        "Tỷ trọng"
-    ]
+    revenue_breakdown["Tỷ trọng"]
     .map(
         lambda value:
         f"{value:.0%}"
@@ -451,7 +391,10 @@ st.dataframe(
 # Quan trọng:
 # Phải truyền merged_data.
 #
-# Không truyền data vì data chưa có:
+# merged_data đã có:
+# - ngay_hoa_don
+# - ro
+# - doanh_thu_truoc_thue
 # - doanh_thu_phu_tung
 # - doanh_thu_theo_lenh
 # ============================================================
@@ -469,6 +412,10 @@ render_daily_charts(
 
 # ============================================================
 # 14. BRAND SECTION
+# ============================================================
+#
+# Phần Hãng xe hiện vẫn giữ logic cũ:
+# dùng Tổng trước thuế trong file dịch vụ.
 # ============================================================
 
 render_brand_section(
@@ -509,44 +456,32 @@ with st.expander(
 
     st.write(
         "Doanh thu dịch vụ:",
-        fmt_m(
-            service_revenue
-        ),
+        fmt_m(service_revenue),
     )
 
     st.write(
         "Doanh thu phụ tùng:",
-        fmt_m(
-            parts_revenue
-        ),
+        fmt_m(parts_revenue),
     )
 
     st.write(
         "Doanh thu phụ kiện:",
-        fmt_m(
-            accessory_revenue
-        ),
+        fmt_m(accessory_revenue),
     )
 
     st.write(
         "Tổng doanh thu:",
-        fmt_m(
-            actual_revenue
-        ),
+        fmt_m(actual_revenue),
     )
 
     st.write(
         "Tổng tiền sau thuế từ lệnh sửa chữa:",
-        fmt_m(
-            total_after_tax
-        ),
+        fmt_m(total_after_tax),
     )
 
     st.write(
         "Tổng cơ cấu nguồn thanh toán:",
-        fmt_m(
-            total_payment
-        ),
+        fmt_m(total_payment),
     )
 
     st.write(
