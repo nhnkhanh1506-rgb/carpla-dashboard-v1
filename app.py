@@ -215,7 +215,9 @@ render_daily_charts(
     workshop=selected_workshop,
     target_ro=target_ro,
     target_revenue=target_revenue,
-    working_days=WORKING_DAYS,
+    working_days=working_day_info[
+        "total_working_days"
+    ],
 )
 
 render_brand_section(data=data)
