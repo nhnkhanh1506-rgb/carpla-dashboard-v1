@@ -6,7 +6,6 @@ from calculations import (
     calculate_target_plan,
     calculate_working_days,
 )
-
 from charts import (
     render_brand_section,
     render_daily_charts,
