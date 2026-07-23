@@ -612,6 +612,10 @@ def render_daily_charts(
         working_days=working_days,
     )
 
+    # ========================================================
+    # TÍNH CÁC CHỈ SỐ
+    # ========================================================
+
     total_ro = daily[
         "ro"
     ].sum()
@@ -630,34 +634,20 @@ def render_daily_charts(
         working_days,
     )
 
-    ro_vs_target = (
-        safe_div(
-            total_ro,
-            target_ro,
-        )
-        - 1
-    )
-
-    revenue_vs_target = (
-        safe_div(
-            total_revenue,
-            target_revenue,
-        )
-        - 1
-    )
-
     revenue_per_cpus = safe_div(
         total_revenue,
         total_ro,
     )
 
-    chart_column, side_column = (
-        st.columns(
-            [4.6, 1.25]
-        )
+    # ========================================================
+    # HÀNG 1: CPUS DAILY
+    # ========================================================
+
+    ro_chart_column, ro_kpi_column = st.columns(
+        [4.6, 1.25]
     )
 
-    with chart_column:
+    with ro_chart_column:
         ro_figure = build_ro_daily_chart(
             daily=daily,
             days=days,
@@ -669,6 +659,26 @@ def render_daily_charts(
             use_container_width=True,
         )
 
+    with ro_kpi_column:
+        render_mini_kpi(
+            "CPUS TB/NGÀY",
+            f"{actual_ro_average:.0f}",
+        )
+
+        render_mini_kpi(
+            "CPUS/NGÀY TARGET",
+            f"{target_ro_day:.0f}",
+        )
+
+    # ========================================================
+    # HÀNG 2: DOANH THU DAILY
+    # ========================================================
+
+    revenue_chart_column, revenue_kpi_column = st.columns(
+        [4.6, 1.25]
+    )
+
+    with revenue_chart_column:
         revenue_figure = (
             build_revenue_daily_chart(
                 daily=daily,
@@ -682,31 +692,11 @@ def render_daily_charts(
             use_container_width=True,
         )
 
-    with side_column:
+    with revenue_kpi_column:
         render_mini_kpi(
             "DT TB/CPUS",
             fmt_m(
                 revenue_per_cpus
-            ),
-        )
-
-        render_mini_kpi(
-            "CPUS TB/NGÀY",
-            f"{actual_ro_average:.0f}",
-        )
-
-        render_mini_kpi(
-            "CPUS TB/NGÀY TARGET",
-            f"{target_ro_day:.0f}",
-        )
-
-        render_mini_kpi(
-            "CPUS VS TARGET",
-            f"{total_ro:,.0f}",
-
-            (
-                f"Target: {target_ro:,.0f} | "
-                f"{ro_vs_target:.0%}"
             ),
         )
 
@@ -723,20 +713,6 @@ def render_daily_charts(
                 target_revenue_day
             ),
         )
-
-        render_mini_kpi(
-            "DOANH THU VS TARGET",
-            fmt_m0(
-                total_revenue
-            ),
-
-            (
-                f"Target: "
-                f"{fmt_m0(target_revenue)} | "
-                f"{revenue_vs_target:.0%}"
-            ),
-        )
-
 
 # ============================================================
 # HÃNG XE
