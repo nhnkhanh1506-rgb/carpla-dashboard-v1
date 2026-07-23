@@ -9,24 +9,25 @@ WORKSHOP_CONFIG = {
     "Phạm Văn Đồng": {
         "chi_nhanh": "Hà Nội",
 
-        # Doanh thu dịch vụ:
-        # Lấy cột "Tổng trước thuế" trong file lệnh sửa chữa
+        # File lệnh sửa chữa:
+        # - Dùng Ngày hóa đơn để xác định kỳ báo cáo
+        # - Dùng Số lệnh để xác định lượt xe
+        # - Dùng Tổng trước thuế để đối chiếu tổng doanh thu
         "service_file": Path(
             "hn_pvd_service_2026_07.xlsx"
         ),
 
-        # Doanh thu phụ tùng:
-        # Lấy cột "Doanh thu phụ tùng" tại dòng Tổng cộng
+        # File Bảng tổng hợp lệnh sửa chữa mới:
+        # - Có dữ liệu từ 01/06/2026 đến 15/07/2026
+        # - Không lọc theo Ngày quyết toán trong dashboard
+        # - Ghép với file lệnh sửa chữa theo Số lệnh
+        # - Lấy Doanh thu công việc và Doanh thu phụ tùng
         "parts_file": Path(
-            "hn_pvd_parts_2026_07.xlsx"
+            "summary_repair_orders.xlsx"
         ),
 
-        # Xưởng này hiện chưa có file lệnh phụ kiện
+        # Hiện tại xưởng chưa có file doanh thu phụ kiện
         "accessory_file": None,
-
-        # Kỳ dữ liệu của báo cáo phụ tùng
-        "parts_year": 2026,
-        "parts_month": 7,
     },
 }
 
@@ -43,9 +44,14 @@ TARGETS = {
 }
 
 
-# Số ngày làm việc dùng để tính trung bình/ngày
+# ============================================================
+# CẤU HÌNH CHUNG
+# ============================================================
+
+# Số ngày làm việc tiêu chuẩn
 WORKING_DAYS = 25
 
-
 # Logo trang chủ
-LOGO_FILE = Path("carpla_services_logo_hd.png")
+LOGO_FILE = Path(
+    "carpla_services_logo_hd.png"
+)
