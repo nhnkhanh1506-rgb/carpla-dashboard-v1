@@ -15,7 +15,6 @@ from charts import (
 
 from components import (
     fmt_m,
-    fmt_m0,
     render_dashboard_header,
     render_homepage,
     render_interactive_target_planner,
@@ -36,7 +35,6 @@ from styles import apply_global_style
 
 # ============================================================
 # HÀM ĐỊNH DẠNG BẢNG
-# HEADER XÁM NHẠT, DÒNG DỮ LIỆU TRẮNG
 # ============================================================
 
 def style_white_table(dataframe):
@@ -106,7 +104,9 @@ def style_white_table(dataframe):
 # ============================================================
 
 st.set_page_config(
-    page_title="Dashboard DMS - Carpla Service",
+    page_title=(
+        "Dashboard DMS - Carpla Service"
+    ),
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -123,7 +123,11 @@ apply_global_style()
 # 3. LOAD DATA
 # ============================================================
 
-data_raw, parts_data, accessory_data = load_all_data(
+(
+    data_raw,
+    parts_data,
+    accessory_data,
+) = load_all_data(
     WORKSHOP_CONFIG
 )
 
@@ -132,7 +136,7 @@ data_raw, parts_data, accessory_data = load_all_data(
 # 4. SIDEBAR FILTER
 # ============================================================
 
-selection = _sidebar(
+selection = render_sidebar(
     data_raw=data_raw
 )
 
@@ -142,7 +146,7 @@ selection = _sidebar(
 # ============================================================
 
 if not selection["show_dashboard"]:
-    _homepage(
+    render_homepage(
         logo_path=LOGO_FILE
     )
 
@@ -153,10 +157,21 @@ if not selection["show_dashboard"]:
 # 6. SELECTED FILTERS
 # ============================================================
 
-selected_branch = selection["branch"]
-selected_workshop = selection["workshop"]
-year = int(selection["year"])
-month = int(selection["month"])
+selected_branch = (
+    selection["branch"]
+)
+
+selected_workshop = (
+    selection["workshop"]
+)
+
+year = int(
+    selection["year"]
+)
+
+month = int(
+    selection["month"]
+)
 
 
 # ============================================================
@@ -174,32 +189,75 @@ metrics = calculate_dashboard_metrics(
     targets=TARGETS,
 )
 
+# Dữ liệu file dịch vụ đã lọc
 data = metrics["data"]
 
-actual_ro = metrics["actual_ro"]
+# Dữ liệu đã ghép phụ tùng theo từng lệnh
+merged_data = metrics[
+    "merged_data"
+]
 
-service_revenue = metrics["service_revenue"]
-parts_revenue = metrics["parts_revenue"]
-accessory_revenue = metrics["accessory_revenue"]
-actual_revenue = metrics["actual_revenue"]
+actual_ro = metrics[
+    "actual_ro"
+]
 
-total_after_tax = metrics["total_after_tax"]
+matched_orders = metrics[
+    "matched_orders"
+]
 
-target_ro = metrics["target_ro"]
-target_revenue = metrics["target_revenue"]
+missing_orders = metrics[
+    "missing_orders"
+]
 
-ro_rate = metrics["ro_rate"]
-revenue_rate = metrics["revenue_rate"]
+service_revenue = metrics[
+    "service_revenue"
+]
+
+parts_revenue = metrics[
+    "parts_revenue"
+]
+
+accessory_revenue = metrics[
+    "accessory_revenue"
+]
+
+actual_revenue = metrics[
+    "actual_revenue"
+]
+
+total_after_tax = metrics[
+    "total_after_tax"
+]
+
+target_ro = metrics[
+    "target_ro"
+]
+
+target_revenue = metrics[
+    "target_revenue"
+]
+
+ro_rate = metrics[
+    "ro_rate"
+]
+
+revenue_rate = metrics[
+    "revenue_rate"
+]
 
 
 # ============================================================
 # 8. WARNING IF TARGET IS MISSING
 # ============================================================
 
-if target_ro == 0 and target_revenue == 0:
+if (
+    target_ro == 0
+    and target_revenue == 0
+):
     st.warning(
         f"Chưa thiết lập target cho Chi nhánh "
-        f"{selected_branch}, Xưởng {selected_workshop}, "
+        f"{selected_branch}, "
+        f"Xưởng {selected_workshop}, "
         f"tháng {month}/{year}."
     )
 
@@ -208,7 +266,7 @@ if target_ro == 0 and target_revenue == 0:
 # 9. DASHBOARD HEADER
 # ============================================================
 
-_dashboard_header(
+render_dashboard_header(
     branch=selected_branch,
     workshop=selected_workshop,
     year=year,
@@ -220,7 +278,7 @@ _dashboard_header(
 # 10. TOP KPI CARDS
 # ============================================================
 
-_top_kpis(
+render_top_kpis(
     metrics
 )
 
@@ -235,7 +293,7 @@ working_day_info = calculate_working_days(
     data=data,
 )
 
-planner_result = _interactive_target_planner(
+render_interactive_target_planner(
     actual_ro=actual_ro,
     target_ro=target_ro,
     actual_revenue=actual_revenue,
@@ -313,25 +371,32 @@ revenue_breakdown = pd.DataFrame(
 revenue_breakdown[
     "Giá trị hiển thị"
 ] = (
-    revenue_breakdown["Giá trị"]
+    revenue_breakdown[
+        "Giá trị"
+    ]
     .map(fmt_m)
 )
 
-revenue_breakdown["Tỷ trọng"] = [
+revenue_breakdown[
+    "Tỷ trọng"
+] = [
     (
-        service_revenue / actual_revenue
+        service_revenue
+        / actual_revenue
         if actual_revenue
         else 0
     ),
 
     (
-        parts_revenue / actual_revenue
+        parts_revenue
+        / actual_revenue
         if actual_revenue
         else 0
     ),
 
     (
-        accessory_revenue / actual_revenue
+        accessory_revenue
+        / actual_revenue
         if actual_revenue
         else 0
     ),
@@ -346,7 +411,9 @@ revenue_breakdown["Tỷ trọng"] = [
 revenue_breakdown[
     "Tỷ trọng"
 ] = (
-    revenue_breakdown["Tỷ trọng"]
+    revenue_breakdown[
+        "Tỷ trọng"
+    ]
     .map(
         lambda value:
         f"{value:.0%}"
@@ -380,6 +447,14 @@ st.dataframe(
 
 # ============================================================
 # 13. DAILY CHARTS
+# ============================================================
+#
+# Quan trọng:
+# Phải truyền merged_data.
+#
+# Không truyền data vì data chưa có:
+# - doanh_thu_phu_tung
+# - doanh_thu_theo_lenh
 # ============================================================
 
 render_daily_charts(
@@ -419,33 +494,60 @@ with st.expander(
     "Kiểm tra đối chiếu tổng"
 ):
     st.write(
+        "Số lệnh theo Ngày hóa đơn:",
+        f"{actual_ro:,.0f}",
+    )
+
+    st.write(
+        "Số lệnh tìm thấy trong Bảng tổng hợp:",
+        f"{matched_orders:,.0f}",
+    )
+
+    st.write(
+        "Số lệnh chưa tìm thấy:",
+        f"{missing_orders:,.0f}",
+    )
+
+    st.write(
         "Doanh thu dịch vụ:",
-        fmt_m(service_revenue),
+        fmt_m(
+            service_revenue
+        ),
     )
 
     st.write(
         "Doanh thu phụ tùng:",
-        fmt_m(parts_revenue),
+        fmt_m(
+            parts_revenue
+        ),
     )
 
     st.write(
         "Doanh thu phụ kiện:",
-        fmt_m(accessory_revenue),
+        fmt_m(
+            accessory_revenue
+        ),
     )
 
     st.write(
         "Tổng doanh thu:",
-        fmt_m(actual_revenue),
+        fmt_m(
+            actual_revenue
+        ),
     )
 
     st.write(
         "Tổng tiền sau thuế từ lệnh sửa chữa:",
-        fmt_m(total_after_tax),
+        fmt_m(
+            total_after_tax
+        ),
     )
 
     st.write(
         "Tổng cơ cấu nguồn thanh toán:",
-        fmt_m(total_payment),
+        fmt_m(
+            total_payment
+        ),
     )
 
     st.write(
@@ -467,4 +569,29 @@ with st.expander(
     st.dataframe(
         data,
         use_container_width=True,
+    )
+
+
+with st.expander(
+    "Xem dữ liệu lệnh đã ghép phụ tùng"
+):
+    display_columns = [
+        column
+        for column in [
+            "ro",
+            "ngay_hoa_don",
+            "doanh_thu_truoc_thue",
+            "doanh_thu_phu_tung",
+            "doanh_thu_theo_lenh",
+            "tim_thay_trong_bang_tong_hop",
+        ]
+        if column in merged_data.columns
+    ]
+
+    st.dataframe(
+        merged_data[
+            display_columns
+        ],
+        use_container_width=True,
+        hide_index=True,
     )
