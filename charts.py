@@ -595,7 +595,7 @@ def render_daily_charts(
     working_days,
 ):
     st.markdown(
-        "## 2. Lượt xe & doanh thu theo ngày"
+        "## 2. Lượt xe & Doanh thu theo ngày"
     )
 
     (
