@@ -430,14 +430,14 @@ div[data-baseweb="popover"] li:hover span {{
 .mini-kpi {{
     background: {CARD_BG};
     border-radius: 18px;
-    padding: 18px;
+    padding: 14px 18px;
     border: 1px solid {CARD_BORDER};
 
     box-shadow:
         0 8px 22px
         rgba(15, 23, 42, 0.05);
 
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }}
 
 .mini-kpi-title {{
