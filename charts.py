@@ -458,13 +458,11 @@ def build_revenue_daily_chart(
             name="Doanh thu/ngày",
 
             text=[
-                f"{value:.0f}M"
-                if value > 0
-                else ""
-                for value in daily[
-                    "revenue_m"
-                ]
-            ],
+    f"{value:.1f}M"
+    if value > 0
+    else ""
+    for value in daily["revenue_m"]
+],
 
             textposition="outside",
 
