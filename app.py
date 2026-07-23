@@ -132,7 +132,7 @@ data_raw, parts_data, accessory_data = load_all_data(
 # 4. SIDEBAR FILTER
 # ============================================================
 
-selection = render_sidebar(
+selection = _sidebar(
     data_raw=data_raw
 )
 
@@ -142,7 +142,7 @@ selection = render_sidebar(
 # ============================================================
 
 if not selection["show_dashboard"]:
-    render_homepage(
+    _homepage(
         logo_path=LOGO_FILE
     )
 
@@ -208,7 +208,7 @@ if target_ro == 0 and target_revenue == 0:
 # 9. DASHBOARD HEADER
 # ============================================================
 
-render_dashboard_header(
+_dashboard_header(
     branch=selected_branch,
     workshop=selected_workshop,
     year=year,
@@ -220,7 +220,7 @@ render_dashboard_header(
 # 10. TOP KPI CARDS
 # ============================================================
 
-render_top_kpis(
+_top_kpis(
     metrics
 )
 
@@ -235,7 +235,7 @@ working_day_info = calculate_working_days(
     data=data,
 )
 
-planner_result = render_interactive_target_planner(
+planner_result = _interactive_target_planner(
     actual_ro=actual_ro,
     target_ro=target_ro,
     actual_revenue=actual_revenue,
@@ -383,7 +383,7 @@ st.dataframe(
 # ============================================================
 
 render_daily_charts(
-    data=data,
+    data=merged_data,
     year=year,
     month=month,
     workshop=selected_workshop,
