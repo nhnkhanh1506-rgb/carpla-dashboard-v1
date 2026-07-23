@@ -5,7 +5,12 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
-from components import fmt_m, fmt_m0, render_mini_kpi
+from components import (
+    fmt_m,
+    fmt_m0,
+    render_mini_kpi,
+)
+
 from styles import (
     PRIMARY_BLUE,
     PRIMARY_BLUE_LIGHT,
@@ -31,7 +36,7 @@ def safe_div(a, b):
 
 
 # ============================================================
-# ĐỊNH DẠNG BẢNG: HEADER XÁM, DÒNG DỮ LIỆU TRẮNG
+# ĐỊNH DẠNG BẢNG
 # ============================================================
 
 def style_white_table(dataframe):
@@ -50,19 +55,43 @@ def style_white_table(dataframe):
                 {
                     "selector": "thead th",
                     "props": [
-                        ("background-color", "#F3F4F6"),
-                        ("color", "#6B7280"),
-                        ("font-weight", "600"),
-                        ("border-color", "#E5E7EB"),
-                        ("text-align", "left"),
+                        (
+                            "background-color",
+                            "#F3F4F6",
+                        ),
+                        (
+                            "color",
+                            "#6B7280",
+                        ),
+                        (
+                            "font-weight",
+                            "600",
+                        ),
+                        (
+                            "border-color",
+                            "#E5E7EB",
+                        ),
+                        (
+                            "text-align",
+                            "left",
+                        ),
                     ],
                 },
                 {
                     "selector": "tbody td",
                     "props": [
-                        ("background-color", "#FFFFFF"),
-                        ("color", "#1F2937"),
-                        ("border-color", "#E5E7EB"),
+                        (
+                            "background-color",
+                            "#FFFFFF",
+                        ),
+                        (
+                            "color",
+                            "#1F2937",
+                        ),
+                        (
+                            "border-color",
+                            "#E5E7EB",
+                        ),
                     ],
                 },
             ],
@@ -96,19 +125,62 @@ def prepare_daily_data(
         )
     )
 
+    daily_source = data.dropna(
+        subset=["ngay_hoa_don"]
+    ).copy()
+
+    # --------------------------------------------------------
+    # Nếu đã có doanh thu đầy đủ theo từng lệnh,
+    # sử dụng doanh_thu_theo_lenh.
+    #
+    # Fallback về doanh_thu_truoc_thue để app không lỗi
+    # nếu dữ liệu cũ chưa có cột mới.
+    # --------------------------------------------------------
+
+    if (
+        "doanh_thu_theo_lenh"
+        not in daily_source.columns
+    ):
+        daily_source[
+            "doanh_thu_theo_lenh"
+        ] = daily_source[
+            "doanh_thu_truoc_thue"
+        ]
+
+    daily_source[
+        "doanh_thu_theo_lenh"
+    ] = pd.to_numeric(
+        daily_source[
+            "doanh_thu_theo_lenh"
+        ],
+        errors="coerce",
+    ).fillna(0)
+
+    # --------------------------------------------------------
+    # Nhóm dữ liệu theo Ngày hóa đơn
+    # --------------------------------------------------------
+
     daily = (
-        data.dropna(
-            subset=["ngay_hoa_don"]
-        )
+        daily_source
         .assign(
             day=lambda dataframe:
-            dataframe["ngay_hoa_don"].dt.day
+            dataframe[
+                "ngay_hoa_don"
+            ].dt.day
         )
         .groupby("day")
         .agg(
-            ro=("ro", "nunique"),
+            # CPUS Daily giữ nguyên
+            ro=(
+                "ro",
+                "nunique",
+            ),
+
+            # Doanh thu Daily:
+            # Tổng trước thuế từng lệnh
+            # + Phụ tùng của từng lệnh
             revenue=(
-                "doanh_thu_truoc_thue",
+                "doanh_thu_theo_lenh",
                 "sum",
             ),
         )
@@ -277,7 +349,9 @@ def build_ro_daily_chart(
                 f"{value:.0f}%"
                 if value > 0
                 else ""
-                for value in daily["cum_ro_pct"]
+                for value in daily[
+                    "cum_ro_pct"
+                ]
             ],
 
             textposition="bottom center",
@@ -392,7 +466,9 @@ def build_revenue_daily_chart(
                 f"{value:.0f}M"
                 if value > 0
                 else ""
-                for value in daily["revenue_m"]
+                for value in daily[
+                    "revenue_m"
+                ]
             ],
 
             textposition="outside",
@@ -408,7 +484,9 @@ def build_revenue_daily_chart(
     figure.add_trace(
         go.Scatter(
             x=daily["day"],
-            y=daily["cum_revenue_pct"],
+            y=daily[
+                "cum_revenue_pct"
+            ],
 
             mode="lines+markers+text",
 
@@ -432,8 +510,9 @@ def build_revenue_daily_chart(
                 f"{value:.0f}%"
                 if value > 0
                 else ""
-                for value
-                in daily["cum_revenue_pct"]
+                for value in daily[
+                    "cum_revenue_pct"
+                ]
             ],
 
             textposition="bottom center",
@@ -540,11 +619,13 @@ def render_daily_charts(
         working_days=working_days,
     )
 
-    total_ro = daily["ro"].sum()
+    total_ro = daily[
+        "ro"
+    ].sum()
 
-    total_revenue = (
-        daily["revenue"].sum()
-    )
+    total_revenue = daily[
+        "revenue"
+    ].sum()
 
     actual_ro_average = safe_div(
         total_ro,
@@ -577,8 +658,10 @@ def render_daily_charts(
         total_ro,
     )
 
-    chart_column, side_column = st.columns(
-        [4.6, 1.25]
+    chart_column, side_column = (
+        st.columns(
+            [4.6, 1.25]
+        )
     )
 
     with chart_column:
@@ -609,7 +692,9 @@ def render_daily_charts(
     with side_column:
         render_mini_kpi(
             "DT TB/CPUS",
-            fmt_m(revenue_per_cpus),
+            fmt_m(
+                revenue_per_cpus
+            ),
         )
 
         render_mini_kpi(
@@ -648,7 +733,9 @@ def render_daily_charts(
 
         render_mini_kpi(
             "DOANH THU VS TARGET",
-            fmt_m0(total_revenue),
+            fmt_m0(
+                total_revenue
+            ),
 
             (
                 f"Target: "
@@ -663,10 +750,14 @@ def render_daily_charts(
 # ============================================================
 
 def render_brand_section(data):
-    st.markdown("## 3. Hãng xe")
+    st.markdown(
+        "## 3. Hãng xe"
+    )
 
     brand_summary = (
-        data.groupby("hang_xe")
+        data.groupby(
+            "hang_xe"
+        )
         .agg(
             so_ro=(
                 "ro",
@@ -686,14 +777,20 @@ def render_brand_section(data):
     )
 
     total_ro_brand = (
-        brand_summary["so_ro"].sum()
+        brand_summary[
+            "so_ro"
+        ].sum()
     )
 
     total_revenue_brand = (
-        brand_summary["doanh_thu"].sum()
+        brand_summary[
+            "doanh_thu"
+        ].sum()
     )
 
-    brand_summary["ty_trong_ro"] = (
+    brand_summary[
+        "ty_trong_ro"
+    ] = (
         brand_summary["so_ro"]
         / total_ro_brand
         if total_ro_brand
@@ -709,15 +806,24 @@ def render_brand_section(data):
         else 0
     )
 
-    brand_display = brand_summary.copy()
-
-    brand_display["doanh_thu"] = (
-        brand_display["doanh_thu"]
-        .map(fmt_m)
+    brand_display = (
+        brand_summary.copy()
     )
 
-    brand_display["ty_trong_ro"] = (
-        brand_display["ty_trong_ro"]
+    brand_display[
+        "doanh_thu"
+    ] = (
+        brand_display[
+            "doanh_thu"
+        ].map(fmt_m)
+    )
+
+    brand_display[
+        "ty_trong_ro"
+    ] = (
+        brand_display[
+            "ty_trong_ro"
+        ]
         .map(
             lambda value:
             f"{value:.0%}"
@@ -736,20 +842,22 @@ def render_brand_section(data):
         )
     )
 
-    brand_display = brand_display.rename(
-        columns={
-            "hang_xe": "Hãng xe",
-            "so_ro": "Số RO",
+    brand_display = (
+        brand_display.rename(
+            columns={
+                "hang_xe": "Hãng xe",
+                "so_ro": "Số RO",
 
-            "doanh_thu":
-                "Doanh thu trước thuế",
+                "doanh_thu":
+                    "Doanh thu trước thuế",
 
-            "ty_trong_ro":
-                "Tỷ trọng RO",
+                "ty_trong_ro":
+                    "Tỷ trọng RO",
 
-            "ty_trong_doanh_thu":
-                "Tỷ trọng doanh thu",
-        }
+                "ty_trong_doanh_thu":
+                    "Tỷ trọng doanh thu",
+            }
+        )
     )
 
     total_row = pd.DataFrame({
@@ -782,8 +890,10 @@ def render_brand_section(data):
         ignore_index=True,
     )
 
-    left_column, right_column = st.columns(
-        [1.35, 1]
+    left_column, right_column = (
+        st.columns(
+            [1.35, 1]
+        )
     )
 
     with left_column:
@@ -795,7 +905,9 @@ def render_brand_section(data):
         )
 
         st.dataframe(
-            style_white_table(brand_display),
+            style_white_table(
+                brand_display
+            ),
             use_container_width=True,
             hide_index=True,
         )
@@ -818,14 +930,20 @@ def render_brand_section(data):
             .copy()
         )
 
-        brand_chart["doanh_thu_m"] = (
-            brand_chart["doanh_thu"]
+        brand_chart[
+            "doanh_thu_m"
+        ] = (
+            brand_chart[
+                "doanh_thu"
+            ]
             / 1_000_000
         )
 
-        color_list = MUTED_BAR_COLORS[
-            :len(brand_chart)
-        ]
+        color_list = (
+            MUTED_BAR_COLORS[
+                :len(brand_chart)
+            ]
+        )
 
         figure = go.Figure()
 
@@ -938,25 +1056,31 @@ def render_payment_section(data):
     )
 
     insurance_value = (
-        data["bao_hiem_chi_tra"].sum()
+        data[
+            "bao_hiem_chi_tra"
+        ].sum()
     )
 
     customer_value = (
-        data["tong_tien_sau_thue"].sum()
+        data[
+            "tong_tien_sau_thue"
+        ].sum()
         - insurance_value
     )
 
-    payment_structure = pd.DataFrame({
-        "Nguồn thanh toán": [
-            "Bảo hiểm chi trả",
-            "Khách hàng chi trả",
-        ],
+    payment_structure = (
+        pd.DataFrame({
+            "Nguồn thanh toán": [
+                "Bảo hiểm chi trả",
+                "Khách hàng chi trả",
+            ],
 
-        "Giá trị": [
-            insurance_value,
-            customer_value,
-        ],
-    })
+            "Giá trị": [
+                insurance_value,
+                customer_value,
+            ],
+        })
+    )
 
     total_payment = (
         payment_structure[
@@ -964,8 +1088,12 @@ def render_payment_section(data):
         ].sum()
     )
 
-    payment_structure["Tỷ trọng"] = (
-        payment_structure["Giá trị"]
+    payment_structure[
+        "Tỷ trọng"
+    ] = (
+        payment_structure[
+            "Giá trị"
+        ]
         .apply(
             lambda value:
             safe_div(
@@ -979,13 +1107,21 @@ def render_payment_section(data):
         payment_structure.copy()
     )
 
-    payment_display["Giá trị"] = (
-        payment_display["Giá trị"]
+    payment_display[
+        "Giá trị"
+    ] = (
+        payment_display[
+            "Giá trị"
+        ]
         .map(fmt_m)
     )
 
-    payment_display["Tỷ trọng"] = (
-        payment_display["Tỷ trọng"]
+    payment_display[
+        "Tỷ trọng"
+    ] = (
+        payment_display[
+            "Tỷ trọng"
+        ]
         .map(
             lambda value:
             f"{value:.2%}"
@@ -998,7 +1134,9 @@ def render_payment_section(data):
         ],
 
         "Giá trị": [
-            fmt_m(total_payment)
+            fmt_m(
+                total_payment
+            )
         ],
 
         "Tỷ trọng": [
@@ -1014,8 +1152,10 @@ def render_payment_section(data):
         ignore_index=True,
     )
 
-    left_column, right_column = st.columns(
-        [1, 1]
+    left_column, right_column = (
+        st.columns(
+            [1, 1]
+        )
     )
 
     with left_column:
@@ -1027,7 +1167,9 @@ def render_payment_section(data):
         )
 
         st.dataframe(
-            style_white_table(payment_display),
+            style_white_table(
+                payment_display
+            ),
             use_container_width=True,
             hide_index=True,
         )
@@ -1063,7 +1205,10 @@ def render_payment_section(data):
                     ),
 
                     textinfo="none",
-texttemplate="%{percent:.0%}",
+
+                    texttemplate=(
+                        "%{percent:.0%}"
+                    ),
 
                     textfont=dict(
                         size=15,
