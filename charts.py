@@ -462,7 +462,7 @@ def build_revenue_daily_chart(
 
             textfont=dict(
                 color=BAR_LABEL_COLOR,
-                size=18,
+                size=14,
             ),
 
             constraintext="none",
@@ -522,7 +522,7 @@ def build_revenue_daily_chart(
         paper_bgcolor=DARK_PANEL,
         plot_bgcolor=DARK_PANEL,
 
-        uniformtext_minsize=18,
+        uniformtext_minsize=14,
         uniformtext_mode="show",
 
         font=dict(
