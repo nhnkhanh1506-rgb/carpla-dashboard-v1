@@ -28,20 +28,20 @@ DARK_GRID = "rgba(255,255,255,0.10)"
 WHITE = "#F8FAFC"
 
 MUTED_BAR_COLORS = [
-    "#335C99",
-    "#426AA4",
-    "#5278AF",
-    "#6185BA",
-    "#7193C4",
-    "#80A0CE",
-    "#90ADD7",
-    "#9FB9DF",
-    "#AFC6E7",
-    "#BED2EE",
+    "#4BC58F",
+    "#65CFA1",
+    "#7FD8B2",
+    "#99E0C2",
+    "#A2B1BA",
+    "#B2BEC6",
+    "#C1C9CF",
+    "#D0D4D8",
+    "#F29A73",
+    "#F78555",
 ]
 
-DONUT_MAIN = "#3C64A6"
-DONUT_SECOND = "#9CC0DF"
+DONUT_MAIN = "#4BC58F"
+DONUT_SECOND = "#F78555"
 
 
 # ============================================================
