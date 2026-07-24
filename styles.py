@@ -865,6 +865,41 @@ div[data-testid="stPlotlyChart"] > div {{
 }}
 
 
+/* =========================================================
+   DAILY KPI COLORS
+   2 CPUS cards: yellow family
+   3 Revenue cards: orange / peach family
+   ========================================================= */
+
+.st-key-ro_daily_kpi_group .mini-kpi {{
+    background: #FFEEA5 !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 8px 22px rgba(254, 221, 101, 0.16) !important;
+}}
+
+.st-key-ro_daily_kpi_group .mini-kpi-title {{
+    color: #7A5700 !important;
+}}
+
+.st-key-ro_daily_kpi_group .mini-kpi-value {{
+    color: #1E2F6E !important;
+}}
+
+.st-key-revenue_daily_kpi_group .mini-kpi {{
+    background: #FFEBD5 !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 8px 22px rgba(254, 158, 44, 0.14) !important;
+}}
+
+.st-key-revenue_daily_kpi_group .mini-kpi-title {{
+    color: #984000 !important;
+}}
+
+.st-key-revenue_daily_kpi_group .mini-kpi-value {{
+    color: #1E2F6E !important;
+}}
+
+
 </style>
 """,
         unsafe_allow_html=True,
