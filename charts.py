@@ -1300,17 +1300,25 @@ def render_payment_section(data):
                 ),
             ),
 
-            paper_bgcolor="white",
-            plot_bgcolor="white",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
 
             font=dict(
                 color="#475467",
             ),
         )
 
-        st.plotly_chart(
-            figure,
-            use_container_width=True,
+        payment_chart_card = st.container(
+            key="payment_donut_card"
         )
+
+        with payment_chart_card:
+            st.plotly_chart(
+                figure,
+                use_container_width=True,
+                config={
+                    "displayModeBar": False,
+                },
+            )
 
     return total_payment
