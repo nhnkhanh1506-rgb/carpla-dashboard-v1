@@ -1011,49 +1011,66 @@ def render_payment_section(data):
         "## 4. Cơ cấu nguồn thanh toán"
     )
 
-    insurance_value = (
-        data[
-            "bao_hiem_chi_tra"
-        ].sum()
-    )
+    required_columns = [
+        "khach_hang_chi_tra",
+        "bao_hiem_chi_tra",
+    ]
 
-    customer_value = (
-        data[
-            "tong_tien_sau_thue"
-        ].sum()
-        - insurance_value
-    )
+    missing_columns = [
+        column
+        for column in required_columns
+        if column not in data.columns
+    ]
 
-    payment_structure = pd.DataFrame({
-        "Nguồn thanh toán": [
-            "Bảo hiểm chi trả",
-            "Khách hàng chi trả",
-        ],
+    if missing_columns:
+        st.error(
+            "Thiếu cột nguồn thanh toán: "
+            + ", ".join(missing_columns)
+        )
+        return 0
 
-        "Giá trị": [
-            insurance_value,
-            customer_value,
-        ],
-    })
+    # ========================================================
+    # LẤY TRỰC TIẾP TỪ FILE LỆNH SỬA CHỮA
+    # ========================================================
+
+    customer_value = pd.to_numeric(
+        data["khach_hang_chi_tra"],
+        errors="coerce",
+    ).fillna(0).sum()
+
+    insurance_value = pd.to_numeric(
+        data["bao_hiem_chi_tra"],
+        errors="coerce",
+    ).fillna(0).sum()
 
     total_payment = (
-        payment_structure[
-            "Giá trị"
-        ].sum()
+        customer_value
+        + insurance_value
+    )
+
+    payment_structure = pd.DataFrame(
+        {
+            "Nguồn thanh toán": [
+                "Bảo hiểm chi trả",
+                "Khách hàng chi trả",
+            ],
+
+            "Giá trị": [
+                insurance_value,
+                customer_value,
+            ],
+        }
     )
 
     payment_structure[
         "Tỷ trọng"
-    ] = (
-        payment_structure[
-            "Giá trị"
-        ]
-        .apply(
-            lambda value:
-            safe_div(
-                value,
-                total_payment,
-            )
+    ] = payment_structure[
+        "Giá trị"
+    ].apply(
+        lambda value:
+        safe_div(
+            value,
+            total_payment,
         )
     )
 
@@ -1063,40 +1080,36 @@ def render_payment_section(data):
 
     payment_display[
         "Giá trị"
-    ] = (
-        payment_display[
-            "Giá trị"
-        ]
-        .map(fmt_m)
-    )
+    ] = payment_display[
+        "Giá trị"
+    ].map(fmt_m)
 
     payment_display[
         "Tỷ trọng"
-    ] = (
-        payment_display[
-            "Tỷ trọng"
-        ]
-        .map(
-            lambda value:
-            f"{value:.2%}"
-        )
+    ] = payment_display[
+        "Tỷ trọng"
+    ].map(
+        lambda value:
+        f"{value:.2%}"
     )
 
-    total_row = pd.DataFrame({
-        "Nguồn thanh toán": [
-            "TỔNG"
-        ],
+    total_row = pd.DataFrame(
+        {
+            "Nguồn thanh toán": [
+                "TỔNG"
+            ],
 
-        "Giá trị": [
-            fmt_m(
-                total_payment
-            )
-        ],
+            "Giá trị": [
+                fmt_m(
+                    total_payment
+                )
+            ],
 
-        "Tỷ trọng": [
-            "100.00%"
-        ],
-    })
+            "Tỷ trọng": [
+                "100.00%"
+            ],
+        }
+    )
 
     payment_display = pd.concat(
         [
@@ -1160,15 +1173,6 @@ def render_payment_section(data):
 
                     textinfo="none",
 
-                    texttemplate=(
-                        "%{percent:.0%}"
-                    ),
-
-                    textfont=dict(
-                        size=15,
-                        color="white",
-                    ),
-
                     domain=dict(
                         x=[0.08, 0.78],
                         y=[0.10, 0.90],
@@ -1177,7 +1181,7 @@ def render_payment_section(data):
                     hovertemplate=(
                         "<b>%{label}</b><br>"
                         "Giá trị: %{value:,.0f}<br>"
-                        "Tỷ trọng: %{percent:.0%}"
+                        "Tỷ trọng: %{percent:.2%}"
                         "<extra></extra>"
                     ),
                 )
