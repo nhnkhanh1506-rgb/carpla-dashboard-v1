@@ -24,6 +24,11 @@ from styles import (
     CUMULATIVE_LINE_COLOR,
     CUMULATIVE_MARKER_COLOR,
     CUMULATIVE_MARKER_BORDER,
+    DAILY_CHART_BG,
+    DAILY_CHART_GRID,
+    DAILY_CHART_TEXT,
+    DAILY_CHART_TITLE,
+    DAILY_CHART_AXIS,
     DARK_PANEL,
     DARK_GRID,
     WHITE,
@@ -344,7 +349,7 @@ def build_ro_daily_chart(
 
             textfont=dict(
                 size=10,
-                color=PCT_TEXT_COLOR,
+                color=DAILY_CHART_TEXT,
             ),
 
             name="% đạt lũy kế",
@@ -353,13 +358,13 @@ def build_ro_daily_chart(
     )
 
     figure.update_layout(
-        template="plotly_dark",
+        template="simple_white",
         height=370,
-        paper_bgcolor=DARK_PANEL,
-        plot_bgcolor=DARK_PANEL,
+        paper_bgcolor=DAILY_CHART_BG,
+        plot_bgcolor=DAILY_CHART_BG,
 
         font=dict(
-            color=WHITE,
+            color=DAILY_CHART_TEXT,
         ),
 
         margin=dict(
@@ -379,7 +384,7 @@ def build_ro_daily_chart(
             x=0.5,
             font=dict(
                 size=19,
-                color=WHITE,
+                color=DAILY_CHART_TITLE,
             ),
         ),
     )
@@ -388,14 +393,15 @@ def build_ro_daily_chart(
         tickmode="array",
         tickvals=days,
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
-        linecolor="rgba(255,255,255,0.22)",
+        color=DAILY_CHART_AXIS,
+        linecolor="#D1D5DB",
+        zeroline=False,
     )
 
     figure.update_yaxes(
         showgrid=True,
-        gridcolor=DARK_GRID,
-        color="rgba(248,250,252,0.85)",
+        gridcolor=DAILY_CHART_GRID,
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=False,
     )
@@ -404,7 +410,7 @@ def build_ro_daily_chart(
         range=[0, 300],
         ticksuffix="%",
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=True,
     )
@@ -504,7 +510,7 @@ def build_revenue_daily_chart(
 
             textfont=dict(
                 size=10,
-                color=PCT_TEXT_COLOR,
+                color=DAILY_CHART_TEXT,
             ),
 
             name="% đạt lũy kế",
@@ -513,13 +519,13 @@ def build_revenue_daily_chart(
     )
 
     figure.update_layout(
-        template="plotly_dark",
+        template="simple_white",
         height=370,
-        paper_bgcolor=DARK_PANEL,
-        plot_bgcolor=DARK_PANEL,
+        paper_bgcolor=DAILY_CHART_BG,
+        plot_bgcolor=DAILY_CHART_BG,
 
         font=dict(
-            color=WHITE,
+            color=DAILY_CHART_TEXT,
         ),
 
         margin=dict(
@@ -539,7 +545,7 @@ def build_revenue_daily_chart(
             x=0.5,
             font=dict(
                 size=19,
-                color=WHITE,
+                color=DAILY_CHART_TITLE,
             ),
         ),
     )
@@ -548,14 +554,15 @@ def build_revenue_daily_chart(
         tickmode="array",
         tickvals=days,
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
-        linecolor="rgba(255,255,255,0.22)",
+        color=DAILY_CHART_AXIS,
+        linecolor="#D1D5DB",
+        zeroline=False,
     )
 
     figure.update_yaxes(
         showgrid=True,
-        gridcolor=DARK_GRID,
-        color="rgba(248,250,252,0.85)",
+        gridcolor=DAILY_CHART_GRID,
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=False,
     )
@@ -564,7 +571,7 @@ def build_revenue_daily_chart(
         range=[0, 300],
         ticksuffix="%",
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=True,
     )
