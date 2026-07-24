@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 
 from components import (
     fmt_m,
+    render_mini_kpi,
 )
 
 from styles import (
@@ -16,18 +17,6 @@ from styles import (
     LINE_BLUE_SOFT,
     PCT_TEXT_COLOR,
     BAR_LABEL_COLOR,
-    CPUS_BAR_COLOR,
-    CPUS_BAR_BORDER,
-    REVENUE_BAR_COLOR,
-    REVENUE_BAR_BORDER,
-    CUMULATIVE_LINE_COLOR,
-    CUMULATIVE_MARKER_COLOR,
-    CUMULATIVE_MARKER_BORDER,
-    DAILY_CHART_BG,
-    DAILY_CHART_GRID,
-    DAILY_CHART_TEXT,
-    DAILY_CHART_TITLE,
-    DAILY_CHART_AXIS,
     DARK_PANEL,
     DARK_GRID,
     WHITE,
@@ -43,55 +32,6 @@ from styles import (
 
 def safe_div(a, b):
     return a / b if b else 0
-
-
-def render_colored_mini_kpi(
-    title,
-    value,
-    background_color,
-    title_color,
-):
-    st.markdown(
-        f"""
-        <div
-            class="mini-kpi"
-            style="
-                background: {background_color} !important;
-                border: none !important;
-                border-radius: 18px;
-                padding: 14px 18px;
-                box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
-                margin-bottom: 10px;
-            "
-        >
-            <div
-                class="mini-kpi-title"
-                style="
-                    font-size: 13px;
-                    font-weight: 800;
-                    color: {title_color} !important;
-                    text-transform: uppercase;
-                    margin-bottom: 8px;
-                "
-            >
-                {title}
-            </div>
-
-            <div
-                class="mini-kpi-value"
-                style="
-                    font-size: 30px;
-                    font-weight: 900;
-                    color: #0F172A !important;
-                    margin-bottom: 10px;
-                "
-            >
-                {value}
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
 
 # ============================================================
@@ -334,9 +274,9 @@ def build_ro_daily_chart(
             y=daily["ro"],
 
             marker=dict(
-                color=CPUS_BAR_COLOR,
+                color=PRIMARY_BLUE,
                 line=dict(
-                    color=CPUS_BAR_BORDER,
+                    color=PRIMARY_BLUE_LIGHT,
                     width=1,
                 ),
             ),
@@ -370,16 +310,16 @@ def build_ro_daily_chart(
             mode="lines+markers+text",
 
             line=dict(
-                color=CUMULATIVE_LINE_COLOR,
-                width=3,
+                color=LINE_BLUE,
+                width=2.5,
                 dash="dot",
             ),
 
             marker=dict(
-                size=7,
-                color=CUMULATIVE_MARKER_COLOR,
+                size=6,
+                color=LINE_BLUE_SOFT,
                 line=dict(
-                    color=CUMULATIVE_MARKER_BORDER,
+                    color="#D7EAFE",
                     width=1,
                 ),
             ),
@@ -397,7 +337,7 @@ def build_ro_daily_chart(
 
             textfont=dict(
                 size=10,
-                color=DAILY_CHART_TEXT,
+                color=PCT_TEXT_COLOR,
             ),
 
             name="% đạt lũy kế",
@@ -406,20 +346,13 @@ def build_ro_daily_chart(
     )
 
     figure.update_layout(
-        template="simple_white",
+        template="plotly_dark",
         height=370,
-        paper_bgcolor=DAILY_CHART_BG,
-        plot_bgcolor=DAILY_CHART_BG,
-        hoverlabel=dict(
-            bgcolor="#FFFFFF",
-            bordercolor="#E9ECF3",
-            font=dict(
-                color="#1E2F6E",
-            ),
-        ),
+        paper_bgcolor=DARK_PANEL,
+        plot_bgcolor=DARK_PANEL,
 
         font=dict(
-            color=DAILY_CHART_TEXT,
+            color=WHITE,
         ),
 
         margin=dict(
@@ -430,7 +363,6 @@ def build_ro_daily_chart(
         ),
 
         showlegend=False,
-        bargap=0.18,
 
         title=dict(
             text=(
@@ -440,7 +372,7 @@ def build_ro_daily_chart(
             x=0.5,
             font=dict(
                 size=19,
-                color=DAILY_CHART_TITLE,
+                color=WHITE,
             ),
         ),
     )
@@ -449,15 +381,14 @@ def build_ro_daily_chart(
         tickmode="array",
         tickvals=days,
         showgrid=False,
-        color=DAILY_CHART_AXIS,
-        linecolor="#DAD1D2",
-        zeroline=False,
+        color="rgba(248,250,252,0.85)",
+        linecolor="rgba(255,255,255,0.22)",
     )
 
     figure.update_yaxes(
         showgrid=True,
-        gridcolor=DAILY_CHART_GRID,
-        color=DAILY_CHART_AXIS,
+        gridcolor=DARK_GRID,
+        color="rgba(248,250,252,0.85)",
         zeroline=False,
         secondary_y=False,
     )
@@ -466,7 +397,7 @@ def build_ro_daily_chart(
         range=[0, 300],
         ticksuffix="%",
         showgrid=False,
-        color=DAILY_CHART_AXIS,
+        color="rgba(248,250,252,0.85)",
         zeroline=False,
         secondary_y=True,
     )
@@ -499,9 +430,9 @@ def build_revenue_daily_chart(
             y=daily["revenue_m"],
 
             marker=dict(
-                color=REVENUE_BAR_COLOR,
+                color=PRIMARY_BLUE,
                 line=dict(
-                    color=REVENUE_BAR_BORDER,
+                    color=PRIMARY_BLUE_LIGHT,
                     width=1,
                 ),
             ),
@@ -539,16 +470,16 @@ def build_revenue_daily_chart(
             mode="lines+markers+text",
 
             line=dict(
-                color=CUMULATIVE_LINE_COLOR,
-                width=3,
+                color=LINE_BLUE,
+                width=2.5,
                 dash="dot",
             ),
 
             marker=dict(
-                size=7,
-                color=CUMULATIVE_MARKER_COLOR,
+                size=6,
+                color=LINE_BLUE_SOFT,
                 line=dict(
-                    color=CUMULATIVE_MARKER_BORDER,
+                    color="#D7EAFE",
                     width=1,
                 ),
             ),
@@ -566,7 +497,7 @@ def build_revenue_daily_chart(
 
             textfont=dict(
                 size=10,
-                color=DAILY_CHART_TEXT,
+                color=PCT_TEXT_COLOR,
             ),
 
             name="% đạt lũy kế",
@@ -575,20 +506,13 @@ def build_revenue_daily_chart(
     )
 
     figure.update_layout(
-        template="simple_white",
+        template="plotly_dark",
         height=370,
-        paper_bgcolor=DAILY_CHART_BG,
-        plot_bgcolor=DAILY_CHART_BG,
-        hoverlabel=dict(
-            bgcolor="#FFFFFF",
-            bordercolor="#E9ECF3",
-            font=dict(
-                color="#1E2F6E",
-            ),
-        ),
+        paper_bgcolor=DARK_PANEL,
+        plot_bgcolor=DARK_PANEL,
 
         font=dict(
-            color=DAILY_CHART_TEXT,
+            color=WHITE,
         ),
 
         margin=dict(
@@ -599,7 +523,6 @@ def build_revenue_daily_chart(
         ),
 
         showlegend=False,
-        bargap=0.18,
 
         title=dict(
             text=(
@@ -609,7 +532,7 @@ def build_revenue_daily_chart(
             x=0.5,
             font=dict(
                 size=19,
-                color=DAILY_CHART_TITLE,
+                color=WHITE,
             ),
         ),
     )
@@ -618,15 +541,14 @@ def build_revenue_daily_chart(
         tickmode="array",
         tickvals=days,
         showgrid=False,
-        color=DAILY_CHART_AXIS,
-        linecolor="#DAD1D2",
-        zeroline=False,
+        color="rgba(248,250,252,0.85)",
+        linecolor="rgba(255,255,255,0.22)",
     )
 
     figure.update_yaxes(
         showgrid=True,
-        gridcolor=DAILY_CHART_GRID,
-        color=DAILY_CHART_AXIS,
+        gridcolor=DARK_GRID,
+        color="rgba(248,250,252,0.85)",
         zeroline=False,
         secondary_y=False,
     )
@@ -635,7 +557,7 @@ def build_revenue_daily_chart(
         range=[0, 300],
         ticksuffix="%",
         showgrid=False,
-        color=DAILY_CHART_AXIS,
+        color="rgba(248,250,252,0.85)",
         zeroline=False,
         secondary_y=True,
     )
@@ -711,41 +633,21 @@ def render_daily_charts(
             workshop=workshop,
         )
 
-        ro_chart_card = st.container(
-            key="ro_daily_chart_card"
+        st.plotly_chart(
+            ro_figure,
+            use_container_width=True,
         )
-
-        with ro_chart_card:
-            st.plotly_chart(
-                ro_figure,
-                use_container_width=True,
-                config={
-                    "displayModeBar": True,
-                    "displaylogo": False,
-                    "responsive": True,
-                    "scrollZoom": False,
-                },
-            )
 
     with ro_kpi_column:
-        ro_kpi_group = st.container(
-            key="ro_daily_kpi_group"
+        render_mini_kpi(
+            "CPUS TB/NGÀY",
+            f"{actual_ro_average:.0f}",
         )
 
-        with ro_kpi_group:
-            render_colored_mini_kpi(
-                title="CPUS TB/NGÀY",
-                value=f"{actual_ro_average:.0f}",
-                background_color="#FFEEA5",
-                title_color="#FEDD65",
-            )
-
-            render_colored_mini_kpi(
-                title="CPUS/NGÀY TARGET",
-                value=f"{target_ro_day:.0f}",
-                background_color="#FFEEA5",
-                title_color="#FEDD65",
-            )
+        render_mini_kpi(
+            "CPUS/NGÀY TARGET",
+            f"{target_ro_day:.0f}",
+        )
 
     # HÀNG 2: DOANH THU DAILY
     revenue_chart_column, revenue_kpi_column = (
@@ -763,54 +665,32 @@ def render_daily_charts(
             )
         )
 
-        revenue_chart_card = st.container(
-            key="revenue_daily_chart_card"
+        st.plotly_chart(
+            revenue_figure,
+            use_container_width=True,
         )
-
-        with revenue_chart_card:
-            st.plotly_chart(
-                revenue_figure,
-                use_container_width=True,
-                config={
-                    "displayModeBar": True,
-                    "displaylogo": False,
-                    "responsive": True,
-                    "scrollZoom": False,
-                },
-            )
 
     with revenue_kpi_column:
-        revenue_kpi_group = st.container(
-            key="revenue_daily_kpi_group"
+        render_mini_kpi(
+            "DT TB/CPUS",
+            fmt_m(
+                revenue_per_cpus
+            ),
         )
 
-        with revenue_kpi_group:
-            render_colored_mini_kpi(
-                title="DT TB/CPUS",
-                value=fmt_m(
-                    revenue_per_cpus
-                ),
-                background_color="#FFEBD5",
-                title_color="#FE9E2C",
-            )
+        render_mini_kpi(
+            "DT TB/NGÀY",
+            fmt_m(
+                actual_revenue_average
+            ),
+        )
 
-            render_colored_mini_kpi(
-                title="DT TB/NGÀY",
-                value=fmt_m(
-                    actual_revenue_average
-                ),
-                background_color="#FFEBD5",
-                title_color="#FE9E2C",
-            )
-
-            render_colored_mini_kpi(
-                title="DT TB/NGÀY TARGET",
-                value=fmt_m(
-                    target_revenue_day
-                ),
-                background_color="#FFEBD5",
-                title_color="#FE9E2C",
-            )
+        render_mini_kpi(
+            "DT TB/NGÀY TARGET",
+            fmt_m(
+                target_revenue_day
+            ),
+        )
 
 # ============================================================
 # HÃNG XE
