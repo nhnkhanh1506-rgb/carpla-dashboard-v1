@@ -850,19 +850,24 @@ def render_brand_section(data):
         )
     )
 
-brand_display["Số RO"] = (
-    brand_display["Số RO"]
-    .astype(int)
-    .astype(str)
-)
-    
+    # Chuyển Số RO sang chuỗi để Streamlit căn trái.
+    brand_display["Số RO"] = (
+        brand_display["Số RO"]
+        .astype(int)
+        .astype(str)
+    )
+
     total_row = pd.DataFrame(
         {
             "Hãng xe": [
                 "TỔNG"
             ],
             "Số RO": [
-                str(int(total_ro_brand))
+                str(
+                    int(
+                        total_ro_brand
+                    )
+                )
             ],
             "Doanh thu trước thuế": [
                 fmt_m(
@@ -1003,11 +1008,11 @@ brand_display["Số RO"] = (
             height=403,
 
             margin=dict(
-                 l=24,
-        r=62,
-        t=18,
-        b=42,
-    ),
+                l=24,
+                r=62,
+                t=18,
+                b=42,
+            ),
 
             xaxis_title=(
                 "Doanh thu trước thuế (M)"
