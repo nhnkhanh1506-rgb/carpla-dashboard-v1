@@ -45,52 +45,27 @@ def calculate_dashboard_metrics(
     # --------------------------------------------------------
 
     data = data_raw[
-        (
-            data_raw["chi_nhanh"]
-            == selected_branch
-        )
-        & (
-            data_raw["xuong"]
-            == selected_workshop
-        )
-        & (
-            data_raw["ngay_hoa_don"].dt.year
-            == year
-        )
-        & (
-            data_raw["ngay_hoa_don"].dt.month
-            == month
-        )
+        (data_raw["chi_nhanh"] == selected_branch)
+        & (data_raw["xuong"] == selected_workshop)
+        & (data_raw["ngay_hoa_don"].dt.year == year)
+        & (data_raw["ngay_hoa_don"].dt.month == month)
     ].copy()
-
-    # --------------------------------------------------------
-    # 2. LOẠI TRẠNG THÁI KHÔNG HỢP LỆ
-    # --------------------------------------------------------
 
     data = data[
-        ~data["trang_thai"].isin(
-            EXCLUDED_STATUS
-        )
+        ~data["trang_thai"].isin(EXCLUDED_STATUS)
     ].copy()
 
-    # Chỉ giữ lệnh có Tổng trước thuế dương
     data = data[
         data["doanh_thu_truoc_thue"] > 0
     ].copy()
 
-    # Chỉ giữ lệnh có mã ghép hợp lệ
     data = data[
         data["ro_key"].notna()
     ].copy()
 
-    # --------------------------------------------------------
-    # 3. MỖI SỐ LỆNH CHỈ GIỮ MỘT DÒNG
-    # --------------------------------------------------------
-
+    # Mỗi số lệnh chỉ giữ một dòng
     data = (
-        data.sort_values(
-            "ngay_hoa_don"
-        )
+        data.sort_values("ngay_hoa_don")
         .drop_duplicates(
             subset=["ro_key"],
             keep="last",
@@ -99,12 +74,12 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 4. DOANH THU DỊCH VỤ
+    # 2. TỔNG TRƯỚC THUẾ
     # --------------------------------------------------------
-    #
-    # Lấy Tổng trước thuế trong file:
-    # hn_pvd_service_2026_07.xlsx
-    # --------------------------------------------------------
+    # Cột Tổng trước thuế trong file Lệnh sửa chữa đã bao gồm:
+    # - Doanh thu công việc
+    # - Doanh thu phụ tùng
+    # Vì vậy không cộng phụ tùng thêm lần nữa.
 
     service_revenue = pd.to_numeric(
         data["doanh_thu_truoc_thue"],
@@ -112,7 +87,7 @@ def calculate_dashboard_metrics(
     ).fillna(0).sum()
 
     # --------------------------------------------------------
-    # 5. LẤY FILE BẢNG TỔNG HỢP CỦA XƯỞNG
+    # 3. GHÉP FILE BẢNG TỔNG HỢP ĐỂ PHÂN TÍCH CƠ CẤU PHỤ TÙNG
     # --------------------------------------------------------
 
     parts_df = parts_data.get(
@@ -123,21 +98,10 @@ def calculate_dashboard_metrics(
     if parts_df is None:
         parts_df = pd.DataFrame()
 
-    # --------------------------------------------------------
-    # 6. GHÉP DOANH THU PHỤ TÙNG VÀO TỪNG LỆNH
-    # --------------------------------------------------------
-
     if parts_df.empty:
         merged_data = data.copy()
-
-        merged_data[
-            "doanh_thu_phu_tung"
-        ] = 0
-
-        merged_data[
-            "tim_thay_trong_bang_tong_hop"
-        ] = False
-
+        merged_data["doanh_thu_phu_tung"] = 0
+        merged_data["tim_thay_trong_bang_tong_hop"] = False
     else:
         merged_data = data.merge(
             parts_df,
@@ -146,65 +110,33 @@ def calculate_dashboard_metrics(
             indicator=True,
         )
 
-        merged_data[
-            "tim_thay_trong_bang_tong_hop"
-        ] = (
-            merged_data["_merge"]
-            == "both"
+        merged_data["tim_thay_trong_bang_tong_hop"] = (
+            merged_data["_merge"] == "both"
         )
 
         merged_data = merged_data.drop(
             columns=["_merge"]
         )
 
-    # --------------------------------------------------------
-    # 7. CHUẨN HÓA DOANH THU PHỤ TÙNG
-    # --------------------------------------------------------
+    if "doanh_thu_phu_tung" not in merged_data.columns:
+        merged_data["doanh_thu_phu_tung"] = 0
 
-    if (
-        "doanh_thu_phu_tung"
-        not in merged_data.columns
-    ):
-        merged_data[
-            "doanh_thu_phu_tung"
-        ] = 0
-
-    merged_data[
-        "doanh_thu_phu_tung"
-    ] = pd.to_numeric(
-        merged_data[
-            "doanh_thu_phu_tung"
-        ],
+    merged_data["doanh_thu_phu_tung"] = pd.to_numeric(
+        merged_data["doanh_thu_phu_tung"],
         errors="coerce",
     ).fillna(0)
 
-    # --------------------------------------------------------
-    # 8. TÍNH DOANH THU ĐẦY ĐỦ CỦA TỪNG LỆNH
-    # --------------------------------------------------------
-    #
-    # Doanh thu một lệnh =
-    # Tổng trước thuế của lệnh
-    # + Doanh thu phụ tùng của chính lệnh đó
-    # --------------------------------------------------------
-
-    merged_data[
-        "doanh_thu_theo_lenh"
-    ] = (
-        merged_data[
-            "doanh_thu_truoc_thue"
-        ]
-        + merged_data[
-            "doanh_thu_phu_tung"
-        ]
+    # Giữ để tương thích với các phần kiểm tra cũ.
+    # Không cộng phụ tùng lần hai.
+    merged_data["doanh_thu_theo_lenh"] = (
+        merged_data["doanh_thu_truoc_thue"]
     )
 
     # --------------------------------------------------------
-    # 9. KIỂM TRA SỐ LỆNH GHÉP ĐƯỢC
+    # 4. KIỂM TRA SỐ LỆNH GHÉP
     # --------------------------------------------------------
 
-    actual_ro = data[
-        "ro_key"
-    ].nunique()
+    actual_ro = data["ro_key"].nunique()
 
     matched_orders = int(
         merged_data[
@@ -212,29 +144,31 @@ def calculate_dashboard_metrics(
         ].sum()
     )
 
-    missing_orders = (
-        actual_ro
-        - matched_orders
-    )
+    missing_orders = actual_ro - matched_orders
 
     if missing_orders > 0:
         st.warning(
-            f"Còn {missing_orders:,}/{actual_ro:,} "
-            f"lệnh theo Ngày hóa đơn chưa tìm thấy "
-            f"trong file Bảng tổng hợp. "
-            f"Doanh thu phụ tùng có thể bị thiếu."
+            f"Còn {missing_orders:,}/{actual_ro:,} lệnh theo Ngày hóa đơn "
+            f"chưa tìm thấy trong file Bảng tổng hợp. "
+            f"Việc này chỉ ảnh hưởng phân tích cơ cấu phụ tùng, "
+            f"không ảnh hưởng Tổng doanh thu."
         )
 
     # --------------------------------------------------------
-    # 10. TỔNG DOANH THU PHỤ TÙNG
+    # 5. CƠ CẤU DOANH THU NẰM TRONG TỔNG TRƯỚC THUẾ
     # --------------------------------------------------------
 
     parts_revenue = merged_data[
         "doanh_thu_phu_tung"
     ].sum()
 
+    labor_revenue = max(
+        service_revenue - parts_revenue,
+        0,
+    )
+
     # --------------------------------------------------------
-    # 11. DOANH THU PHỤ KIỆN
+    # 6. DOANH THU PHỤ KIỆN
     # --------------------------------------------------------
 
     accessory_df = accessory_data.get(
@@ -247,66 +181,40 @@ def calculate_dashboard_metrics(
     if (
         accessory_df is not None
         and not accessory_df.empty
-        and "ngay_hoa_don"
-        in accessory_df.columns
-        and "doanh_thu_truoc_thue"
-        in accessory_df.columns
+        and "ngay_hoa_don" in accessory_df.columns
+        and "doanh_thu_truoc_thue" in accessory_df.columns
     ):
-        accessory_df = (
-            accessory_df.copy()
-        )
+        accessory_df = accessory_df.copy()
 
-        accessory_df[
-            "ngay_hoa_don"
-        ] = pd.to_datetime(
-            accessory_df[
-                "ngay_hoa_don"
-            ],
+        accessory_df["ngay_hoa_don"] = pd.to_datetime(
+            accessory_df["ngay_hoa_don"],
             errors="coerce",
             dayfirst=True,
         )
 
         accessory_filtered = accessory_df[
-            (
-                accessory_df[
-                    "ngay_hoa_don"
-                ].dt.year
-                == year
-            )
-            & (
-                accessory_df[
-                    "ngay_hoa_don"
-                ].dt.month
-                == month
-            )
+            (accessory_df["ngay_hoa_don"].dt.year == year)
+            & (accessory_df["ngay_hoa_don"].dt.month == month)
         ].copy()
 
         accessory_revenue = pd.to_numeric(
-            accessory_filtered[
-                "doanh_thu_truoc_thue"
-            ],
+            accessory_filtered["doanh_thu_truoc_thue"],
             errors="coerce",
         ).fillna(0).sum()
 
     # --------------------------------------------------------
-    # 12. TỔNG DOANH THU
+    # 7. TỔNG DOANH THU
     # --------------------------------------------------------
-    #
-    # Tổng doanh thu =
-    # Tổng trước thuế file dịch vụ
-    # + Doanh thu phụ tùng của các lệnh match
-    # + Doanh thu phụ kiện
-    # --------------------------------------------------------
+    # Tổng doanh thu = Tổng trước thuế trong file Lệnh sửa chữa
+    # + Doanh thu phụ kiện ngoài file Lệnh sửa chữa.
 
     actual_revenue = (
-        merged_data[
-            "doanh_thu_theo_lenh"
-        ].sum()
+        service_revenue
         + accessory_revenue
     )
 
     # --------------------------------------------------------
-    # 13. TỔNG TIỀN SAU THUẾ
+    # 8. TỔNG TIỀN SAU THUẾ
     # --------------------------------------------------------
 
     total_after_tax = pd.to_numeric(
@@ -315,7 +223,7 @@ def calculate_dashboard_metrics(
     ).fillna(0).sum()
 
     # --------------------------------------------------------
-    # 14. TARGET
+    # 9. TARGET
     # --------------------------------------------------------
 
     target_info = targets.get(
@@ -335,7 +243,7 @@ def calculate_dashboard_metrics(
     target_revenue = target_info["revenue"]
 
     # --------------------------------------------------------
-    # 15. TỶ LỆ HOÀN THÀNH
+    # 10. TỶ LỆ HOÀN THÀNH
     # --------------------------------------------------------
 
     ro_rate = safe_div(
@@ -354,14 +262,11 @@ def calculate_dashboard_metrics(
     )
 
     # --------------------------------------------------------
-    # 16. TRẢ KẾT QUẢ VỀ APP
+    # 11. TRẢ KẾT QUẢ VỀ APP
     # --------------------------------------------------------
 
     return {
-        # File dịch vụ đã lọc
         "data": data,
-
-        # File đã ghép doanh thu phụ tùng theo từng lệnh
         "merged_data": merged_data,
 
         "selected_branch": selected_branch,
@@ -373,11 +278,17 @@ def calculate_dashboard_metrics(
         "matched_orders": matched_orders,
         "missing_orders": missing_orders,
 
+        # Tổng trước thuế đã gồm công việc + phụ tùng
         "service_revenue": service_revenue,
-        "parts_revenue": parts_revenue,
-        "accessory_revenue": accessory_revenue,
-        "actual_revenue": actual_revenue,
 
+        # Cơ cấu nằm bên trong Tổng trước thuế
+        "labor_revenue": labor_revenue,
+        "parts_revenue": parts_revenue,
+
+        # Phụ kiện ngoài file Lệnh sửa chữa
+        "accessory_revenue": accessory_revenue,
+
+        "actual_revenue": actual_revenue,
         "total_after_tax": total_after_tax,
 
         "target_ro": target_ro,
@@ -411,11 +322,7 @@ def calculate_working_days(
     )[1]
 
     working_dates = [
-        date(
-            year,
-            month,
-            day,
-        )
+        date(year, month, day)
         for day in range(
             1,
             days_in_month + 1,
@@ -459,12 +366,8 @@ def calculate_working_days(
     ]
 
     return {
-        "data_cutoff_date": (
-            data_cutoff_date
-        ),
-        "total_working_days": (
-            total_working_days
-        ),
+        "data_cutoff_date": data_cutoff_date,
+        "total_working_days": total_working_days,
         "elapsed_working_days": len(
             elapsed_working_dates
         ),
@@ -512,13 +415,7 @@ def calculate_target_plan(
 
     return {
         "desired_value": desired_value,
-        "remaining_required": (
-            remaining_required
-        ),
-        "average_required": (
-            average_required
-        ),
-        "already_achieved": (
-            already_achieved
-        ),
+        "remaining_required": remaining_required,
+        "average_required": average_required,
+        "already_achieved": already_achieved,
     }
