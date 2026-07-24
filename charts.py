@@ -39,7 +39,7 @@ def safe_div(a, b):
 # ============================================================
 
 def style_white_table(dataframe):
-    styled = (
+    return (
         dataframe.style
         .set_properties(
             **{
@@ -103,18 +103,6 @@ def style_white_table(dataframe):
         )
         .hide(axis="index")
     )
-
-    # Chỉ áp dụng riêng cho cột Số RO khi bảng có cột này.
-    # Nhờ vậy bảng Cơ cấu nguồn thanh toán không bị KeyError.
-    if "Số RO" in dataframe.columns:
-        styled = styled.set_properties(
-            subset=["Số RO"],
-            **{
-                "text-align": "left",
-            }
-        )
-
-    return styled
 
 
 # ============================================================
