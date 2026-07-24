@@ -323,12 +323,12 @@ def build_ro_daily_chart(
 
             line=dict(
                 color=CUMULATIVE_LINE_COLOR,
-                width=2.5,
+                width=3,
                 dash="dot",
             ),
 
             marker=dict(
-                size=6,
+                size=7,
                 color=CUMULATIVE_MARKER_COLOR,
                 line=dict(
                     color=CUMULATIVE_MARKER_BORDER,
@@ -362,6 +362,13 @@ def build_ro_daily_chart(
         height=370,
         paper_bgcolor=DAILY_CHART_BG,
         plot_bgcolor=DAILY_CHART_BG,
+        hoverlabel=dict(
+            bgcolor="#FFFFFF",
+            bordercolor="#E9ECF3",
+            font=dict(
+                color="#1E2F6E",
+            ),
+        ),
 
         font=dict(
             color=DAILY_CHART_TEXT,
@@ -375,6 +382,7 @@ def build_ro_daily_chart(
         ),
 
         showlegend=False,
+        bargap=0.18,
 
         title=dict(
             text=(
@@ -394,7 +402,7 @@ def build_ro_daily_chart(
         tickvals=days,
         showgrid=False,
         color=DAILY_CHART_AXIS,
-        linecolor="#D1D5DB",
+        linecolor="#DAD1D2",
         zeroline=False,
     )
 
@@ -484,12 +492,12 @@ def build_revenue_daily_chart(
 
             line=dict(
                 color=CUMULATIVE_LINE_COLOR,
-                width=2.5,
+                width=3,
                 dash="dot",
             ),
 
             marker=dict(
-                size=6,
+                size=7,
                 color=CUMULATIVE_MARKER_COLOR,
                 line=dict(
                     color=CUMULATIVE_MARKER_BORDER,
@@ -523,6 +531,13 @@ def build_revenue_daily_chart(
         height=370,
         paper_bgcolor=DAILY_CHART_BG,
         plot_bgcolor=DAILY_CHART_BG,
+        hoverlabel=dict(
+            bgcolor="#FFFFFF",
+            bordercolor="#E9ECF3",
+            font=dict(
+                color="#1E2F6E",
+            ),
+        ),
 
         font=dict(
             color=DAILY_CHART_TEXT,
@@ -536,6 +551,7 @@ def build_revenue_daily_chart(
         ),
 
         showlegend=False,
+        bargap=0.18,
 
         title=dict(
             text=(
@@ -555,7 +571,7 @@ def build_revenue_daily_chart(
         tickvals=days,
         showgrid=False,
         color=DAILY_CHART_AXIS,
-        linecolor="#D1D5DB",
+        linecolor="#DAD1D2",
         zeroline=False,
     )
 
@@ -647,10 +663,18 @@ def render_daily_charts(
             workshop=workshop,
         )
 
-        st.plotly_chart(
-            ro_figure,
-            use_container_width=True,
+        ro_chart_card = st.container(
+            key="ro_daily_chart_card"
         )
+
+        with ro_chart_card:
+            st.plotly_chart(
+                ro_figure,
+                use_container_width=True,
+                config={
+                    "displayModeBar": False,
+                },
+            )
 
     with ro_kpi_column:
         render_mini_kpi(
@@ -679,10 +703,18 @@ def render_daily_charts(
             )
         )
 
-        st.plotly_chart(
-            revenue_figure,
-            use_container_width=True,
+        revenue_chart_card = st.container(
+            key="revenue_daily_chart_card"
         )
+
+        with revenue_chart_card:
+            st.plotly_chart(
+                revenue_figure,
+                use_container_width=True,
+                config={
+                    "displayModeBar": False,
+                },
+            )
 
     with revenue_kpi_column:
         render_mini_kpi(
