@@ -18,23 +18,23 @@ PRIMARY_BLUE_LIGHT = "#7FA7E6"
 LINE_BLUE = "#8EC5FF"
 LINE_BLUE_SOFT = "#A8D3FF"
 PCT_TEXT_COLOR = "#DCEEFF"
-BAR_LABEL_COLOR = "#EF5869"
+BAR_LABEL_COLOR = "#E45858"
 
-CPUS_BAR_COLOR = "#2EBA78"
-CPUS_BAR_BORDER = "#69D5A4"
+CPUS_BAR_COLOR = "#FEDD65"
+CPUS_BAR_BORDER = "#E7BE33"
 
 REVENUE_BAR_COLOR = "#FE9E2C"
-REVENUE_BAR_BORDER = "#FFC16E"
+REVENUE_BAR_BORDER = "#E88713"
 
-CUMULATIVE_LINE_COLOR = "#926BFA"
-CUMULATIVE_MARKER_COLOR = "#EAFDFF"
-CUMULATIVE_MARKER_BORDER = "#B5AFFE"
+CUMULATIVE_LINE_COLOR = "#E45858"
+CUMULATIVE_MARKER_COLOR = "#FFFFFF"
+CUMULATIVE_MARKER_BORDER = "#E45858"
 
 DAILY_CHART_BG = "#FFFFFF"
-DAILY_CHART_GRID = "#E5E7EB"
-DAILY_CHART_TEXT = "#667085"
-DAILY_CHART_TITLE = "#1F2937"
-DAILY_CHART_AXIS = "#667085"
+DAILY_CHART_GRID = "#E9ECF3"
+DAILY_CHART_TEXT = "#1E2F6E"
+DAILY_CHART_TITLE = "#1E2F6E"
+DAILY_CHART_AXIS = "#59657A"
 
 RED_MAIN = "#E45858"
 RED_DARK = "#D64545"
@@ -823,6 +823,47 @@ div[data-testid="stPlotlyChart"] > div {{
     border-radius: 18px !important;
     overflow: hidden !important;
 }}
+
+/* =========================================================
+   DAILY CHART CARDS - CARPLA SERVICE
+   White cards, rounded corners, soft border and shadow
+   ========================================================= */
+
+.st-key-ro_daily_chart_card,
+.st-key-revenue_daily_chart_card {{
+    background: #FFFFFF !important;
+    border: 1px solid #E9ECF3 !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 24px rgba(30, 47, 110, 0.06) !important;
+}}
+
+.st-key-ro_daily_chart_card > div,
+.st-key-revenue_daily_chart_card > div {{
+    border-radius: 20px !important;
+    overflow: hidden !important;
+}}
+
+.st-key-ro_daily_chart_card div[data-testid="stPlotlyChart"],
+.st-key-revenue_daily_chart_card div[data-testid="stPlotlyChart"] {{
+    background: transparent !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+}}
+
+.st-key-ro_daily_chart_card .js-plotly-plot,
+.st-key-ro_daily_chart_card .plot-container,
+.st-key-ro_daily_chart_card .svg-container,
+.st-key-ro_daily_chart_card .main-svg,
+.st-key-revenue_daily_chart_card .js-plotly-plot,
+.st-key-revenue_daily_chart_card .plot-container,
+.st-key-revenue_daily_chart_card .svg-container,
+.st-key-revenue_daily_chart_card .main-svg {{
+    background: transparent !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+}}
+
 
 </style>
 """,
