@@ -54,43 +54,19 @@ def style_white_table(dataframe):
                 {
                     "selector": "thead th",
                     "props": [
-                        (
-                            "background-color",
-                            "#F3F4F6",
-                        ),
-                        (
-                            "color",
-                            "#6B7280",
-                        ),
-                        (
-                            "font-weight",
-                            "600",
-                        ),
-                        (
-                            "border-color",
-                            "#E5E7EB",
-                        ),
-                        (
-                            "text-align",
-                            "left",
-                        ),
+                        ("background-color", "#F3F4F6"),
+                        ("color", "#6B7280"),
+                        ("font-weight", "600"),
+                        ("border-color", "#E5E7EB"),
+                        ("text-align", "left"),
                     ],
                 },
                 {
                     "selector": "tbody td",
                     "props": [
-                        (
-                            "background-color",
-                            "#FFFFFF",
-                        ),
-                        (
-                            "color",
-                            "#1F2937",
-                        ),
-                        (
-                            "border-color",
-                            "#E5E7EB",
-                        ),
+                        ("background-color", "#FFFFFF"),
+                        ("color", "#1F2937"),
+                        ("border-color", "#E5E7EB"),
                     ],
                 },
             ],
@@ -128,29 +104,17 @@ def prepare_daily_data(
         subset=["ngay_hoa_don"]
     ).copy()
 
-    if "doanh_thu_theo_lenh" not in daily_source.columns:
-        st.error(
-            "Dữ liệu biểu đồ Daily chưa có cột "
-            "'doanh_thu_theo_lenh'. "
-            "Kiểm tra app.py phải truyền "
-            "metrics['merged_data'] vào "
-            "render_daily_charts()."
-        )
-        st.stop()
-
     daily_source[
-        "doanh_thu_theo_lenh"
+        "doanh_thu_truoc_thue"
     ] = pd.to_numeric(
         daily_source[
-            "doanh_thu_theo_lenh"
+            "doanh_thu_truoc_thue"
         ],
         errors="coerce",
     ).fillna(0)
 
-    # --------------------------------------------------------
-    # Nhóm theo Ngày hóa đơn
-    # --------------------------------------------------------
-
+    # CPUS và doanh thu đều chia theo Ngày hóa đơn.
+    # Doanh thu Daily chỉ dùng Tổng trước thuế.
     daily = (
         daily_source
         .assign(
@@ -166,7 +130,7 @@ def prepare_daily_data(
                 "nunique",
             ),
             revenue=(
-                "doanh_thu_theo_lenh",
+                "doanh_thu_truoc_thue",
                 "sum",
             ),
         )
@@ -358,9 +322,6 @@ def build_ro_daily_chart(
         paper_bgcolor=DARK_PANEL,
         plot_bgcolor=DARK_PANEL,
 
-        uniformtext_minsize=14,
-        uniformtext_mode="show",
-
         font=dict(
             color=WHITE,
         ),
@@ -462,10 +423,9 @@ def build_revenue_daily_chart(
 
             textfont=dict(
                 color=BAR_LABEL_COLOR,
-                size=13,
+                size=14,
             ),
 
-            constraintext="none",
             cliponaxis=False,
         ),
         secondary_y=False,
@@ -521,9 +481,6 @@ def build_revenue_daily_chart(
         height=370,
         paper_bgcolor=DARK_PANEL,
         plot_bgcolor=DARK_PANEL,
-
-        uniformtext_minsize=13,
-        uniformtext_mode="show",
 
         font=dict(
             color=WHITE,
@@ -633,10 +590,7 @@ def render_daily_charts(
         total_ro,
     )
 
-    # ========================================================
     # HÀNG 1: CPUS DAILY
-    # ========================================================
-
     ro_chart_column, ro_kpi_column = (
         st.columns(
             [4.6, 1.25]
@@ -666,10 +620,7 @@ def render_daily_charts(
             f"{target_ro_day:.0f}",
         )
 
-    # ========================================================
     # HÀNG 2: DOANH THU DAILY
-    # ========================================================
-
     revenue_chart_column, revenue_kpi_column = (
         st.columns(
             [4.6, 1.25]
@@ -722,14 +673,10 @@ def render_brand_section(data):
         "## 3. Hãng xe"
     )
 
-    # --------------------------------------------------------
-    # Kiểm tra dữ liệu đầu vào
-    # --------------------------------------------------------
-
     required_columns = [
         "ro",
         "hang_xe",
-        "doanh_thu_theo_lenh",
+        "doanh_thu_truoc_thue",
     ]
 
     missing_columns = [
@@ -742,18 +689,16 @@ def render_brand_section(data):
         st.error(
             "Dữ liệu phần Hãng xe thiếu các cột: "
             + ", ".join(missing_columns)
-            + ". Kiểm tra app.py phải truyền "
-            "merged_data vào render_brand_section()."
         )
         st.stop()
 
     brand_data = data.copy()
 
     brand_data[
-        "doanh_thu_theo_lenh"
+        "doanh_thu_truoc_thue"
     ] = pd.to_numeric(
         brand_data[
-            "doanh_thu_theo_lenh"
+            "doanh_thu_truoc_thue"
         ],
         errors="coerce",
     ).fillna(0)
@@ -769,17 +714,8 @@ def render_brand_section(data):
         .str.strip()
     )
 
-    # --------------------------------------------------------
-    # Nhóm 144 lệnh theo hãng xe
-    #
-    # Số RO:
-    # Số lệnh duy nhất của từng hãng
-    #
-    # Tổng doanh thu:
-    # Tổng trước thuế + Doanh thu phụ tùng
-    # của từng lệnh thuộc hãng đó
-    # --------------------------------------------------------
-
+    # Danh sách lệnh và hãng lấy từ file Lệnh sửa chữa.
+    # Doanh thu theo hãng dùng Tổng trước thuế.
     brand_summary = (
         brand_data
         .groupby(
@@ -791,7 +727,7 @@ def render_brand_section(data):
                 "nunique",
             ),
             doanh_thu=(
-                "doanh_thu_theo_lenh",
+                "doanh_thu_truoc_thue",
                 "sum",
             ),
         )
@@ -831,10 +767,6 @@ def render_brand_section(data):
         if total_revenue_brand
         else 0
     )
-
-    # --------------------------------------------------------
-    # Bảng hiển thị
-    # --------------------------------------------------------
 
     brand_display = (
         brand_summary.copy()
@@ -877,7 +809,7 @@ def render_brand_section(data):
             columns={
                 "hang_xe": "Hãng xe",
                 "so_ro": "Số RO",
-                "doanh_thu": "Tổng doanh thu",
+                "doanh_thu": "Doanh thu trước thuế",
                 "ty_trong_ro": "Tỷ trọng RO",
                 "ty_trong_doanh_thu": (
                     "Tỷ trọng doanh thu"
@@ -893,7 +825,7 @@ def render_brand_section(data):
         "Số RO": [
             total_ro_brand
         ],
-        "Tổng doanh thu": [
+        "Doanh thu trước thuế": [
             fmt_m(
                 total_revenue_brand
             )
@@ -936,14 +868,10 @@ def render_brand_section(data):
             hide_index=True,
         )
 
-    # --------------------------------------------------------
-    # Biểu đồ Top hãng xe
-    # --------------------------------------------------------
-
     with right_column:
         st.markdown(
             '<div class="section-label">'
-            'Top hãng xe theo tổng doanh thu'
+            'Top hãng xe theo doanh thu'
             '</div>',
             unsafe_allow_html=True,
         )
@@ -1013,7 +941,7 @@ def render_brand_section(data):
 
                 hovertemplate=(
                     "<b>%{y}</b><br>"
-                    "Tổng doanh thu: %{x:.1f}M"
+                    "Doanh thu trước thuế: %{x:.1f}M"
                     "<extra></extra>"
                 ),
             )
@@ -1031,7 +959,7 @@ def render_brand_section(data):
             ),
 
             xaxis_title=(
-                "Tổng doanh thu (M)"
+                "Doanh thu trước thuế (M)"
             ),
 
             yaxis_title="",
