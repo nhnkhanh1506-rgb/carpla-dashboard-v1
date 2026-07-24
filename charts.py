@@ -663,7 +663,6 @@ def render_daily_charts(
             ),
         )
 
-
 # ============================================================
 # HÃNG XE
 # ============================================================
@@ -809,8 +808,12 @@ def render_brand_section(data):
             columns={
                 "hang_xe": "Hãng xe",
                 "so_ro": "Số RO",
-                "doanh_thu": "Doanh thu trước thuế",
-                "ty_trong_ro": "Tỷ trọng RO",
+                "doanh_thu": (
+                    "Doanh thu trước thuế"
+                ),
+                "ty_trong_ro": (
+                    "Tỷ trọng RO"
+                ),
                 "ty_trong_doanh_thu": (
                     "Tỷ trọng doanh thu"
                 ),
@@ -818,25 +821,27 @@ def render_brand_section(data):
         )
     )
 
-    total_row = pd.DataFrame({
-        "Hãng xe": [
-            "TỔNG"
-        ],
-        "Số RO": [
-            total_ro_brand
-        ],
-        "Doanh thu trước thuế": [
-            fmt_m(
-                total_revenue_brand
-            )
-        ],
-        "Tỷ trọng RO": [
-            "100%"
-        ],
-        "Tỷ trọng doanh thu": [
-            "100%"
-        ],
-    })
+    total_row = pd.DataFrame(
+        {
+            "Hãng xe": [
+                "TỔNG"
+            ],
+            "Số RO": [
+                total_ro_brand
+            ],
+            "Doanh thu trước thuế": [
+                fmt_m(
+                    total_revenue_brand
+                )
+            ],
+            "Tỷ trọng RO": [
+                "100%"
+            ],
+            "Tỷ trọng doanh thu": [
+                "100%"
+            ],
+        }
+    )
 
     brand_display = pd.concat(
         [
@@ -851,6 +856,10 @@ def render_brand_section(data):
             [1.35, 1]
         )
     )
+
+    # ========================================================
+    # BẢNG CHI TIẾT
+    # ========================================================
 
     with left_column:
         st.markdown(
@@ -867,6 +876,10 @@ def render_brand_section(data):
             use_container_width=True,
             hide_index=True,
         )
+
+    # ========================================================
+    # BIỂU ĐỒ TOP HÃNG XE
+    # ========================================================
 
     with right_column:
         st.markdown(
@@ -941,7 +954,8 @@ def render_brand_section(data):
 
                 hovertemplate=(
                     "<b>%{y}</b><br>"
-                    "Doanh thu trước thuế: %{x:.1f}M"
+                    "Doanh thu trước thuế: "
+                    "%{x:.1f}M"
                     "<extra></extra>"
                 ),
             )
@@ -949,7 +963,9 @@ def render_brand_section(data):
 
         figure.update_layout(
             template="simple_white",
-            height=450,
+
+            # Chỉ giảm chiều cao để cân với bảng.
+            height=425,
 
             margin=dict(
                 l=10,
@@ -996,10 +1012,16 @@ def render_brand_section(data):
             ),
         )
 
-        st.plotly_chart(
-            figure,
-            use_container_width=True,
+        # Container chỉ dùng để bo góc ô graph này.
+        chart_card = st.container(
+            key="brand_revenue_chart_card"
         )
+
+        with chart_card:
+            st.plotly_chart(
+                figure,
+                use_container_width=True,
+            )
 
 
 # ============================================================
