@@ -436,7 +436,7 @@ render_daily_charts(
 # ============================================================
 
 render_brand_section(
-    data=data
+    data=merged_data
 )
 
 
