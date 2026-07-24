@@ -965,14 +965,14 @@ def render_brand_section(data):
             template="simple_white",
 
             # Chỉ giảm chiều cao để cân với bảng.
-            height=425,
+            height=405,
 
             margin=dict(
-                l=10,
-                r=50,
-                t=10,
-                b=30,
-            ),
+                 l=24,
+        r=62,
+        t=18,
+        b=42,
+    ),
 
             xaxis_title=(
                 "Doanh thu trước thuế (M)"
