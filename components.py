@@ -322,13 +322,10 @@ def render_homepage(logo_path: Path):
                 '</div>'
 
                 '<div class="homepage-subtitle">'
-                    'Nền tảng dashboard tập trung giúp theo dõi, '
-                    'phân tích và đánh giá hiệu quả hoạt động của '
-                    'các xưởng trong toàn hệ thống Carpla Services, '
-                    'bao gồm (nhưng không giới hạn) lượt xe, doanh thu, '
-                    'cơ cấu hãng xe, nguồn thanh toán và các chỉ số '
-                    'vận hành liên quan.'
-                '</div>'
+'Nền tảng dashboard tập trung giúp theo dõi, '
+'phân tích và đánh giá hiệu quả hoạt động của '
+'các xưởng trong toàn hệ thống Carpla Services.'
+'</div>'
 
                 '<div class="homepage-guide">'
                     'Vui lòng chọn <b>Chi nhánh</b>, <b>Xưởng</b>, '
