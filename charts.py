@@ -47,6 +47,13 @@ def style_white_table(dataframe):
                 "color": "#1F2937",
                 "border-color": "#E5E7EB",
                 "font-weight": "500",
+                "text-align": "left",
+            }
+        )
+        .set_properties(
+            subset=["Số RO"],
+            **{
+                "text-align": "left",
             }
         )
         .set_table_styles(
@@ -54,19 +61,47 @@ def style_white_table(dataframe):
                 {
                     "selector": "thead th",
                     "props": [
-                        ("background-color", "#F3F4F6"),
-                        ("color", "#6B7280"),
-                        ("font-weight", "600"),
-                        ("border-color", "#E5E7EB"),
-                        ("text-align", "left"),
+                        (
+                            "background-color",
+                            "#F3F4F6",
+                        ),
+                        (
+                            "color",
+                            "#6B7280",
+                        ),
+                        (
+                            "font-weight",
+                            "600",
+                        ),
+                        (
+                            "border-color",
+                            "#E5E7EB",
+                        ),
+                        (
+                            "text-align",
+                            "left",
+                        ),
                     ],
                 },
                 {
                     "selector": "tbody td",
                     "props": [
-                        ("background-color", "#FFFFFF"),
-                        ("color", "#1F2937"),
-                        ("border-color", "#E5E7EB"),
+                        (
+                            "background-color",
+                            "#FFFFFF",
+                        ),
+                        (
+                            "color",
+                            "#1F2937",
+                        ),
+                        (
+                            "border-color",
+                            "#E5E7EB",
+                        ),
+                        (
+                            "text-align",
+                            "left",
+                        ),
                     ],
                 },
             ],
