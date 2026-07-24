@@ -767,20 +767,32 @@ div[data-testid="stPlotlyChart"] {{
 
 /* =========================================================
    CƠ CẤU NGUỒN THANH TOÁN - DONUT CHART
-   Chỉ bo 4 góc ô trắng của biểu đồ
+   Chỉ bo 4 góc ô trắng, không đổi bố cục biểu đồ
    ========================================================= */
 
 .st-key-payment_donut_card {{
-    background: #FFFFFF;
-    border-radius: 16px;
-    overflow: hidden;
+    background: #FFFFFF !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}}
+
+.st-key-payment_donut_card > div {{
+    border-radius: 18px !important;
+    overflow: hidden !important;
 }}
 
 .st-key-payment_donut_card
 div[data-testid="stPlotlyChart"] {{
-    background: #FFFFFF;
-    border-radius: 16px;
-    overflow: hidden;
+    background: transparent !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}}
+
+.st-key-payment_donut_card
+div[data-testid="stPlotlyChart"] > div {{
+    background: transparent !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
 }}
 
 .st-key-payment_donut_card
@@ -788,11 +800,13 @@ div[data-testid="stPlotlyChart"] {{
 .st-key-payment_donut_card
 .plot-container,
 .st-key-payment_donut_card
-.svg-container {{
-    border-radius: 16px;
-    overflow: hidden;
+.svg-container,
+.st-key-payment_donut_card
+.main-svg {{
+    background: transparent !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
 }}
-
 
 </style>
 """,
