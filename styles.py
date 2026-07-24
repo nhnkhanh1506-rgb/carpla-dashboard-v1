@@ -53,367 +53,6 @@ def apply_global_style():
         f"""
 <style>
 
-# ============================================================
-# HÃNG XE
-# ============================================================
-
-def render_brand_section(data):
-    st.markdown(
-        "## 3. Hãng xe"
-    )
-
-    required_columns = [
-        "ro",
-        "hang_xe",
-        "doanh_thu_truoc_thue",
-    ]
-
-    missing_columns = [
-        column
-        for column in required_columns
-        if column not in data.columns
-    ]
-
-    if missing_columns:
-        st.error(
-            "Dữ liệu phần Hãng xe thiếu các cột: "
-            + ", ".join(missing_columns)
-        )
-        st.stop()
-
-    brand_data = data.copy()
-
-    brand_data[
-        "doanh_thu_truoc_thue"
-    ] = pd.to_numeric(
-        brand_data[
-            "doanh_thu_truoc_thue"
-        ],
-        errors="coerce",
-    ).fillna(0)
-
-    brand_data[
-        "hang_xe"
-    ] = (
-        brand_data[
-            "hang_xe"
-        ]
-        .fillna("KHÔNG XÁC ĐỊNH")
-        .astype(str)
-        .str.strip()
-    )
-
-    # Danh sách lệnh và hãng lấy từ file Lệnh sửa chữa.
-    # Doanh thu theo hãng dùng Tổng trước thuế.
-    brand_summary = (
-        brand_data
-        .groupby(
-            "hang_xe"
-        )
-        .agg(
-            so_ro=(
-                "ro",
-                "nunique",
-            ),
-            doanh_thu=(
-                "doanh_thu_truoc_thue",
-                "sum",
-            ),
-        )
-        .reset_index()
-        .sort_values(
-            "doanh_thu",
-            ascending=False,
-        )
-    )
-
-    total_ro_brand = (
-        brand_summary[
-            "so_ro"
-        ].sum()
-    )
-
-    total_revenue_brand = (
-        brand_summary[
-            "doanh_thu"
-        ].sum()
-    )
-
-    brand_summary[
-        "ty_trong_ro"
-    ] = (
-        brand_summary["so_ro"]
-        / total_ro_brand
-        if total_ro_brand
-        else 0
-    )
-
-    brand_summary[
-        "ty_trong_doanh_thu"
-    ] = (
-        brand_summary["doanh_thu"]
-        / total_revenue_brand
-        if total_revenue_brand
-        else 0
-    )
-
-    brand_display = (
-        brand_summary.copy()
-    )
-
-    brand_display[
-        "doanh_thu"
-    ] = (
-        brand_display[
-            "doanh_thu"
-        ].map(fmt_m)
-    )
-
-    brand_display[
-        "ty_trong_ro"
-    ] = (
-        brand_display[
-            "ty_trong_ro"
-        ]
-        .map(
-            lambda value:
-            f"{value:.0%}"
-        )
-    )
-
-    brand_display[
-        "ty_trong_doanh_thu"
-    ] = (
-        brand_display[
-            "ty_trong_doanh_thu"
-        ]
-        .map(
-            lambda value:
-            f"{value:.0%}"
-        )
-    )
-
-    brand_display = (
-        brand_display.rename(
-            columns={
-                "hang_xe": "Hãng xe",
-                "so_ro": "Số RO",
-                "doanh_thu": (
-                    "Doanh thu trước thuế"
-                ),
-                "ty_trong_ro": (
-                    "Tỷ trọng RO"
-                ),
-                "ty_trong_doanh_thu": (
-                    "Tỷ trọng doanh thu"
-                ),
-            }
-        )
-    )
-
-    total_row = pd.DataFrame(
-        {
-            "Hãng xe": [
-                "TỔNG"
-            ],
-            "Số RO": [
-                total_ro_brand
-            ],
-            "Doanh thu trước thuế": [
-                fmt_m(
-                    total_revenue_brand
-                )
-            ],
-            "Tỷ trọng RO": [
-                "100%"
-            ],
-            "Tỷ trọng doanh thu": [
-                "100%"
-            ],
-        }
-    )
-
-    brand_display = pd.concat(
-        [
-            brand_display,
-            total_row,
-        ],
-        ignore_index=True,
-    )
-
-    left_column, right_column = (
-        st.columns(
-            [1.35, 1]
-        )
-    )
-
-    # ========================================================
-    # BẢNG CHI TIẾT
-    # ========================================================
-
-    with left_column:
-        st.markdown(
-            '<div class="section-label">'
-            'Bảng chi tiết theo hãng xe'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-
-        st.dataframe(
-            style_white_table(
-                brand_display
-            ),
-            use_container_width=True,
-            hide_index=True,
-        )
-
-    # ========================================================
-    # BIỂU ĐỒ TOP HÃNG XE
-    # ========================================================
-
-    with right_column:
-        st.markdown(
-            '<div class="section-label">'
-            'Top hãng xe theo doanh thu'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-
-        brand_chart = (
-            brand_summary
-            .head(10)
-            .sort_values(
-                "doanh_thu",
-                ascending=True,
-            )
-            .copy()
-        )
-
-        brand_chart[
-            "doanh_thu_m"
-        ] = (
-            brand_chart[
-                "doanh_thu"
-            ]
-            / 1_000_000
-        )
-
-        color_list = (
-            MUTED_BAR_COLORS[
-                :len(brand_chart)
-            ]
-        )
-
-        figure = go.Figure()
-
-        figure.add_trace(
-            go.Bar(
-                x=brand_chart[
-                    "doanh_thu_m"
-                ],
-                y=brand_chart[
-                    "hang_xe"
-                ],
-
-                orientation="h",
-
-                marker=dict(
-                    color=color_list,
-                    line=dict(
-                        color="#E5ECF6",
-                        width=0.5,
-                    ),
-                ),
-
-                text=[
-                    f"{value:.1f}M"
-                    for value
-                    in brand_chart[
-                        "doanh_thu_m"
-                    ]
-                ],
-
-                textposition="outside",
-
-                textfont=dict(
-                    color="#667085",
-                    size=12,
-                ),
-
-                cliponaxis=False,
-
-                hovertemplate=(
-                    "<b>%{y}</b><br>"
-                    "Doanh thu trước thuế: "
-                    "%{x:.1f}M"
-                    "<extra></extra>"
-                ),
-            )
-        )
-
-        figure.update_layout(
-            template="simple_white",
-
-            # Chỉ giảm chiều cao để cân với bảng.
-            height=425,
-
-            margin=dict(
-                l=10,
-                r=50,
-                t=10,
-                b=30,
-            ),
-
-            xaxis_title=(
-                "Doanh thu trước thuế (M)"
-            ),
-
-            yaxis_title="",
-
-            paper_bgcolor="white",
-            plot_bgcolor="white",
-
-            font=dict(
-                color="#475467",
-            ),
-
-            showlegend=False,
-        )
-
-        figure.update_xaxes(
-            showgrid=True,
-            gridcolor="#E5E7EB",
-            zeroline=False,
-
-            title_font=dict(
-                color="#667085",
-            ),
-
-            tickfont=dict(
-                color="#667085",
-            ),
-        )
-
-        figure.update_yaxes(
-            showgrid=False,
-
-            tickfont=dict(
-                color="#667085",
-            ),
-        )
-
-        # Container chỉ dùng để bo góc ô graph này.
-        chart_card = st.container(
-            key="brand_revenue_chart_card"
-        )
-
-        with chart_card:
-            st.plotly_chart(
-                figure,
-                use_container_width=True,
-            )
-
-
 /* =========================================================
    TOÀN BỘ ỨNG DỤNG
    ========================================================= */
@@ -1094,6 +733,35 @@ div[data-testid="stAlert"] {{
 /* Nút reset bên dưới */
 button[kind="secondary"] {{
     border-radius: 12px !important;
+}}
+
+
+/* =========================================================
+   TOP HÃNG XE CHART
+   Chỉ bo góc nền trắng, không đổi ngoại hình graph
+   ========================================================= */
+
+.st-key-brand_revenue_chart_card {{
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+}}
+
+.st-key-brand_revenue_chart_card
+div[data-testid="stPlotlyChart"] {{
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+}}
+
+.st-key-brand_revenue_chart_card
+.js-plotly-plot,
+.st-key-brand_revenue_chart_card
+.plot-container,
+.st-key-brand_revenue_chart_card
+.svg-container {{
+    border-radius: 16px;
+    overflow: hidden;
 }}
 
 
