@@ -17,6 +17,18 @@ from styles import (
     LINE_BLUE_SOFT,
     PCT_TEXT_COLOR,
     BAR_LABEL_COLOR,
+    CPUS_BAR_COLOR,
+    CPUS_BAR_BORDER,
+    REVENUE_BAR_COLOR,
+    REVENUE_BAR_BORDER,
+    CUMULATIVE_LINE_COLOR,
+    CUMULATIVE_MARKER_COLOR,
+    CUMULATIVE_MARKER_BORDER,
+    DAILY_CHART_BG,
+    DAILY_CHART_GRID,
+    DAILY_CHART_TEXT,
+    DAILY_CHART_TITLE,
+    DAILY_CHART_AXIS,
     DARK_PANEL,
     DARK_GRID,
     WHITE,
@@ -274,9 +286,9 @@ def build_ro_daily_chart(
             y=daily["ro"],
 
             marker=dict(
-                color=PRIMARY_BLUE,
+                color=CPUS_BAR_COLOR,
                 line=dict(
-                    color=PRIMARY_BLUE_LIGHT,
+                    color=CPUS_BAR_BORDER,
                     width=1,
                 ),
             ),
@@ -310,16 +322,16 @@ def build_ro_daily_chart(
             mode="lines+markers+text",
 
             line=dict(
-                color=LINE_BLUE,
-                width=2.5,
+                color=CUMULATIVE_LINE_COLOR,
+                width=3,
                 dash="dot",
             ),
 
             marker=dict(
-                size=6,
-                color=LINE_BLUE_SOFT,
+                size=7,
+                color=CUMULATIVE_MARKER_COLOR,
                 line=dict(
-                    color="#D7EAFE",
+                    color=CUMULATIVE_MARKER_BORDER,
                     width=1,
                 ),
             ),
@@ -337,7 +349,7 @@ def build_ro_daily_chart(
 
             textfont=dict(
                 size=10,
-                color=PCT_TEXT_COLOR,
+                color=DAILY_CHART_TEXT,
             ),
 
             name="% đạt lũy kế",
@@ -346,13 +358,20 @@ def build_ro_daily_chart(
     )
 
     figure.update_layout(
-        template="plotly_dark",
+        template="simple_white",
         height=370,
-        paper_bgcolor=DARK_PANEL,
-        plot_bgcolor=DARK_PANEL,
+        paper_bgcolor=DAILY_CHART_BG,
+        plot_bgcolor=DAILY_CHART_BG,
+        hoverlabel=dict(
+            bgcolor="#FFFFFF",
+            bordercolor="#E9ECF3",
+            font=dict(
+                color="#1E2F6E",
+            ),
+        ),
 
         font=dict(
-            color=WHITE,
+            color=DAILY_CHART_TEXT,
         ),
 
         margin=dict(
@@ -363,6 +382,7 @@ def build_ro_daily_chart(
         ),
 
         showlegend=False,
+        bargap=0.18,
 
         title=dict(
             text=(
@@ -372,7 +392,7 @@ def build_ro_daily_chart(
             x=0.5,
             font=dict(
                 size=19,
-                color=WHITE,
+                color=DAILY_CHART_TITLE,
             ),
         ),
     )
@@ -381,14 +401,15 @@ def build_ro_daily_chart(
         tickmode="array",
         tickvals=days,
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
-        linecolor="rgba(255,255,255,0.22)",
+        color=DAILY_CHART_AXIS,
+        linecolor="#DAD1D2",
+        zeroline=False,
     )
 
     figure.update_yaxes(
         showgrid=True,
-        gridcolor=DARK_GRID,
-        color="rgba(248,250,252,0.85)",
+        gridcolor=DAILY_CHART_GRID,
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=False,
     )
@@ -397,7 +418,7 @@ def build_ro_daily_chart(
         range=[0, 300],
         ticksuffix="%",
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=True,
     )
@@ -430,9 +451,9 @@ def build_revenue_daily_chart(
             y=daily["revenue_m"],
 
             marker=dict(
-                color=PRIMARY_BLUE,
+                color=REVENUE_BAR_COLOR,
                 line=dict(
-                    color=PRIMARY_BLUE_LIGHT,
+                    color=REVENUE_BAR_BORDER,
                     width=1,
                 ),
             ),
@@ -470,16 +491,16 @@ def build_revenue_daily_chart(
             mode="lines+markers+text",
 
             line=dict(
-                color=LINE_BLUE,
-                width=2.5,
+                color=CUMULATIVE_LINE_COLOR,
+                width=3,
                 dash="dot",
             ),
 
             marker=dict(
-                size=6,
-                color=LINE_BLUE_SOFT,
+                size=7,
+                color=CUMULATIVE_MARKER_COLOR,
                 line=dict(
-                    color="#D7EAFE",
+                    color=CUMULATIVE_MARKER_BORDER,
                     width=1,
                 ),
             ),
@@ -497,7 +518,7 @@ def build_revenue_daily_chart(
 
             textfont=dict(
                 size=10,
-                color=PCT_TEXT_COLOR,
+                color=DAILY_CHART_TEXT,
             ),
 
             name="% đạt lũy kế",
@@ -506,13 +527,20 @@ def build_revenue_daily_chart(
     )
 
     figure.update_layout(
-        template="plotly_dark",
+        template="simple_white",
         height=370,
-        paper_bgcolor=DARK_PANEL,
-        plot_bgcolor=DARK_PANEL,
+        paper_bgcolor=DAILY_CHART_BG,
+        plot_bgcolor=DAILY_CHART_BG,
+        hoverlabel=dict(
+            bgcolor="#FFFFFF",
+            bordercolor="#E9ECF3",
+            font=dict(
+                color="#1E2F6E",
+            ),
+        ),
 
         font=dict(
-            color=WHITE,
+            color=DAILY_CHART_TEXT,
         ),
 
         margin=dict(
@@ -523,6 +551,7 @@ def build_revenue_daily_chart(
         ),
 
         showlegend=False,
+        bargap=0.18,
 
         title=dict(
             text=(
@@ -532,7 +561,7 @@ def build_revenue_daily_chart(
             x=0.5,
             font=dict(
                 size=19,
-                color=WHITE,
+                color=DAILY_CHART_TITLE,
             ),
         ),
     )
@@ -541,14 +570,15 @@ def build_revenue_daily_chart(
         tickmode="array",
         tickvals=days,
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
-        linecolor="rgba(255,255,255,0.22)",
+        color=DAILY_CHART_AXIS,
+        linecolor="#DAD1D2",
+        zeroline=False,
     )
 
     figure.update_yaxes(
         showgrid=True,
-        gridcolor=DARK_GRID,
-        color="rgba(248,250,252,0.85)",
+        gridcolor=DAILY_CHART_GRID,
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=False,
     )
@@ -557,7 +587,7 @@ def build_revenue_daily_chart(
         range=[0, 300],
         ticksuffix="%",
         showgrid=False,
-        color="rgba(248,250,252,0.85)",
+        color=DAILY_CHART_AXIS,
         zeroline=False,
         secondary_y=True,
     )
@@ -633,10 +663,21 @@ def render_daily_charts(
             workshop=workshop,
         )
 
-        st.plotly_chart(
-            ro_figure,
-            use_container_width=True,
+        ro_chart_card = st.container(
+            key="ro_daily_chart_card"
         )
+
+        with ro_chart_card:
+            st.plotly_chart(
+                ro_figure,
+                use_container_width=True,
+                config={
+                    "displayModeBar": True,
+                    "displaylogo": False,
+                    "responsive": True,
+                    "scrollZoom": True,
+                },
+            )
 
     with ro_kpi_column:
         render_mini_kpi(
@@ -665,10 +706,21 @@ def render_daily_charts(
             )
         )
 
-        st.plotly_chart(
-            revenue_figure,
-            use_container_width=True,
+        revenue_chart_card = st.container(
+            key="revenue_daily_chart_card"
         )
+
+        with revenue_chart_card:
+            st.plotly_chart(
+                revenue_figure,
+                use_container_width=True,
+                config={
+                    "displayModeBar": True,
+                    "displaylogo": False,
+                    "responsive": True,
+                    "scrollZoom": True,
+                },
+            )
 
     with revenue_kpi_column:
         render_mini_kpi(
