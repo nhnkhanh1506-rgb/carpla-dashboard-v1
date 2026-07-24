@@ -52,43 +52,19 @@ def style_white_table(dataframe):
                 {
                     "selector": "thead th",
                     "props": [
-                        (
-                            "background-color",
-                            "#F3F4F6",
-                        ),
-                        (
-                            "color",
-                            "#6B7280",
-                        ),
-                        (
-                            "font-weight",
-                            "600",
-                        ),
-                        (
-                            "border-color",
-                            "#E5E7EB",
-                        ),
-                        (
-                            "text-align",
-                            "left",
-                        ),
+                        ("background-color", "#F3F4F6"),
+                        ("color", "#6B7280"),
+                        ("font-weight", "600"),
+                        ("border-color", "#E5E7EB"),
+                        ("text-align", "left"),
                     ],
                 },
                 {
                     "selector": "tbody td",
                     "props": [
-                        (
-                            "background-color",
-                            "#FFFFFF",
-                        ),
-                        (
-                            "color",
-                            "#1F2937",
-                        ),
-                        (
-                            "border-color",
-                            "#E5E7EB",
-                        ),
+                        ("background-color", "#FFFFFF"),
+                        ("color", "#1F2937"),
+                        ("border-color", "#E5E7EB"),
                     ],
                 },
             ],
@@ -142,7 +118,6 @@ if not selection["show_dashboard"]:
     render_homepage(
         logo_path=LOGO_FILE
     )
-
     st.stop()
 
 
@@ -176,22 +151,24 @@ metrics = calculate_dashboard_metrics(
 # 8. GET METRICS
 # ============================================================
 
-# Dữ liệu file dịch vụ đã lọc
 data = metrics["data"]
-
-# Dữ liệu đã ghép phụ tùng theo từng lệnh
 merged_data = metrics["merged_data"]
 
 actual_ro = metrics["actual_ro"]
-
 matched_orders = metrics["matched_orders"]
 missing_orders = metrics["missing_orders"]
 
+# Tổng trước thuế đã gồm công việc + phụ tùng
 service_revenue = metrics["service_revenue"]
-parts_revenue = metrics["parts_revenue"]
-accessory_revenue = metrics["accessory_revenue"]
-actual_revenue = metrics["actual_revenue"]
 
+# Cơ cấu nằm trong Tổng trước thuế
+labor_revenue = metrics["labor_revenue"]
+parts_revenue = metrics["parts_revenue"]
+
+# Phụ kiện ngoài file Lệnh sửa chữa
+accessory_revenue = metrics["accessory_revenue"]
+
+actual_revenue = metrics["actual_revenue"]
 total_after_tax = metrics["total_after_tax"]
 
 target_ro = metrics["target_ro"]
@@ -208,8 +185,7 @@ revenue_rate = metrics["revenue_rate"]
 if target_ro == 0 and target_revenue == 0:
     st.warning(
         f"Chưa thiết lập target cho Chi nhánh "
-        f"{selected_branch}, "
-        f"Xưởng {selected_workshop}, "
+        f"{selected_branch}, Xưởng {selected_workshop}, "
         f"tháng {month}/{year}."
     )
 
@@ -237,13 +213,6 @@ render_top_kpis(
 
 # ============================================================
 # 12. TÍNH SỐ NGÀY LÀM VIỆC THỰC TẾ
-# ============================================================
-#
-# calculate_working_days() tính:
-# - Tất cả ngày trong tháng
-# - Loại Chủ nhật
-#
-# Tháng 7/2026 sẽ trả về 27 ngày làm việc.
 # ============================================================
 
 working_day_info = calculate_working_days(
@@ -311,8 +280,10 @@ st.dataframe(
 
 
 # ============================================================
-# 15. REVENUE BREAKDOWN
+# 15. CƠ CẤU DOANH THU
 # ============================================================
+# Công việc + phụ tùng = Tổng trước thuế.
+# Phụ kiện chỉ cộng thêm nếu nằm ngoài file Lệnh sửa chữa.
 
 st.markdown(
     "## Cơ cấu tổng doanh thu"
@@ -321,14 +292,14 @@ st.markdown(
 revenue_breakdown = pd.DataFrame(
     {
         "Nguồn doanh thu": [
-            "Doanh thu dịch vụ",
+            "Doanh thu công việc",
             "Doanh thu phụ tùng",
             "Doanh thu phụ kiện",
             "TỔNG DOANH THU",
         ],
 
         "Giá trị": [
-            service_revenue,
+            labor_revenue,
             parts_revenue,
             accessory_revenue,
             actual_revenue,
@@ -347,32 +318,15 @@ revenue_breakdown[
 revenue_breakdown[
     "Tỷ trọng"
 ] = [
-    (
-        service_revenue
-        / actual_revenue
-        if actual_revenue
-        else 0
-    ),
-
-    (
-        parts_revenue
-        / actual_revenue
-        if actual_revenue
-        else 0
-    ),
-
-    (
-        accessory_revenue
-        / actual_revenue
-        if actual_revenue
-        else 0
-    ),
-
-    (
-        1
-        if actual_revenue
-        else 0
-    ),
+    value / actual_revenue
+    if actual_revenue
+    else 0
+    for value in [
+        labor_revenue,
+        parts_revenue,
+        accessory_revenue,
+        actual_revenue,
+    ]
 ]
 
 revenue_breakdown[
@@ -396,8 +350,7 @@ revenue_breakdown_display = (
     ]
     .rename(
         columns={
-            "Giá trị hiển thị":
-                "Giá trị",
+            "Giá trị hiển thị": "Giá trị",
         }
     )
 )
@@ -414,14 +367,10 @@ st.dataframe(
 # ============================================================
 # 16. DAILY CHARTS
 # ============================================================
-#
-# Quan trọng:
-# - Truyền merged_data để dùng doanh_thu_theo_lenh
-# - Truyền actual_working_days thay vì WORKING_DAYS cố định
-# ============================================================
+# Daily dùng Tổng trước thuế trực tiếp từ file Lệnh sửa chữa.
 
 render_daily_charts(
-    data=merged_data,
+    data=data,
     year=year,
     month=month,
     workshop=selected_workshop,
@@ -434,9 +383,11 @@ render_daily_charts(
 # ============================================================
 # 17. BRAND SECTION
 # ============================================================
+# Hãng xe và danh sách lệnh lấy từ file Lệnh sửa chữa.
+# Doanh thu theo hãng dùng Tổng trước thuế.
 
 render_brand_section(
-    data=merged_data
+    data=data
 )
 
 
@@ -477,28 +428,35 @@ with st.expander(
     )
 
     st.write(
-        "Doanh thu dịch vụ:",
+        "Tổng trước thuế trong file Lệnh sửa chữa:",
         fmt_m(
             service_revenue
         ),
     )
 
     st.write(
-        "Doanh thu phụ tùng:",
+        "Trong đó - Doanh thu công việc:",
+        fmt_m(
+            labor_revenue
+        ),
+    )
+
+    st.write(
+        "Trong đó - Doanh thu phụ tùng:",
         fmt_m(
             parts_revenue
         ),
     )
 
     st.write(
-        "Doanh thu phụ kiện:",
+        "Doanh thu phụ kiện ngoài file Lệnh sửa chữa:",
         fmt_m(
             accessory_revenue
         ),
     )
 
     st.write(
-        "Tổng doanh thu:",
+        "Tổng doanh thu dashboard:",
         fmt_m(
             actual_revenue
         ),
@@ -541,7 +499,7 @@ with st.expander(
 
 
 with st.expander(
-    "Xem dữ liệu lệnh đã ghép phụ tùng"
+    "Xem dữ liệu đối chiếu phụ tùng"
 ):
     display_columns = [
         column
@@ -550,7 +508,6 @@ with st.expander(
             "ngay_hoa_don",
             "doanh_thu_truoc_thue",
             "doanh_thu_phu_tung",
-            "doanh_thu_theo_lenh",
             "tim_thay_trong_bang_tong_hop",
         ]
         if column in merged_data.columns
