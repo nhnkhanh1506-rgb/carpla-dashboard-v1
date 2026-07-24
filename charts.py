@@ -675,7 +675,7 @@ def render_daily_charts(
                     "displayModeBar": True,
                     "displaylogo": False,
                     "responsive": True,
-                    "scrollZoom": True,
+                    "scrollZoom": False,
                 },
             )
 
@@ -718,7 +718,7 @@ def render_daily_charts(
                     "displayModeBar": True,
                     "displaylogo": False,
                     "responsive": True,
-                    "scrollZoom": True,
+                    "scrollZoom": False,
                 },
             )
 
