@@ -17,6 +17,13 @@ from styles import (
     LINE_BLUE_SOFT,
     PCT_TEXT_COLOR,
     BAR_LABEL_COLOR,
+    CPUS_BAR_COLOR,
+    CPUS_BAR_BORDER,
+    REVENUE_BAR_COLOR,
+    REVENUE_BAR_BORDER,
+    CUMULATIVE_LINE_COLOR,
+    CUMULATIVE_MARKER_COLOR,
+    CUMULATIVE_MARKER_BORDER,
     DARK_PANEL,
     DARK_GRID,
     WHITE,
@@ -274,9 +281,9 @@ def build_ro_daily_chart(
             y=daily["ro"],
 
             marker=dict(
-                color=PRIMARY_BLUE,
+                color=CPUS_BAR_COLOR,
                 line=dict(
-                    color=PRIMARY_BLUE_LIGHT,
+                    color=CPUS_BAR_BORDER,
                     width=1,
                 ),
             ),
@@ -310,16 +317,16 @@ def build_ro_daily_chart(
             mode="lines+markers+text",
 
             line=dict(
-                color=LINE_BLUE,
+                color=CUMULATIVE_LINE_COLOR,
                 width=2.5,
                 dash="dot",
             ),
 
             marker=dict(
                 size=6,
-                color=LINE_BLUE_SOFT,
+                color=CUMULATIVE_MARKER_COLOR,
                 line=dict(
-                    color="#D7EAFE",
+                    color=CUMULATIVE_MARKER_BORDER,
                     width=1,
                 ),
             ),
@@ -430,9 +437,9 @@ def build_revenue_daily_chart(
             y=daily["revenue_m"],
 
             marker=dict(
-                color=PRIMARY_BLUE,
+                color=REVENUE_BAR_COLOR,
                 line=dict(
-                    color=PRIMARY_BLUE_LIGHT,
+                    color=REVENUE_BAR_BORDER,
                     width=1,
                 ),
             ),
@@ -470,16 +477,16 @@ def build_revenue_daily_chart(
             mode="lines+markers+text",
 
             line=dict(
-                color=LINE_BLUE,
+                color=CUMULATIVE_LINE_COLOR,
                 width=2.5,
                 dash="dot",
             ),
 
             marker=dict(
                 size=6,
-                color=LINE_BLUE_SOFT,
+                color=CUMULATIVE_MARKER_COLOR,
                 line=dict(
-                    color="#D7EAFE",
+                    color=CUMULATIVE_MARKER_BORDER,
                     width=1,
                 ),
             ),
