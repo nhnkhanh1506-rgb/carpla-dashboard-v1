@@ -850,13 +850,19 @@ def render_brand_section(data):
         )
     )
 
+brand_display["Số RO"] = (
+    brand_display["Số RO"]
+    .astype(int)
+    .astype(str)
+)
+    
     total_row = pd.DataFrame(
         {
             "Hãng xe": [
                 "TỔNG"
             ],
             "Số RO": [
-                total_ro_brand
+                str(int(total_ro_brand))
             ],
             "Doanh thu trước thuế": [
                 fmt_m(
