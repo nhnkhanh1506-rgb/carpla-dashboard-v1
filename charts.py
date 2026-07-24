@@ -301,7 +301,7 @@ def build_ro_daily_chart(
 
             textfont=dict(
                 color=BAR_LABEL_COLOR,
-                size=13,
+                size=14,
             ),
 
             cliponaxis=False,
@@ -358,7 +358,7 @@ def build_ro_daily_chart(
         paper_bgcolor=DARK_PANEL,
         plot_bgcolor=DARK_PANEL,
 
-        uniformtext_minsize=13,
+        uniformtext_minsize=14,
         uniformtext_mode="show",
 
         font=dict(
