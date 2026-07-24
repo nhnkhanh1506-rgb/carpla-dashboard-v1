@@ -965,7 +965,7 @@ def render_brand_section(data):
             template="simple_white",
 
             # Chỉ giảm chiều cao để cân với bảng.
-            height=404,
+            height=403,
 
             margin=dict(
                  l=24,
