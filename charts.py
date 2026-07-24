@@ -1048,6 +1048,10 @@ def render_payment_section(data):
         + insurance_value
     )
 
+    # ========================================================
+    # DỮ LIỆU BẢNG
+    # ========================================================
+
     payment_structure = pd.DataFrame(
         {
             "Nguồn thanh toán": [
@@ -1082,7 +1086,9 @@ def render_payment_section(data):
         "Giá trị"
     ] = payment_display[
         "Giá trị"
-    ].map(fmt_m)
+    ].map(
+        fmt_m
+    )
 
     payment_display[
         "Tỷ trọng"
@@ -1119,11 +1125,19 @@ def render_payment_section(data):
         ignore_index=True,
     )
 
+    # ========================================================
+    # LAYOUT
+    # ========================================================
+
     left_column, right_column = (
         st.columns(
             [1, 1]
         )
     )
+
+    # ========================================================
+    # BẢNG CƠ CẤU NGUỒN THANH TOÁN
+    # ========================================================
 
     with left_column:
         st.markdown(
@@ -1140,6 +1154,10 @@ def render_payment_section(data):
             use_container_width=True,
             hide_index=True,
         )
+
+    # ========================================================
+    # BIỂU ĐỒ DONUT
+    # ========================================================
 
     with right_column:
         st.markdown(
@@ -1171,7 +1189,16 @@ def render_payment_section(data):
                         ]
                     ),
 
-                    textinfo="none",
+                    textinfo="percent",
+
+                    texttemplate=(
+                        "%{percent:.0%}"
+                    ),
+
+                    textfont=dict(
+                        size=15,
+                        color="white",
+                    ),
 
                     domain=dict(
                         x=[0.08, 0.78],
